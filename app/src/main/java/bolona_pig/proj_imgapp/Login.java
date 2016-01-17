@@ -54,7 +54,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 }
 
                 password = secureModule.getSHA1Hash(password);
-                Toast.makeText(this, password.length() + "", Toast.LENGTH_SHORT).show();
 
                 User user = new User(username, password);
 
