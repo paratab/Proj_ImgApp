@@ -20,6 +20,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     TextView tvRegister;
 
     UserLocalStore userLocalStore;
+    SecureModule secureModule;
 
 
     @Override
@@ -36,6 +37,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         tvRegister.setOnClickListener(this);
 
         userLocalStore = new UserLocalStore(this);
+        secureModule = new SecureModule();
     }
 
     @Override
@@ -50,6 +52,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     Toast.makeText(this, "Username or Password is empty!.", Toast.LENGTH_SHORT).show();
                     break;
                 }
+
+                password = secureModule.getSHA1Hash(password);
+                Toast.makeText(this, password.length() + "", Toast.LENGTH_SHORT).show();
 
                 User user = new User(username, password);
 
@@ -88,7 +93,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void showErrorMessage() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Login.this);
-        dialogBuilder.setMessage("Incorrect user details.");
+        dialogBuilder.setMessage("Username or Password is invalid.");
         dialogBuilder.setPositiveButton("ok", null);
         dialogBuilder.show();
     }

@@ -14,10 +14,11 @@ import android.widget.Toast;
 
 public class UserDetailEdit extends AppCompatActivity implements View.OnClickListener {
 
-    Button btChangePhone, btUpdate, btChangePW;
-    TextView edtUsername, edtID, edtPassword, edtTelephone;
-    EditText edtName, edtEmail;
+    Button btUpdate, btChangePW;
+    TextView edtUsername, edtID, edtPassword;
+    EditText edtName, edtEmail, edtTelephone;
     UserLocalStore userLocalStore;
+    SecureModule secureModule;
 
 
     @Override
@@ -25,7 +26,6 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_user_detail_edit);
 
-        btChangePhone = (Button) findViewById(R.id.btChangePhone);
         btUpdate = (Button) findViewById(R.id.btUpdate);
         btChangePW = (Button) findViewById(R.id.btChangePW);
         edtUsername = (TextView) findViewById(R.id.edtUsername);
@@ -33,12 +33,12 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         edtName = (EditText) findViewById(R.id.edtName);
         edtID = (TextView) findViewById(R.id.edtID);
         edtEmail = (EditText) findViewById(R.id.edtEmail);
-        edtTelephone = (TextView) findViewById(R.id.edtPhone);
+        edtTelephone = (EditText) findViewById(R.id.edtPhone);
 
-        btChangePhone.setOnClickListener(this);
         btUpdate.setOnClickListener(this);
         btChangePW.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
+        secureModule = new SecureModule();
 
     }
 
@@ -61,6 +61,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         Intent intent;
+        CharSequence text;
         switch (v.getId()) {
             case R.id.btUpdate:
 
@@ -71,26 +72,44 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                 String email = edtEmail.getText().toString();
                 String telephone = edtTelephone.getText().toString();
 
+                if (email.isEmpty()) {
+                    text = "Email cannot be empty.";
+                    secureModule.printError(this, text);
+                    break;
+                }
+                if (!secureModule.isValidEmail(email)) {
+                    text = "Email is not valid";
+                    secureModule.printError(this, text);
+                    break;
+                }
+                if (telephone.isEmpty()) {
+                    text = "Telephone cannot be empty.";
+                    secureModule.printError(this, text);
+                    break;
+                }
+
                 User user = new User(username, password, name, nationId, email, telephone);
 
                 ServerRequest serverRequest = new ServerRequest(this);
                 serverRequest.updateUserDataInBG(user, new GetUserCallBack() {
                     @Override
                     public void done(User returnedUser) {
-                        userLocalStore.storeUserData(returnedUser);
-
-                        Intent intent = new Intent(UserDetailEdit.this, UserManagement.class);
-                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
+                        if (returnedUser != null) {
+                            userLocalStore.storeUserData(returnedUser);
+                            Toast.makeText(UserDetailEdit.this, "Updated", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(UserDetailEdit.this, UserManagement.class);
+                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(UserDetailEdit.this, "Error on Update", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 break;
             case R.id.btChangePW:
                 intent = new Intent(UserDetailEdit.this, UserPasswordChange.class);
                 startActivity(intent);
-                break;
-            case R.id.btChangePhone:
                 break;
         }
     }

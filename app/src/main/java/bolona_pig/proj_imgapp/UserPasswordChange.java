@@ -17,6 +17,7 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
     EditText edtPassword, edtNewPassword, edtReplyNewPassword;
     Button btSavePassword;
     UserLocalStore userLocalStore;
+    SecureModule secureModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
 
         btSavePassword.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
+        secureModule = new SecureModule();
     }
 
     @Override
@@ -39,6 +41,10 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
                 String password = edtPassword.getText().toString();
                 String newPassword = edtNewPassword.getText().toString();
                 String replyNewPassword = edtReplyNewPassword.getText().toString();
+
+                password = secureModule.getSHA1Hash(password);
+                newPassword = secureModule.getSHA1Hash(newPassword);
+                replyNewPassword = secureModule.getSHA1Hash(replyNewPassword);
 
                 User user = userLocalStore.getLoggedInUser();
                 if (!password.equals(user.password)) {

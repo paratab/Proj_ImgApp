@@ -23,7 +23,7 @@ public class UserLocalStore {
         spEdt.putString("nationId", user.nationId);
         spEdt.putString("email", user.email);
         spEdt.putString("telephone", user.telephone);
-        spEdt.commit();
+        spEdt.apply();
     }
 
     public User getLoggedInUser() {
@@ -41,13 +41,13 @@ public class UserLocalStore {
     public void setUserLoggedIn(Boolean loggedIn) {
         SharedPreferences.Editor spEdt = userLocalDB.edit();
         spEdt.putBoolean("loggedIn", loggedIn);
-        spEdt.commit();
+        spEdt.apply();
     }
 
     public void clearUserData() {
         SharedPreferences.Editor spEdt = userLocalDB.edit();
         spEdt.clear();
-        spEdt.commit();
+        spEdt.apply();
     }
 
     public boolean getLoggedInStatus() {

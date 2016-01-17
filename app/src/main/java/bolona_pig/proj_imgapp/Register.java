@@ -19,6 +19,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     Button btRegister;
     EditText edtUsername, edtPassword, edtReplyPassword, edtName, edtID, edtEmail, edtTelephone;
+    SecureModule secureModule;
 
 
     @Override
@@ -34,6 +35,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         edtID = (EditText) findViewById(R.id.edtID);
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtTelephone = (EditText) findViewById(R.id.edtPhone);
+
+        secureModule = new SecureModule();
 
         btRegister.setOnClickListener(this);
 
@@ -56,6 +59,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     break;
                 }
 
+                password = secureModule.getSHA1Hash(password);
 
                 User user = new User(username, password, name, nationId, email, telephone);
 
@@ -74,11 +78,15 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         serverRequest.storeUserDataInBG(user, new GetUserCallBack() {
             @Override
             public void done(User returnedUser) {
-                Log.i("custom_check", "Register Complete");
-                Intent intent = new Intent(Register.this, Login.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                if (returnedUser != null) {
+                    Toast.makeText(Register.this, "Register Completed", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Register.this, Login.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(Register.this, "Register not successful. Make sure you enable internet.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -88,64 +96,45 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         CharSequence text;
         if (username.isEmpty()) {
             text = "Username cannot be empty.";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
-        if (isValidUsername(username)) {
+        if (!secureModule.isValidUsername(username)) {
             text = "Username invalid. Username must be more than 3 char and contain only [A-Z,a-z,0-9,_,-]";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
         if (password.isEmpty()) {
             text = "Password cannot be empty";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
         if (!password.equals(replyPassword)) {
             text = "Password and Reply Password is not equal.";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
         if (nationId.length() != 13) {
             text = "National ID must has 13 digits";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
         if (email.isEmpty()) {
             text = "Email cannot be empty.";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
-        if (isValidEmail(email)) {
+        if (!secureModule.isValidEmail(email)) {
             text = "Email is not valid";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
         if (telephone.isEmpty()) {
             text = "Telephone cannot be empty.";
-            printError(text);
+            secureModule.printError(this, text);
             return false;
         }
 
         return true;
-    }
-
-    private boolean isValidUsername(String username) {
-        Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_-]{3,15}$");
-        Matcher m = emailPattern.matcher(username);
-        return !m.matches();
-    }
-
-    private boolean isValidEmail(String email) {
-       /* Pattern emailPattern = Pattern.compile("[A-Z]+[a-zA-Z_]+@\b([a-zA-Z]+.){2}\b?.[a-zA-Z]+");
-        Matcher m = emailPattern.matcher(email);
-        return !m.matches();*/
-        return !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private void printError(CharSequence text) {
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-        toast.show();
     }
 }

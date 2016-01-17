@@ -58,7 +58,7 @@ public class ServerRequest {
         new UpdateUserPasswordAsyncTask(user, newPassword, userCallBack).execute();
     }
 
-    public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
+    public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, User> {
 
         User user;
         GetUserCallBack userCallBack;
@@ -69,7 +69,7 @@ public class ServerRequest {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected User doInBackground(Void... params) {
 
             Map<String, String> dataToSend = new HashMap<>();
             dataToSend.put("username", user.username);
@@ -82,6 +82,7 @@ public class ServerRequest {
 
             String encodeData = getEncodeData(dataToSend);
             BufferedReader reader = null; // Read some data from server
+            User returnUser = null;
 
             try {
                 URL url = new URL(ADDRESS + "Register.php");
@@ -110,6 +111,17 @@ public class ServerRequest {
 
                 Log.i("custom_check", line);
 
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    String name = jObj.getString("name");
+                    String nationId = jObj.getString("nationId");
+                    String email = jObj.getString("email");
+                    String telephone = jObj.getString("telephone");
+
+                    returnUser = new User(user.username, user.password, name, nationId, email, telephone);
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -122,7 +134,7 @@ public class ServerRequest {
                     }
                 }
             }
-            return null;
+            return returnUser;
         }
 
         private String getEncodeData(Map<String, String> data) {
@@ -145,10 +157,10 @@ public class ServerRequest {
 
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(User returnUser) {
             progressDialog.dismiss();
-            userCallBack.done(null);
-            super.onPostExecute(aVoid);
+            userCallBack.done(returnUser);
+            super.onPostExecute(returnUser);
         }
     }
 
@@ -263,7 +275,7 @@ public class ServerRequest {
             dataToSend.put("name", user.name);
             //dataToSend.put("nationId",user.nationId);
             dataToSend.put("email", user.email);
-            //dataToSend.put("telephone",user.telephone);
+            dataToSend.put("telephone", user.telephone);
 
             String encodeData = getEncodeData(dataToSend);
             BufferedReader reader = null; // Read some data from server
@@ -289,7 +301,6 @@ public class ServerRequest {
                 }
                 line = strb.toString();
 
-                Log.i("custom_check", "The values received in the store part are as follows:");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
@@ -298,9 +309,9 @@ public class ServerRequest {
                     String name = jObj.getString("name");
                     //String nationId = jObj.getString("nationId");
                     String email = jObj.getString("email");
-                    //String telephone = jObj.getString("telephone");
+                    String telephone = jObj.getString("telephone");
 
-                    returnUser = new User(user.username, user.password, name, user.nationId, email, user.telephone);
+                    returnUser = new User(user.username, user.password, name, user.nationId, email, telephone);
                 }
 
             } catch (Exception e) {
