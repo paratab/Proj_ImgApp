@@ -5,7 +5,7 @@ package bolona_pig.proj_imgapp;
  */
 public class Notice {
 
-    int noticeId;
+    int id;
     String lp_name, lp_birthdate, lp_location, lp_date, lp_detail, ct_name, ct_phone;
 
     public Notice(String lp_name, String lp_birthdate, String lp_date, String lp_location, String lp_detail, String ct_name, String ct_phone) {
@@ -19,7 +19,7 @@ public class Notice {
     }
 
     public void setNoticeId(int id) {
-        this.noticeId = id;
+        this.id = id;
     }
 
 }
