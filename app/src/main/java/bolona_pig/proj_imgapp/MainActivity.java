@@ -2,20 +2,13 @@ package bolona_pig.proj_imgapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btUserManagement, btGoogle;
+    Button btUserManagement, btNoticeAdd, btGoogle;
 
 
     @Override
@@ -25,9 +18,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btUserManagement = (Button) findViewById(R.id.btUserManagement);
         btGoogle = (Button) findViewById(R.id.btGoogle);
+        btNoticeAdd = (Button) findViewById(R.id.btNoticeAdd);
 
         btUserManagement.setOnClickListener(this);
         btGoogle.setOnClickListener(this);
+        btNoticeAdd.setOnClickListener(this);
+
 
     }
 
@@ -48,6 +44,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btGoogle:
                 intent = new Intent(this, MapsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btNoticeAdd:
+                intent = new Intent(this, NoticeAdd.class);
                 startActivity(intent);
                 break;
         }

@@ -4,21 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
-import org.apache.http.params.HttpParams;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +15,8 @@ import java.util.Map;
  */
 public class ServerRequest {
 
-    ProgressDialog progressDialog;
-    public static final int CONNECTION_TIME = 1000 * 15;
     public static final String ADDRESS = "http://www.surawit-sj.xyz/";
+    ProgressDialog progressDialog;
 
     public ServerRequest(Context context) {
         progressDialog = new ProgressDialog(context);
@@ -62,10 +49,12 @@ public class ServerRequest {
 
         User user;
         GetUserCallBack userCallBack;
+        HttpRequest httpRequest;
 
         public StoreUserDataAsyncTask(User user, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
+            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -79,36 +68,11 @@ public class ServerRequest {
             dataToSend.put("email", user.email);
             dataToSend.put("telephone", user.telephone);
 
-
-            String encodeData = getEncodeData(dataToSend);
-            BufferedReader reader = null; // Read some data from server
             User returnUser = null;
 
             try {
-                URL url = new URL(ADDRESS + "Register.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-                con.setRequestMethod("POST");
-
-                con.setDoOutput(true);
-
-                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-
-                writer.write(encodeData);
-
-                writer.flush();
-
-
-                //----------Read Output from Post---------
-                StringBuilder strb = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    strb.append(line + "\n");
-                }
-                line = strb.toString();
-
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "Register.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
@@ -121,40 +85,13 @@ public class ServerRequest {
 
                     returnUser = new User(user.username, user.password, name, nationId, email, telephone);
                 }
-
-
             } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close(); // Close Reader
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                Log.e("custom_check", e.toString());
             }
+
+
             return returnUser;
         }
-
-        private String getEncodeData(Map<String, String> data) {
-            StringBuilder sb = new StringBuilder();
-            for (String key : data.keySet()) {
-                String value = null;
-                try {
-                    value = URLEncoder.encode(data.get(key), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                if (sb.length() > 0)
-                    sb.append("&");
-
-                sb.append(key + "=" + value);
-            }
-            return sb.toString();
-        }
-
 
         @Override
         protected void onPostExecute(User returnUser) {
@@ -167,10 +104,12 @@ public class ServerRequest {
     public class FetchUserDataAsyncTask extends AsyncTask<Void, Void, User> {
         User user;
         GetUserCallBack userCallBack;
+        HttpRequest httpRequest;
 
         public FetchUserDataAsyncTask(User user, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
+            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -179,30 +118,11 @@ public class ServerRequest {
             dataToSend.put("username", user.username);
             dataToSend.put("password", user.password);
 
-            String encodeData = getEncodeData(dataToSend);
-            BufferedReader reader = null; // Read some data from server
-
             User returnUser = null;
 
             try {
-                URL url = new URL(ADDRESS + "FetchUserData.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-                writer.write(encodeData);
-                writer.flush();
-
-                StringBuilder strb = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    strb.append(line + "\n");
-                }
-                line = strb.toString();
-
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "FetchUserData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
@@ -218,35 +138,9 @@ public class ServerRequest {
 
             } catch (Exception e) {
                 Log.i("custom_check", e.toString());
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close(); // Close Reader
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
 
             return returnUser;
-        }
-
-        private String getEncodeData(Map<String, String> data) {
-            StringBuilder sb = new StringBuilder();
-            for (String key : data.keySet()) {
-                String value = null;
-                try {
-                    value = URLEncoder.encode(data.get(key), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                if (sb.length() > 0)
-                    sb.append("&");
-
-                sb.append(key + "=" + value);
-            }
-            return sb.toString();
         }
 
         @Override
@@ -261,10 +155,12 @@ public class ServerRequest {
     public class UpdateUserDataAsyncTask extends AsyncTask<Void, Void, User> {
         User user;
         GetUserCallBack userCallBack;
+        HttpRequest httpRequest;
 
         public UpdateUserDataAsyncTask(User user, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
+            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -273,41 +169,19 @@ public class ServerRequest {
             dataToSend.put("username", user.username);
             dataToSend.put("password", user.password);
             dataToSend.put("name", user.name);
-            //dataToSend.put("nationId",user.nationId);
             dataToSend.put("email", user.email);
             dataToSend.put("telephone", user.telephone);
-
-            String encodeData = getEncodeData(dataToSend);
-            BufferedReader reader = null; // Read some data from server
 
             User returnUser = null;
 
             try {
-                URL url = new URL(ADDRESS + "UpdateUserData.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-                writer.write(encodeData);
-                writer.flush();
-
-                StringBuilder strb = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    strb.append(line + "\n");
-                }
-                line = strb.toString();
-
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "UpdateUserData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
                     String name = jObj.getString("name");
-                    //String nationId = jObj.getString("nationId");
                     String email = jObj.getString("email");
                     String telephone = jObj.getString("telephone");
 
@@ -316,35 +190,8 @@ public class ServerRequest {
 
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close(); // Close Reader
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
-
             return returnUser;
-        }
-
-        private String getEncodeData(Map<String, String> data) {
-            StringBuilder sb = new StringBuilder();
-            for (String key : data.keySet()) {
-                String value = null;
-                try {
-                    value = URLEncoder.encode(data.get(key), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                if (sb.length() > 0)
-                    sb.append("&");
-
-                sb.append(key + "=" + value);
-            }
-            return sb.toString();
         }
 
         @Override
@@ -360,11 +207,13 @@ public class ServerRequest {
         User user;
         GetUserCallBack userCallBack;
         String newPassword;
+        HttpRequest httpRequest;
 
         public UpdateUserPasswordAsyncTask(User user, String newPassword, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
             this.newPassword = newPassword;
+            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -374,29 +223,10 @@ public class ServerRequest {
             dataToSend.put("password", user.password);
             dataToSend.put("newPassword", newPassword);
 
-            String encodeData = getEncodeData(dataToSend);
-            BufferedReader reader = null; // Read some data from server
-
             User returnUser = null;
 
             try {
-                URL url = new URL(ADDRESS + "UpdateUserPassword.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-                writer.write(encodeData);
-                writer.flush();
-
-                StringBuilder strb = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    strb.append(line + "\n");
-                }
-                line = strb.toString();
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "UpdateUserPassword.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
@@ -409,35 +239,9 @@ public class ServerRequest {
 
             } catch (Exception e) {
                 Log.i("custom_check", e.toString());
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close(); // Close Reader
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
 
             return returnUser;
-        }
-
-        private String getEncodeData(Map<String, String> data) {
-            StringBuilder sb = new StringBuilder();
-            for (String key : data.keySet()) {
-                String value = null;
-                try {
-                    value = URLEncoder.encode(data.get(key), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                if (sb.length() > 0)
-                    sb.append("&");
-
-                sb.append(key + "=" + value);
-            }
-            return sb.toString();
         }
 
         @Override
@@ -449,46 +253,4 @@ public class ServerRequest {
         }
     }
 
-    protected String makeConnection(String encodeData, String urlFile) {
-
-        BufferedReader reader = null; // Read some data from server
-        String line = "";
-
-        try {
-            URL url = new URL(ADDRESS + urlFile);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-            con.setRequestMethod("POST");
-            con.setDoOutput(true);
-            OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-            writer.write(encodeData);
-            writer.flush();
-
-            StringBuilder strb = new StringBuilder();
-            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-
-            while ((line = reader.readLine()) != null) {
-                strb.append(line + "\n");
-            }
-            line = strb.toString();
-
-            Log.i("custom_check", "The values received in the store part are as follows:");
-            Log.i("custom_check", line);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close(); // Close Reader
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return line;
-    }
 }
