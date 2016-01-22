@@ -37,16 +37,10 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        if (!userLocalStore.getLoggedInStatus()) {
-            Intent intent = new Intent(this, Login.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            //finish();
-        } else {
-            User user = userLocalStore.getLoggedInUser();
-            tvCtName.setText(user.name);
-            tvCtPhone.setText(user.telephone);
-        }
+        User user = userLocalStore.getLoggedInUser();
+        tvCtName.setText(user.name);
+        tvCtPhone.setText(user.telephone);
+
     }
 
     @Override

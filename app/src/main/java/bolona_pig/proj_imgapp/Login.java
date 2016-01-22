@@ -2,11 +2,8 @@ package bolona_pig.proj_imgapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -83,10 +80,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private void logInUser(User user) {
         userLocalStore.storeUserData(user);
         userLocalStore.setUserLoggedIn(true);
-
-        Intent intent = new Intent(this, UserManagement.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
         finish();
     }
 

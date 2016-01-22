@@ -37,19 +37,7 @@ public class UserManagement extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onStart() {
         super.onStart();
-        if (!isLoggedIn()) {
-            Intent intent = new Intent(this, Login.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            //finish();
-        } else {
-            displayUserDetail();
-        }
-
-    }
-
-    private boolean isLoggedIn() {
-        return userLocalStore.getLoggedInStatus();
+        displayUserDetail();
     }
 
     private void displayUserDetail() {
@@ -69,17 +57,12 @@ public class UserManagement extends AppCompatActivity implements View.OnClickLis
             case R.id.btLogout:
                 userLocalStore.clearUserData();
                 userLocalStore.setUserLoggedIn(false);
-
-                intent = new Intent(this, Login.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
                 finish();
                 break;
 
             case R.id.btEditData:
-                intent = new Intent(UserManagement.this, UserDetailEdit.class);
+                intent = new Intent(this, UserDetailEdit.class);
                 startActivity(intent);
-                finish();
                 break;
         }
     }

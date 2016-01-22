@@ -2,10 +2,7 @@ package bolona_pig.proj_imgapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -97,9 +94,6 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                         if (returnedUser != null) {
                             userLocalStore.storeUserData(returnedUser);
                             Toast.makeText(UserDetailEdit.this, "Updated", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(UserDetailEdit.this, UserManagement.class);
-                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
                             finish();
                         } else {
                             Toast.makeText(UserDetailEdit.this, "Error on Update", Toast.LENGTH_SHORT).show();
@@ -109,9 +103,18 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.btChangePW:
                 intent = new Intent(UserDetailEdit.this, UserPasswordChange.class);
-                startActivity(intent);
+                startActivityForResult(intent, 111);
                 break;
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 111) {
+            if (resultCode == RESULT_OK) {
+                finish();
+            }
+        }
+    }
 }

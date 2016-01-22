@@ -9,6 +9,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btUserManagement, btNoticeAdd, btGoogle;
+    UserLocalStore userLocalStore;
 
 
     @Override
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btUserManagement = (Button) findViewById(R.id.btUserManagement);
         btGoogle = (Button) findViewById(R.id.btGoogle);
         btNoticeAdd = (Button) findViewById(R.id.btNoticeAdd);
+        userLocalStore = new UserLocalStore(this);
 
         btUserManagement.setOnClickListener(this);
         btGoogle.setOnClickListener(this);
@@ -38,19 +40,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent;
         switch (v.getId()) {
             case R.id.btUserManagement:
-                intent = new Intent(this, UserManagement.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                if (!userLocalStore.getLoggedInStatus()) {
+                    intent = new Intent(this, Login.class);
+                    startActivityForResult(intent, 111);
+                } else {
+                    intent = new Intent(this, UserManagement.class);
+                    startActivity(intent);
+                }
+                break;
+            case R.id.btNoticeAdd:
+                if (!userLocalStore.getLoggedInStatus()) {
+                    intent = new Intent(this, Login.class);
+                    startActivityForResult(intent, 222);
+                } else {
+                    intent = new Intent(this, NoticeAdd.class);
+                    startActivity(intent);
+                }
                 break;
             case R.id.btGoogle:
                 intent = new Intent(this, MapsActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.btNoticeAdd:
-                intent = new Intent(this, NoticeAdd.class);
-                startActivity(intent);
-                break;
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 111) {
+            if (resultCode == RESULT_OK) {
+                Intent intent = new Intent(this, UserManagement.class);
+                startActivity(intent);
+            }
+        } else if (requestCode == 222) {
+            if (resultCode == RESULT_OK) {
+                Intent intent = new Intent(this, NoticeAdd.class);
+                startActivity(intent);
+            }
+        }
+    }
 }
