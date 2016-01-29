@@ -11,12 +11,12 @@
         android:text="Lost Person's name" />
 
     <EditText
-        android:id="@+id/edtLpName"
+        android:id="@+id/edtLnName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:inputType="text"
-        android:nextFocusDown="@+id/edtLpBirthDate" />
+        android:nextFocusDown="@+id/edtLnBirthDate" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,12 +24,12 @@
         android:text="Lost Person BirthDate" />
 
     <EditText
-        android:id="@+id/edtLpBirthDate"
+        android:id="@+id/edtLnBirthDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:inputType="date"
-        android:nextFocusDown="@+id/edtLpLocation" />
+        android:nextFocusDown="@+id/edtLnLocation" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -37,12 +37,12 @@
         android:text="Lost Location" />
 
     <EditText
-        android:id="@+id/edtLpLocation"
+        android:id="@+id/edtLnPlace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:inputType="text"
-        android:nextFocusDown="@+id/edtLpDate" />
+        android:nextFocusDown="@+id/edtLnLostDate" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,12 +50,12 @@
         android:text="Lost Date" />
 
     <EditText
-        android:id="@+id/edtLpDate"
+        android:id="@+id/edtLnLostDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:inputType="datetime"
-        android:nextFocusDown="@+id/edtLpDetail" />
+        android:nextFocusDown="@+id/edtLnDetail" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
         android:text="Lost Detail" />
 
     <EditText
-        android:id="@+id/edtLpDetail"
+        android:id="@+id/edtLnDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -75,7 +75,7 @@
         android:text="Notice Adder" />
 
     <TextView
-        android:id="@+id/tvCtName"
+        android:id="@+id/tvLnAdder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp" />
@@ -86,16 +86,16 @@
         android:text="Contact" />
 
     <TextView
-        android:id="@+id/tvCtPhone"
+        android:id="@+id/tvLnPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp" />
 
     <Button
-        android:id="@+id/btNoticeAdd"
+        android:id="@+id/btNoticeUpdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add a Notice" />
+        android:text="Update Notice" />
 
 
 </LinearLayout>

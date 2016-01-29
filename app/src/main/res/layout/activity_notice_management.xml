@@ -1,107 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="10dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Usename" />
+        android:text="Lost Person's name" />
 
-    <EditText
-        android:id="@+id/edtUsername"
+    <TextView
+        android:id="@+id/tvLnName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:nextFocusDown="@+id/edtPassword"
-        android:inputType="text" />
+        android:nextFocusDown="@+id/tvLnBirthDate" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Password" />
+        android:text="Lost Person BirthDate" />
 
-    <EditText
-        android:id="@+id/edtPassword"
+    <TextView
+        android:id="@+id/tvLnBirthDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:inputType="textPassword"
-        android:nextFocusDown="@+id/edtReplyPassword" />
+        android:nextFocusDown="@+id/tvLnLocation" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reply Password" />
+        android:text="Lost Location" />
 
-    <EditText
-        android:id="@+id/edtReplyPassword"
+    <TextView
+        android:id="@+id/tvLnPlace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:inputType="textPassword"
-        android:nextFocusDown="@+id/edtName" />
+        android:nextFocusDown="@+id/tvLnDate" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name" />
+        android:text="Lost Date" />
 
-    <EditText
-        android:id="@+id/edtName"
+    <TextView
+        android:id="@+id/tvLnLostDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:nextFocusDown="@+id/edtID"
-        android:inputType="text" />
+        android:nextFocusDown="@+id/tvLnDetail" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="National ID" />
+        android:text="Lost Detail" />
 
-    <EditText
-        android:id="@+id/edtID"
+    <TextView
+        android:id="@+id/tvLnDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:inputType="number"
-        android:nextFocusDown="@+id/edtEmail" />
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Email" />
+        android:text="Notice Adder" />
 
-    <EditText
-        android:id="@+id/edtEmail"
+    <TextView
+        android:id="@+id/tvLnAdder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:inputType="textEmailAddress"
-        android:nextFocusDown="@+id/edtPhone" />
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Telephone Number" />
+        android:text="Contact" />
 
-    <EditText
-        android:id="@+id/edtPhone"
+    <TextView
+        android:id="@+id/tvLnPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:inputType="number" />
+        android:layout_marginBottom="10dp" />
 
     <Button
-        android:id="@+id/btRegister"
+        android:id="@+id/btNoticeEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register" />
+        android:text="Edit Notice" />
 
 
 </LinearLayout>

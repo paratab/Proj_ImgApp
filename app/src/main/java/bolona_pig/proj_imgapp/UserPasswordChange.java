@@ -18,7 +18,7 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_user_password_change);
+        setContentView(R.layout.activity_user_password_change);
 
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtNewPassword = (EditText) findViewById(R.id.edtNewPassword);

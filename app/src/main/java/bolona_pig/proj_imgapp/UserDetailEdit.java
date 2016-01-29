@@ -21,7 +21,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_user_detail_edit);
+        setContentView(R.layout.activity_user_detail_edit);
 
         btUpdate = (Button) findViewById(R.id.btUpdate);
         btChangePW = (Button) findViewById(R.id.btChangePW);

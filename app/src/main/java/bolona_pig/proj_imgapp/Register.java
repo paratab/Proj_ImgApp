@@ -17,7 +17,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_register);
+        setContentView(R.layout.activity_register);
 
         btRegister = (Button) findViewById(R.id.btRegister);
         edtUsername = (EditText) findViewById(R.id.edtUsername);

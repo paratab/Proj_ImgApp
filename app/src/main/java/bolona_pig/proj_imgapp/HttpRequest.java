@@ -21,7 +21,6 @@ public class HttpRequest {
     protected String makeHttpRequest(Map<String, String> data, String address) {
 
         String encodeData = getEncodeData(data);
-
         BufferedReader reader = null; // Read some data from server
         String line = "";
 

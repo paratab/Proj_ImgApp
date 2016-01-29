@@ -1,21 +1,34 @@
 package bolona_pig.proj_imgapp;
 
+import java.io.Serializable;
+
 /**
  * Created by DreamMii on 17/1/2559.
  */
-public class Notice {
+public class Notice implements Serializable {
 
     int id;
-    String lp_name, lp_birthdate, lp_location, lp_date, lp_detail, ct_name, ct_phone;
+    String lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone;
 
-    public Notice(String lp_name, String lp_birthdate, String lp_date, String lp_location, String lp_detail, String ct_name, String ct_phone) {
-        this.lp_name = lp_name;
-        this.lp_birthdate = lp_birthdate;
-        this.lp_date = lp_date;
-        this.lp_location = lp_location;
-        this.lp_detail = lp_detail;
-        this.ct_name = ct_name;
-        this.ct_phone = ct_phone;
+    public Notice(String lnName, String lnBirthDate, String lnPlace, String lnLostDate, String lnDetail, String lnAdder, String lnPhone) {
+        this.lnName = lnName;
+        this.lnBirthDate = lnBirthDate;
+        this.lnPlace = lnPlace;
+        this.lnLostDate = lnLostDate;
+        this.lnDetail = lnDetail;
+        this.lnAdder = lnAdder;
+        this.lnPhone = lnPhone;
+    }
+
+    public Notice(int id, String lnName, String lnBirthDate, String lnPlace, String lnLostDate, String lnDetail, String lnAdder, String lnPhone) {
+        this.id = id;
+        this.lnName = lnName;
+        this.lnBirthDate = lnBirthDate;
+        this.lnPlace = lnPlace;
+        this.lnLostDate = lnLostDate;
+        this.lnDetail = lnDetail;
+        this.lnAdder = lnAdder;
+        this.lnPhone = lnPhone;
     }
 
     public void setNoticeId(int id) {

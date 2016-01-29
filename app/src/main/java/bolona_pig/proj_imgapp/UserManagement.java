@@ -17,7 +17,7 @@ public class UserManagement extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_user_management);
+        setContentView(R.layout.activity_user_management);
 
         btLogout = (Button) findViewById(R.id.btLogout);
         btEditData = (Button) findViewById(R.id.btEditData);

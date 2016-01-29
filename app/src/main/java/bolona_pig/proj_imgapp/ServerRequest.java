@@ -45,6 +45,22 @@ public class ServerRequest {
         new UpdateUserPasswordAsyncTask(user, newPassword, userCallBack).execute();
     }
 
+    public void storeNoticeDataInBG(Notice notice, GetNoticeCallBack noticeCallBack) {
+        progressDialog.show();
+        new StoreNoticeDataAsyncTask(notice, noticeCallBack).execute();
+
+    }
+
+    public void fetchNoticeDataInBG(int noticeId, GetNoticeCallBack noticeCallBack) {
+        progressDialog.show();
+        new FetchNoticeDataAsyncTask(noticeId, noticeCallBack).execute();
+    }
+
+    public void updateNoticeDataInBG(Notice notice, GetNoticeCallBack noticeCallBack) {
+        progressDialog.show();
+        new UpdateNoticeDataAsyncTask(notice, noticeCallBack).execute();
+    }
+
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, User> {
 
         User user;
@@ -72,7 +88,7 @@ public class ServerRequest {
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "Register.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "StoreUserData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
@@ -253,4 +269,191 @@ public class ServerRequest {
         }
     }
 
+    public class StoreNoticeDataAsyncTask extends AsyncTask<Void, Void, Notice> {
+
+        Notice notice;
+        GetNoticeCallBack noticeCallBack;
+        HttpRequest httpRequest;
+
+        public StoreNoticeDataAsyncTask(Notice notice, GetNoticeCallBack noticeCallBack) {
+            this.notice = notice;
+            this.noticeCallBack = noticeCallBack;
+            httpRequest = new HttpRequest();
+        }
+
+
+        @Override
+        protected Notice doInBackground(Void... params) {
+
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("lnName", notice.lnName);
+            dataToSend.put("lnBirthDate", notice.lnBirthDate);
+            dataToSend.put("lnPlace", notice.lnPlace);
+            dataToSend.put("lnLostDate", notice.lnLostDate);
+            dataToSend.put("lnDetail", notice.lnDetail);
+            dataToSend.put("lnAdder", notice.lnAdder);
+            //dataToSend.put("lnPhone", notice.lnPhone);
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "StoreNoticeData.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    String error = jObj.getString("error");
+                    String lnName = jObj.getString("lnName");
+                    String lnBirthDate = jObj.getString("lnBirthDate");
+                    String lnPlace = jObj.getString("lnPlace");
+                    String lnLostDate = jObj.getString("lnLostDate");
+                    String lnDetail = jObj.getString("lnDetail");
+                    String lnAdder = jObj.getString("lnAdder");
+                    String lnPhone = jObj.getString("lnPhone");
+                    int lnId = jObj.getInt("lnId");
+
+                    if (error.equals("null")) {
+                        notice = new Notice(lnId, lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone);
+                    } else {
+                        notice = null;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("custom_check", e.toString());
+            }
+            return notice;
+        }
+
+        @Override
+        protected void onPostExecute(Notice returnNotice) {
+            progressDialog.dismiss();
+            noticeCallBack.done(returnNotice);
+            super.onPostExecute(returnNotice);
+        }
+    }
+
+    public class FetchNoticeDataAsyncTask extends AsyncTask<Void, Void, Notice> {
+        Notice notice;
+        GetNoticeCallBack noticeCallBack;
+        HttpRequest httpRequest;
+        int noticeId;
+
+        public FetchNoticeDataAsyncTask(int noticeId, GetNoticeCallBack noticeCallBack) {
+            this.noticeId = noticeId;
+            this.noticeCallBack = noticeCallBack;
+            httpRequest = new HttpRequest();
+        }
+
+        @Override
+        public Notice doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("noticeId", noticeId + "");
+
+            notice = null;
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "FetchNoticeData.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    String error = jObj.getString("error");
+                    String lnName = jObj.getString("lnName");
+                    String lnBirthDate = jObj.getString("lnBirthDate");
+                    String lnPlace = jObj.getString("lnPlace");
+                    String lnLostDate = jObj.getString("lnLostDate");
+                    String lnDetail = jObj.getString("lnDetail");
+                    String lnAdder = jObj.getString("lnAdder");
+                    String lnPhone = jObj.getString("lnPhone");
+                    int lnId = jObj.getInt("lnId");
+
+                    if (error.equals("null")) {
+                        notice = new Notice(lnId, lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone);
+                    } else {
+                        notice = null;
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return notice;
+        }
+
+        @Override
+        protected void onPostExecute(Notice returnData) {
+            progressDialog.dismiss();
+            noticeCallBack.done(returnData);
+            super.onPostExecute(returnData);
+
+        }
+    }
+
+    public class UpdateNoticeDataAsyncTask extends AsyncTask<Void, Void, Notice> {
+        Notice notice;
+        GetNoticeCallBack noticeCallBack;
+        HttpRequest httpRequest;
+
+        public UpdateNoticeDataAsyncTask(Notice notice, GetNoticeCallBack noticeCallBack) {
+            this.notice = notice;
+            this.noticeCallBack = noticeCallBack;
+            httpRequest = new HttpRequest();
+        }
+
+        @Override
+        public Notice doInBackground(Void... params) {
+
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("lnName", notice.lnName);
+            dataToSend.put("lnBirthDate", notice.lnBirthDate);
+            dataToSend.put("lnPlace", notice.lnPlace);
+            dataToSend.put("lnLostDate", notice.lnLostDate);
+            dataToSend.put("lnDetail", notice.lnDetail);
+            dataToSend.put("noticeId", notice.id + "");
+
+            notice = null;
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "UpdateNoticeData.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    String error = jObj.getString("error");
+                    String lnName = jObj.getString("lnName");
+                    String lnBirthDate = jObj.getString("lnBirthDate");
+                    String lnPlace = jObj.getString("lnPlace");
+                    String lnLostDate = jObj.getString("lnLostDate");
+                    String lnDetail = jObj.getString("lnDetail");
+                    String lnAdder = jObj.getString("lnAdder");
+                    String lnPhone = jObj.getString("lnPhone");
+                    int lnId = jObj.getInt("lnId");
+
+                    if (error.equals("null")) {
+                        notice = new Notice(lnId, lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone);
+                    } else {
+                        notice = null;
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return notice;
+        }
+
+        @Override
+        protected void onPostExecute(Notice returnData) {
+            progressDialog.dismiss();
+            noticeCallBack.done(returnData);
+            super.onPostExecute(returnData);
+
+        }
+    }
 }

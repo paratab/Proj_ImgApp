@@ -9,18 +9,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NoticeAdd extends AppCompatActivity implements View.OnClickListener {
+public class NoticeEdit extends AppCompatActivity implements View.OnClickListener {
 
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
-    Button btAddNotice;
+    Button btNoticeUpdate;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
+    Notice recentNotice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notice_add);
+        setContentView(R.layout.activity_notice_edit);
 
         edtLnName = (EditText) findViewById(R.id.edtLnName);
         edtLnBirthDate = (EditText) findViewById(R.id.edtLnBirthDate);
@@ -29,30 +30,59 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         edtLnDetail = (EditText) findViewById(R.id.edtLnDetail);
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
-        btAddNotice = (Button) findViewById(R.id.btNoticeAdd);
+        btNoticeUpdate = (Button) findViewById(R.id.btNoticeUpdate);
 
-        btAddNotice.setOnClickListener(this);
+        btNoticeUpdate.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
     }
 
-    @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        User user = userLocalStore.getLoggedInUser();
-        tvLnAdder.setText(user.name);
-        tvLnPhone.setText(user.telephone);
+        int noticeId = Integer.parseInt(getIntent().getExtras().getString("noticeId"));
+        serverRequest.fetchNoticeDataInBG(noticeId, new GetNoticeCallBack() {
+            @Override
+            public void done(Notice returnNotice) {
+                if (returnNotice == null) {
+                    printError();
+                } else {
+                    showNotice(returnNotice);
+                }
+            }
+        });
+    }
 
+    public void printError() {
+        Toast.makeText(this, "Unable to get Notice Data, Make sure you have internet connection", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    public void showNotice(Notice notice) {
+        recentNotice = notice;
+        edtLnName.setText(notice.lnName);
+        edtLnBirthDate.setText(notice.lnBirthDate);
+        edtLnPlace.setText(notice.lnPlace);
+        edtLnLostDate.setText(notice.lnLostDate);
+        edtLnDetail.setText(notice.lnDetail);
+        tvLnAdder.setText(notice.lnAdder);
+        tvLnPhone.setText(notice.lnPhone);
+
+        User user = userLocalStore.getLoggedInUser();
+        if (!user.name.equals(notice.lnAdder)) {
+            View v = findViewById(R.id.btNoticeEdit);
+            v.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-            case R.id.btNoticeAdd:
+            case R.id.btNoticeUpdate:
 
                 User user = userLocalStore.getLoggedInUser();
 
+                int id = recentNotice.id;
                 String lnName = edtLnName.getText().toString();
                 String lnBirthDate = edtLnBirthDate.getText().toString();
                 String lnPlace = edtLnPlace.getText().toString();
@@ -61,30 +91,25 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
                 String lnAdder = user.username;
                 String lnPhone = user.telephone;
 
-                Notice notice = new Notice(lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone);
-                serverRequest.storeNoticeDataInBG(notice, new GetNoticeCallBack() {
+                Notice notice = new Notice(id, lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone);
+                serverRequest.updateNoticeDataInBG(notice, new GetNoticeCallBack() {
                     @Override
                     public void done(Notice returnNotice) {
                         if (returnNotice == null) {
-                            showError();
+                            printError();
                         } else {
-                            showResult(returnNotice);
+                            showResult();
                         }
                     }
                 });
-                                
+
                 break;
         }
     }
 
-    public void showError() {
-        Toast.makeText(this, "Added Error, 3G not Working os Same Notice Detail", Toast.LENGTH_SHORT).show();
-    }
-
-    public void showResult(Notice notice) {
-        Intent intent = new Intent();
-        intent.putExtra("ID", notice.id + "");
-        setResult(RESULT_OK, intent);
+    public void showResult() {
+        Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
         finish();
     }
+
 }
