@@ -8,9 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
-
 public class NoticeManagement extends AppCompatActivity implements View.OnClickListener {
 
     TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone;
@@ -18,6 +15,7 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
     ServerRequest serverRequest;
     UserLocalStore userLocalStore;
     Notice recentNotice;
+    DateTime dateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +32,7 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
         btnEdtNotice = (Button) findViewById(R.id.btNoticeEdit);
         serverRequest = new ServerRequest(this);
         userLocalStore = new UserLocalStore(this);
+        dateTime = new DateTime(this);
 
         btnEdtNotice.setOnClickListener(this);
     }
@@ -61,13 +60,14 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
 
     public void showNotice(Notice notice) {
         tvLnName.setText(notice.lnName);
-        tvLnBirthDate.setText(calculateAge(notice.lnBirthDate));
+        tvLnBirthDate.setText(dateTime.getAge(notice.lnBirthDate));
         tvLnPlace.setText(notice.lnPlace);
         tvLnLostDate.setText(notice.lnLostDate);
         tvLnDetail.setText(notice.lnDetail);
         tvLnAdder.setText(notice.lnAdder);
         tvLnPhone.setText(notice.lnPhone);
         recentNotice = notice;
+
         User user = userLocalStore.getLoggedInUser();
         if (!user.name.equals(notice.lnAdder)) {
             View v = findViewById(R.id.btNoticeEdit);
@@ -75,13 +75,6 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public String calculateAge(String date) {
-        String[] day = date.split("-");
-        LocalDate start = new LocalDate(Integer.parseInt(day[0]), Integer.parseInt(day[1]), Integer.parseInt(day[2]));
-        LocalDate end = LocalDate.now();
-        Years years = Years.yearsBetween(start, end);
-        return "" + years.getYears();
-    }
 
     @Override
     public void onClick(View v) {

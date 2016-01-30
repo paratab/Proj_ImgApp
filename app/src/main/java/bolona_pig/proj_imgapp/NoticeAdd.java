@@ -9,13 +9,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NoticeAdd extends AppCompatActivity implements View.OnClickListener {
+public class NoticeAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
     Button btAddNotice;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
+    DateTime dateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,16 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         btAddNotice = (Button) findViewById(R.id.btNoticeAdd);
 
         btAddNotice.setOnClickListener(this);
+
+        edtLnBirthDate.setOnFocusChangeListener(this);
+        edtLnBirthDate.setOnClickListener(this);
+
+        edtLnLostDate.setOnFocusChangeListener(this);
+        edtLnLostDate.setOnClickListener(this);
+
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
+        dateTime = new DateTime(this);
     }
 
     @Override
@@ -42,6 +51,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         User user = userLocalStore.getLoggedInUser();
         tvLnAdder.setText(user.name);
         tvLnPhone.setText(user.telephone);
+        edtLnLostDate.setText(dateTime.getCurrentDate());
 
     }
 
@@ -50,31 +60,48 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         Intent intent;
         switch (v.getId()) {
             case R.id.btNoticeAdd:
-
-                User user = userLocalStore.getLoggedInUser();
-
-                String lnName = edtLnName.getText().toString();
-                String lnBirthDate = edtLnBirthDate.getText().toString();
-                String lnPlace = edtLnPlace.getText().toString();
-                String lnDate = edtLnLostDate.getText().toString();
-                String lnDetail = edtLnDetail.getText().toString();
-                String lnAdder = user.username;
-                String lnPhone = user.telephone;
-
-                Notice notice = new Notice(lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone);
-                serverRequest.storeNoticeDataInBG(notice, new GetNoticeCallBack() {
+                noticeAddMethod();
+                break;
+            case R.id.edtLnBirthDate:
+                dateTime.showDatePickup(new GetDateCallback() {
                     @Override
-                    public void done(Notice returnNotice) {
-                        if (returnNotice == null) {
-                            showError();
-                        } else {
-                            showResult(returnNotice);
-                        }
+                    public void done(String date) {
+                        edtLnBirthDate.setText(date);
                     }
                 });
-                                
                 break;
+            case R.id.edtLnLostDate:
+                dateTime.showDatePickup(new GetDateCallback() {
+                    @Override
+                    public void done(String date) {
+                        edtLnLostDate.setText(date);
+                    }
+                });
         }
+    }
+
+    private void noticeAddMethod() {
+        User user = userLocalStore.getLoggedInUser();
+
+        String lnName = edtLnName.getText().toString();
+        String lnBirthDate = edtLnBirthDate.getText().toString();
+        String lnPlace = edtLnPlace.getText().toString();
+        String lnDate = edtLnLostDate.getText().toString();
+        String lnDetail = edtLnDetail.getText().toString();
+        String lnAdder = user.username;
+        String lnPhone = user.telephone;
+
+        Notice notice = new Notice(lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone);
+        serverRequest.storeNoticeDataInBG(notice, new GetNoticeCallBack() {
+            @Override
+            public void done(Notice returnNotice) {
+                if (returnNotice == null) {
+                    showError();
+                } else {
+                    showResult(returnNotice);
+                }
+            }
+        });
     }
 
     public void showError() {
@@ -86,5 +113,29 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         intent.putExtra("ID", notice.id + "");
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            switch (v.getId()) {
+                case R.id.edtLnBirthDate:
+                    dateTime.showDatePickup(new GetDateCallback() {
+                        @Override
+                        public void done(String date) {
+                            edtLnBirthDate.setText(date);
+                        }
+                    });
+                    break;
+                case R.id.edtLnLostDate:
+                    dateTime.showDatePickup(new GetDateCallback() {
+                        @Override
+                        public void done(String date) {
+                            edtLnLostDate.setText(date);
+                        }
+                    });
+                    break;
+            }
+        }
     }
 }

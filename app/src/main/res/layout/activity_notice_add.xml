@@ -23,12 +23,13 @@
         android:layout_height="wrap_content"
         android:text="Lost Person BirthDate" />
 
+
     <EditText
         android:id="@+id/edtLnBirthDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:inputType="date"
+        android:inputType="none"
         android:nextFocusDown="@+id/edtLnLocation" />
 
     <TextView
@@ -54,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:inputType="datetime"
+        android:inputType="none"
         android:nextFocusDown="@+id/edtLnDetail" />
 
     <TextView
