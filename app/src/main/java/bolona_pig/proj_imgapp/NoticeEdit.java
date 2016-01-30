@@ -75,11 +75,6 @@ public class NoticeEdit extends AppCompatActivity implements View.OnClickListene
         tvLnAdder.setText(notice.lnAdder);
         tvLnPhone.setText(notice.lnPhone);
 
-        User user = userLocalStore.getLoggedInUser();
-        if (!user.name.equals(notice.lnAdder)) {
-            View v = findViewById(R.id.btNoticeEdit);
-            v.setVisibility(View.GONE);
-        }
     }
 
     @Override

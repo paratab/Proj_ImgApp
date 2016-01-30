@@ -69,9 +69,9 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
         recentNotice = notice;
 
         User user = userLocalStore.getLoggedInUser();
-        if (!user.name.equals(notice.lnAdder)) {
+        if (user.name.equals(notice.lnAdder) && user.telephone.equals(notice.lnPhone)) {
             View v = findViewById(R.id.btNoticeEdit);
-            v.setVisibility(View.GONE);
+            v.setVisibility(View.VISIBLE);
         }
     }
 
