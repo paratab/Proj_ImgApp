@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,9 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.R;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btUserManagement, btNoticeAdd, btGoogle, btNoticeEdit;
+    Button btUserManagement, btNoticeAdd, btGoogle, btNoticeEdit, btSeenAdd, btSeenInfo;
     UserLocalStore userLocalStore;
 
 
@@ -21,13 +24,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btGoogle = (Button) findViewById(R.id.btGoogle);
         btNoticeAdd = (Button) findViewById(R.id.btNoticeAdd);
         btNoticeEdit = (Button) findViewById(R.id.btNoticeEdit);
+        btSeenAdd = (Button) findViewById(R.id.btSeenAdd);
+        btSeenInfo = (Button) findViewById(R.id.btSeenInfo);
         userLocalStore = new UserLocalStore(this);
 
         btUserManagement.setOnClickListener(this);
         btGoogle.setOnClickListener(this);
         btNoticeAdd.setOnClickListener(this);
         btNoticeEdit.setOnClickListener(this);
-
+        btSeenAdd.setOnClickListener(this);
+        btSeenInfo.setOnClickListener(this);
 
     }
 
@@ -64,6 +70,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("noticeId", "1");
                 startActivity(intent);
                 break;
+            case R.id.btSeenAdd:
+                if (!userLocalStore.getLoggedInStatus()) {
+                    intent = new Intent(this, Login.class);
+                    startActivityForResult(intent, 444);
+                } else {
+                    intent = new Intent(this, SeenInfoAdd.class);
+                    startActivityForResult(intent, 555);
+                }
+                break;
+            case R.id.btSeenInfo:
+                intent = new Intent(this, SeenInfoDetail.class);
+                intent.putExtra("seenId", "1");
+                startActivity(intent);
+                break;
             case R.id.btGoogle:
                 intent = new Intent(this, MapsActivity.class);
                 startActivity(intent);
@@ -89,6 +109,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String id = data.getStringExtra("ID");
                 Intent intent = new Intent(this, NoticeManagement.class);
                 intent.putExtra("noticeId", id);
+                startActivity(intent);
+            }
+        } else if (requestCode == 444) {
+            if (resultCode == RESULT_OK) {
+                Intent intent = new Intent(this, SeenInfoAdd.class);
+                startActivity(intent);
+            }
+        } else if (requestCode == 555) {
+            if (resultCode == RESULT_OK) {
+                String id = data.getStringExtra("seenId");
+                Intent intent = new Intent(this, SeenInfoDetail.class);
+                intent.putExtra("seenId", id);
                 startActivity(intent);
             }
         }

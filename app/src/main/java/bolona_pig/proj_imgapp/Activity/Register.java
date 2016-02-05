@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import bolona_pig.proj_imgapp.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.SecureModule;
+import bolona_pig.proj_imgapp.ObjectClass.User;
+import bolona_pig.proj_imgapp.R;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
 

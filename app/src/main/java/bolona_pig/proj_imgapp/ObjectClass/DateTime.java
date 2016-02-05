@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.ObjectClass;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -9,6 +9,8 @@ import org.joda.time.Years;
 
 import java.util.Arrays;
 import java.util.Calendar;
+
+import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 
 /**
  * Created by DreamMii on 30/1/2559.

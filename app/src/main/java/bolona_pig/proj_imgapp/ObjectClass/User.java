@@ -1,11 +1,11 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.ObjectClass;
 
 /**
  * Created by DreamMii on 5/1/2559.
  */
 public class User {
 
-    String username, password, name, nationId, email, telephone;
+    public String username, password, name, nationId, email, telephone;
 
 
     public User(String username, String password, String name, String nationId, String email, String telephone) {

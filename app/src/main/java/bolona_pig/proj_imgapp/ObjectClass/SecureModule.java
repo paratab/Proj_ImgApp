@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.ObjectClass;
 
 import android.content.Context;
 import android.util.Log;

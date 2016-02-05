@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.ObjectClass;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class HttpRequest {
     public HttpRequest() {
     }
 
-    protected String makeHttpRequest(Map<String, String> data, String address) {
+    public String makeHttpRequest(Map<String, String> data, String address) {
 
         String encodeData = getEncodeData(data);
         BufferedReader reader = null; // Read some data from server

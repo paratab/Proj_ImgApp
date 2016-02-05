@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
+import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.DateTime;
+import bolona_pig.proj_imgapp.ObjectClass.Notice;
+import bolona_pig.proj_imgapp.ObjectClass.User;
+import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.R;
 
 public class NoticeEdit extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 

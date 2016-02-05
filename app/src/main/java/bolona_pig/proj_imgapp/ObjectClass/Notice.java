@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.ObjectClass;
 
 import java.io.Serializable;
 
@@ -7,8 +7,8 @@ import java.io.Serializable;
  */
 public class Notice implements Serializable {
 
-    int id;
-    String lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone;
+    public int id;
+    public String lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone;
 
     public Notice(String lnName, String lnBirthDate, String lnPlace, String lnLostDate, String lnDetail, String lnAdder, String lnPhone) {
         this.lnName = lnName;

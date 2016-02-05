@@ -1,4 +1,4 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,6 +9,14 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
+import bolona_pig.proj_imgapp.CallBack.GetSeenInfoCallback;
+import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.HttpRequest;
+import bolona_pig.proj_imgapp.ObjectClass.Notice;
+import bolona_pig.proj_imgapp.ObjectClass.SeenInfo;
+import bolona_pig.proj_imgapp.ObjectClass.User;
 
 /**
  * Created by DreamMii on 5/1/2559.
@@ -48,7 +56,6 @@ public class ServerRequest {
     public void storeNoticeDataInBG(Notice notice, GetNoticeCallBack noticeCallBack) {
         progressDialog.show();
         new StoreNoticeDataAsyncTask(notice, noticeCallBack).execute();
-
     }
 
     public void fetchNoticeDataInBG(int noticeId, GetNoticeCallBack noticeCallBack) {
@@ -59,6 +66,16 @@ public class ServerRequest {
     public void updateNoticeDataInBG(Notice notice, GetNoticeCallBack noticeCallBack) {
         progressDialog.show();
         new UpdateNoticeDataAsyncTask(notice, noticeCallBack).execute();
+    }
+
+    public void storeSeenInfoDataInBG(SeenInfo info, GetSeenInfoCallback seenInfoCallback) {
+        progressDialog.show();
+        new StoreSeenInfoDataAsyncTask(info, seenInfoCallback).execute();
+    }
+
+    public void fetchSeenInfoDataInBG(int infoId, GetSeenInfoCallback seenInfoCallback) {
+        progressDialog.show();
+        new FetchSeenInfoDataAsyncTask(infoId, seenInfoCallback).execute();
     }
 
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, User> {
@@ -453,6 +470,121 @@ public class ServerRequest {
             progressDialog.dismiss();
             noticeCallBack.done(returnData);
             super.onPostExecute(returnData);
+
+        }
+    }
+
+    public class StoreSeenInfoDataAsyncTask extends AsyncTask<Void, Void, SeenInfo> {
+
+        SeenInfo seenInfo;
+        GetSeenInfoCallback seenInfoCallback;
+        HttpRequest httpRequest;
+
+        public StoreSeenInfoDataAsyncTask(SeenInfo seenInfo, GetSeenInfoCallback seenInfoCallback) {
+            this.seenInfo = seenInfo;
+            this.seenInfoCallback = seenInfoCallback;
+            httpRequest = new HttpRequest();
+        }
+
+        @Override
+        protected SeenInfo doInBackground(Void... params) {
+
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("seenDate", seenInfo.seenDate);
+            dataToSend.put("seenPlace", seenInfo.seenPlace);
+            dataToSend.put("seenDetail", seenInfo.seenDetail);
+            dataToSend.put("seenAdder", seenInfo.seenAdder);
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "StoreSeenInfoData.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    String error = jObj.getString("error");
+                    String seenDate = jObj.getString("seenDate");
+                    String seenPlace = jObj.getString("seenPlace");
+                    String seenDetail = jObj.getString("seenDetail");
+                    String seenAdder = jObj.getString("seenAdder");
+                    String seenPhone = jObj.getString("seenPhone");
+                    int seenId = jObj.getInt("seenId");
+
+                    if (error.equals("null")) {
+                        seenInfo = new SeenInfo(seenId, seenDate, seenPlace, seenDetail, seenAdder, seenPhone);
+                    } else {
+                        seenInfo = null;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("custom_check", e.toString());
+            }
+            return seenInfo;
+        }
+
+        @Override
+        protected void onPostExecute(SeenInfo returnInfo) {
+            progressDialog.dismiss();
+            seenInfoCallback.done(returnInfo);
+            super.onPostExecute(returnInfo);
+        }
+    }
+
+    public class FetchSeenInfoDataAsyncTask extends AsyncTask<Void, Void, SeenInfo> {
+        GetSeenInfoCallback seenInfoCallback;
+        HttpRequest httpRequest;
+        int infoId;
+        SeenInfo seenInfo;
+
+        public FetchSeenInfoDataAsyncTask(int infoId, GetSeenInfoCallback seenInfoCallback) {
+            this.infoId = infoId;
+            this.seenInfoCallback = seenInfoCallback;
+            httpRequest = new HttpRequest();
+        }
+
+        @Override
+        public SeenInfo doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("infoId", infoId + "");
+
+            seenInfo = null;
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "FetchSeenInfoData.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    String error = jObj.getString("error");
+                    String seenDate = jObj.getString("seenDate");
+                    String seenPlace = jObj.getString("seenPlace");
+                    String seenDetail = jObj.getString("seenDetail");
+                    String seenAdder = jObj.getString("seenAdder");
+                    String seenPhone = jObj.getString("seenPhone");
+                    int seenId = jObj.getInt("seenId");
+
+                    if (error.equals("null")) {
+                        seenInfo = new SeenInfo(seenId, seenDate, seenPlace, seenDetail, seenAdder, seenPhone);
+                    } else {
+                        seenInfo = null;
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return seenInfo;
+        }
+
+        @Override
+        protected void onPostExecute(SeenInfo seenInfo) {
+            progressDialog.dismiss();
+            seenInfoCallback.done(seenInfo);
+            super.onPostExecute(seenInfo);
 
         }
     }

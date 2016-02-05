@@ -1,7 +1,7 @@
-package bolona_pig.proj_imgapp;
+package bolona_pig.proj_imgapp.ObjectClass;
 
-import android.content.SharedPreferences;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 /**
  * Created by DreamMii on 5/1/2559.

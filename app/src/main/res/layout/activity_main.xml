@@ -27,6 +27,18 @@
         android:text="Test Edit Notice" />
 
     <Button
+        android:id="@+id/btSeenAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Seen Detail" />
+
+    <Button
+        android:id="@+id/btSeenInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Show Senn Indo" />
+
+    <Button
         android:id="@+id/btGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
