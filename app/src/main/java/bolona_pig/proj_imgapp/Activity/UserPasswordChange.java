@@ -63,11 +63,15 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
                 serverRequest.updateUserPasswordInBG(user, newPassword, new GetUserCallBack() {
                     @Override
                     public void done(User returnedUser) {
-                        userLocalStore.storeUserData(returnedUser);
-                        Toast.makeText(UserPasswordChange.this, "Password Changed.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent();
-                        setResult(RESULT_OK, intent);
-                        finish();
+                        if (returnedUser != null) {
+                            userLocalStore.storeUserData(returnedUser);
+                            Toast.makeText(UserPasswordChange.this, "Password Changed.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        } else {
+                            Toast.makeText(UserPasswordChange.this, "Password cannot be change. Make sure internet is working.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 

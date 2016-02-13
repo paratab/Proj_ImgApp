@@ -14,8 +14,9 @@ import com.github.clans.fab.FloatingActionMenu;
 import java.util.ArrayList;
 
 import bolona_pig.proj_imgapp.CallBack.GetItemCallback;
-import bolona_pig.proj_imgapp.ObjectClass.NoticeGridAdapter;
-import bolona_pig.proj_imgapp.ObjectClass.NoticeItem;
+import bolona_pig.proj_imgapp.ObjectClass.GridItem;
+import bolona_pig.proj_imgapp.ObjectClass.HttpRequest;
+import bolona_pig.proj_imgapp.ObjectClass.NoticeAdapter;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
@@ -27,14 +28,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final int LOGIN_SEENINFO_ADD = 3;
     public final int NOTICE_ADD_GET_ID = 4;
     public final int SEENINFO_ADD_GET_ID = 5;
+
     FloatingActionButton fabNotice, fabSeenInfo, fabMainPage2, fabLogin;
     UserLocalStore userLocalStore;
-    GridView gridView;
-    ProgressBar progressBar;
-    NoticeGridAdapter noticeGridAdapter;
     ServerRequest serverRequest;
     FloatingActionMenu floatingActionMenu;
-    private ArrayList<NoticeItem> itemData;
+    HttpRequest httpRequest;
+    GridView gridView;
+    ProgressBar progressBar;
+    NoticeAdapter noticeAdapter;
+    private ArrayList<GridItem> itemData = new ArrayList<>();
+    private String FEED_URL = "http://www.surawit-sj.xyz/FetchNoticeItemGrid.php";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,33 +50,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fabSeenInfo = (FloatingActionButton) findViewById(R.id.fabSeenInfo);
         fabMainPage2 = (FloatingActionButton) findViewById(R.id.fabMain2);
         fabLogin = (FloatingActionButton) findViewById(R.id.fabLogin);
-        gridView = (GridView) findViewById(R.id.gridView);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fabMenu);
 
-        userLocalStore = new UserLocalStore(this);
-        itemData = new ArrayList<>();
-        noticeGridAdapter = new NoticeGridAdapter(this, R.layout.notice_list_item, itemData);
-        gridView.setAdapter(noticeGridAdapter);
-        serverRequest = new ServerRequest(this);
+        gridView = (GridView) findViewById(R.id.gridView);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        gridView.setOnItemClickListener(this);
+        userLocalStore = new UserLocalStore(this);
+        serverRequest = new ServerRequest(this);
+        httpRequest = new HttpRequest();
+
+        noticeAdapter = new NoticeAdapter(this, itemData);
+        gridView.setAdapter(noticeAdapter);
+
         fabNotice.setOnClickListener(this);
         fabSeenInfo.setOnClickListener(this);
         fabMainPage2.setOnClickListener(this);
         fabLogin.setOnClickListener(this);
         floatingActionMenu.setClosedOnTouchOutside(true);
 
-        progressBar.setVisibility(View.VISIBLE);
         serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
             @Override
-            public void done(ArrayList<NoticeItem> item) {
+            public void done(ArrayList<GridItem> item) {
+                if (item.size() > 0) {
+                    itemData = item;
+                    noticeAdapter.setGridData(itemData);
+                }
                 progressBar.setVisibility(View.GONE);
-                noticeGridAdapter.setGridData(item);
-
-
             }
         });
+        progressBar.setVisibility(View.VISIBLE);
+
+        gridView.setOnItemClickListener(this);
     }
 
     @Override
@@ -152,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        GridItem item = (GridItem) parent.getItemAtPosition(position);
+        Intent intent = new Intent(this, NoticeManagement.class);
+        intent.putExtra("noticeId", item.id + "");
+        startActivity(intent);
     }
 }

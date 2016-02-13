@@ -78,7 +78,6 @@ public class ServerRequest {
     }
 
     public void fetchNoticeItemGridInBG(int offset, GetItemCallback itemCallback) {
-        progressDialog.show();
         new FetchNoticeItemGridAsyncTask(offset, itemCallback).execute();
     }
 
@@ -579,10 +578,10 @@ public class ServerRequest {
         }
     }
 
-    public class FetchNoticeItemGridAsyncTask extends AsyncTask<Void, Void, ArrayList<NoticeItem>> {
+    public class FetchNoticeItemGridAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
         GetItemCallback itemCallback;
         HttpRequest httpRequest;
-        ArrayList<NoticeItem> noticeItems;
+        ArrayList<GridItem> noticeItems;
         int offset;
 
         public FetchNoticeItemGridAsyncTask(int offset, GetItemCallback itemCallback) {
@@ -593,7 +592,7 @@ public class ServerRequest {
         }
 
         @Override
-        public ArrayList<NoticeItem> doInBackground(Void... params) {
+        public ArrayList<GridItem> doInBackground(Void... params) {
             Map<String, String> dataToSend = new HashMap<>();
             dataToSend.put("offset", offset + "");
 
@@ -603,18 +602,16 @@ public class ServerRequest {
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
-
-                if (jObj.length() != 0) {
-                    JSONArray noticeArray = jObj.getJSONArray("gridItem");
-                    for (int i = 0; i < noticeArray.length(); i++) {
-                        JSONObject item = noticeArray.getJSONObject(i);
-                        int id = item.getInt("lnId");
-                        String imagePath = item.getString("imgURL");
-                        String textLine1 = item.getString("lnName");
-                        String textLine2 = item.getString("lnLostDate");
-                        Log.d("custom_check", id + " , " + imagePath + " , " + textLine1 + " , " + textLine2);
-                        noticeItems.add(new NoticeItem(id, imagePath, textLine1, textLine2));
-                    }
+                JSONArray noticeArray = jObj.getJSONArray("gridItem");
+                GridItem item;
+                for (int i = 0; i < noticeArray.length(); i++) {
+                    JSONObject items = noticeArray.getJSONObject(i);
+                    int id = items.getInt("lnId");
+                    String lnName = items.getString("lnName");
+                    String lnBirthDate = items.getString("lnBirthDate");
+                    String imagePath = ADDRESS + items.getString("imagePath");
+                    item = new GridItem(id, lnName, lnBirthDate, imagePath);
+                    noticeItems.add(item);
                 }
 
             } catch (Exception e) {
@@ -625,11 +622,11 @@ public class ServerRequest {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<NoticeItem> noticeItems) {
-            progressDialog.dismiss();
+        protected void onPostExecute(ArrayList<GridItem> noticeItems) {
             itemCallback.done(noticeItems);
             super.onPostExecute(noticeItems);
 
         }
     }
+
 }

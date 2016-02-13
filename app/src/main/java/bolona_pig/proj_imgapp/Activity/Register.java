@@ -31,13 +31,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onStart() {
         super.onStart();
-        edtUsername.setText("testuser1");
-        edtPassword.setText("1212312121");
-        edtReplyPassword.setText("1212312121");
-        edtName.setText("test User");
-        edtID.setText("1200900152083");
-        edtEmail.setText("iamdreammy@hotmail.com");
-        edtTelephone.setText("0820638770");
     }
 
     @Override
