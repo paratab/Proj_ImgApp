@@ -1,9 +1,13 @@
 package bolona_pig.proj_imgapp.ObjectClass;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,9 +15,9 @@ import java.util.regex.Pattern;
 /**
  * Created by DreamMii on 17/1/2559.
  */
-public class SecureModule {
+public class EncCheckModule {
 
-    public SecureModule() {
+    public EncCheckModule() {
     }
 
     public boolean isValidUsername(String username) {
@@ -46,6 +50,17 @@ public class SecureModule {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    public String bitmapToString(Bitmap in) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        in.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        return Base64.encodeToString(bytes.toByteArray(), Base64.DEFAULT);
+    }
+
+    public Bitmap stringToBitmap(String in) {
+        byte[] bytes = Base64.decode(in, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
 }

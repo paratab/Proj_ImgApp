@@ -1,29 +1,28 @@
-package bolona_pig.proj_imgapp.Activity;
+package bolona_pig.proj_imgapp.ObjectClass;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import bolona_pig.proj_imgapp.CallBack.GetItemCallback;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetSeenInfoCallback;
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
-import bolona_pig.proj_imgapp.ObjectClass.HttpRequest;
-import bolona_pig.proj_imgapp.ObjectClass.Notice;
-import bolona_pig.proj_imgapp.ObjectClass.SeenInfo;
-import bolona_pig.proj_imgapp.ObjectClass.User;
 
 /**
  * Created by DreamMii on 5/1/2559.
  */
 public class ServerRequest {
 
-    public static final String ADDRESS = "http://www.surawit-sj.xyz/";
+    public static final String ADDRESS = "http://www.surawit-sj.xyz";
     ProgressDialog progressDialog;
 
     public ServerRequest(Context context) {
@@ -78,6 +77,11 @@ public class ServerRequest {
         new FetchSeenInfoDataAsyncTask(infoId, seenInfoCallback).execute();
     }
 
+    public void fetchNoticeItemGridInBG(int offset, GetItemCallback itemCallback) {
+        progressDialog.show();
+        new FetchNoticeItemGridAsyncTask(offset, itemCallback).execute();
+    }
+
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, User> {
 
         User user;
@@ -100,23 +104,22 @@ public class ServerRequest {
             dataToSend.put("nationId", user.nationId);
             dataToSend.put("email", user.email);
             dataToSend.put("telephone", user.telephone);
+            dataToSend.put("imageString", user.imagePath);
 
             User returnUser = null;
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "StoreUserData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreUserData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String name = jObj.getString("name");
-                    String nationId = jObj.getString("nationId");
-                    String email = jObj.getString("email");
-                    String telephone = jObj.getString("telephone");
+                    int resultDetail = jObj.getInt("resultDetail");
+                    int resultImage = jObj.getInt("resultImage");
 
-                    returnUser = new User(user.username, user.password, name, nationId, email, telephone);
+                    if (resultDetail == 1 && resultImage == 1) returnUser = user;
                 }
             } catch (Exception e) {
                 Log.e("custom_check", e.toString());
@@ -155,7 +158,7 @@ public class ServerRequest {
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "FetchUserData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
@@ -165,8 +168,9 @@ public class ServerRequest {
                     String nationId = jObj.getString("nationId");
                     String email = jObj.getString("email");
                     String telephone = jObj.getString("telephone");
+                    String imagePath = ADDRESS + jObj.getString("imagePath");
 
-                    returnUser = new User(user.username, user.password, name, nationId, email, telephone);
+                    returnUser = new User(user.username, user.password, name, nationId, email, telephone, imagePath);
                 }
 
             } catch (Exception e) {
@@ -204,21 +208,21 @@ public class ServerRequest {
             dataToSend.put("name", user.name);
             dataToSend.put("email", user.email);
             dataToSend.put("telephone", user.telephone);
+            dataToSend.put("imageString", user.imagePath);
 
             User returnUser = null;
 
             try {
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "UpdateUserData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateUserData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String name = jObj.getString("name");
-                    String email = jObj.getString("email");
-                    String telephone = jObj.getString("telephone");
-
-                    returnUser = new User(user.username, user.password, name, user.nationId, email, telephone);
+                    int result = jObj.getInt("result");
+                    String imagePath = ADDRESS + jObj.getString("imagePath");
+                    if (result == 1)
+                        returnUser = new User(user.username, user.password, user.name, user.nationId, user.email, user.telephone, imagePath);
                 }
 
             } catch (Exception e) {
@@ -259,15 +263,16 @@ public class ServerRequest {
             User returnUser = null;
 
             try {
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "UpdateUserPassword.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateUserPassword.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String password = jObj.getString("password");
+                    int result = jObj.getInt("result");
 
-                    returnUser = new User(user.username, password, user.name, user.nationId, user.email, user.telephone);
+                    if (result == 1)
+                        returnUser = new User(user.username, newPassword, user.name, user.nationId, user.email, user.telephone, user.imagePath);
                 }
 
             } catch (Exception e) {
@@ -309,36 +314,33 @@ public class ServerRequest {
             dataToSend.put("lnLostDate", notice.lnLostDate);
             dataToSend.put("lnDetail", notice.lnDetail);
             dataToSend.put("lnAdder", notice.lnAdder);
-            //dataToSend.put("lnPhone", notice.lnPhone);
+            dataToSend.put("imageString", notice.imagePath);
+
+            Notice returnNotice = null;
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "StoreNoticeData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreNoticeData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String error = jObj.getString("error");
-                    String lnName = jObj.getString("lnName");
-                    String lnBirthDate = jObj.getString("lnBirthDate");
-                    String lnPlace = jObj.getString("lnPlace");
-                    String lnLostDate = jObj.getString("lnLostDate");
-                    String lnDetail = jObj.getString("lnDetail");
-                    String lnAdder = jObj.getString("lnAdder");
-                    String lnPhone = jObj.getString("lnPhone");
                     int lnId = jObj.getInt("lnId");
+                    int resultNoticeCheck = jObj.getInt("resultNoticeCheck");
+                    int resultNoticeAdd = jObj.getInt("resultNoticeAdd");
+                    int resultImage = jObj.getInt("resultImage");
 
-                    if (error.equals("null")) {
-                        notice = new Notice(lnId, lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone);
+                    if (resultNoticeCheck == 1 && resultNoticeAdd == 1 && resultImage == 1) {
+                        returnNotice = new Notice(lnId, notice.lnName, notice.lnBirthDate, notice.lnPlace, notice.lnLostDate, notice.lnDetail, notice.lnAdder, notice.lnPhone, "");
                     } else {
-                        notice = null;
+
                     }
                 }
             } catch (Exception e) {
                 Log.e("custom_check", e.toString());
             }
-            return notice;
+            return returnNotice;
         }
 
         @Override
@@ -350,7 +352,7 @@ public class ServerRequest {
     }
 
     public class FetchNoticeDataAsyncTask extends AsyncTask<Void, Void, Notice> {
-        Notice notice;
+
         GetNoticeCallBack noticeCallBack;
         HttpRequest httpRequest;
         int noticeId;
@@ -366,17 +368,16 @@ public class ServerRequest {
             Map<String, String> dataToSend = new HashMap<>();
             dataToSend.put("noticeId", noticeId + "");
 
-            notice = null;
+            Notice returnNotice = null;
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "FetchNoticeData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchNoticeData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String error = jObj.getString("error");
                     String lnName = jObj.getString("lnName");
                     String lnBirthDate = jObj.getString("lnBirthDate");
                     String lnPlace = jObj.getString("lnPlace");
@@ -384,20 +385,20 @@ public class ServerRequest {
                     String lnDetail = jObj.getString("lnDetail");
                     String lnAdder = jObj.getString("lnAdder");
                     String lnPhone = jObj.getString("lnPhone");
+                    String imagePath = ADDRESS + jObj.getString("imagePath");
                     int lnId = jObj.getInt("lnId");
+                    int resultNotice = jObj.getInt("resultNotice");
+                    int resultImage = jObj.getInt("resultImage");
 
-                    if (error.equals("null")) {
-                        notice = new Notice(lnId, lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone);
-                    } else {
-                        notice = null;
-                    }
+                    if (resultImage == 1 && resultNotice == 1)
+                        returnNotice = new Notice(lnId, lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone, imagePath);
                 }
 
             } catch (Exception e) {
                 Log.i("custom_check", e.toString());
             }
 
-            return notice;
+            return returnNotice;
         }
 
         @Override
@@ -430,39 +431,32 @@ public class ServerRequest {
             dataToSend.put("lnLostDate", notice.lnLostDate);
             dataToSend.put("lnDetail", notice.lnDetail);
             dataToSend.put("noticeId", notice.id + "");
+            dataToSend.put("imageString", notice.imagePath);
 
-            notice = null;
+            Notice returnNotice = null;
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "UpdateNoticeData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateNoticeData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String error = jObj.getString("error");
-                    String lnName = jObj.getString("lnName");
-                    String lnBirthDate = jObj.getString("lnBirthDate");
-                    String lnPlace = jObj.getString("lnPlace");
-                    String lnLostDate = jObj.getString("lnLostDate");
-                    String lnDetail = jObj.getString("lnDetail");
-                    String lnAdder = jObj.getString("lnAdder");
-                    String lnPhone = jObj.getString("lnPhone");
-                    int lnId = jObj.getInt("lnId");
+                    int resultImage = jObj.getInt("resultImage");
+                    int resultUpdate = jObj.getInt("resultUpdate");
+                    String imagePath = ADDRESS + jObj.getString("imagePath");
 
-                    if (error.equals("null")) {
-                        notice = new Notice(lnId, lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone);
-                    } else {
-                        notice = null;
-                    }
+                    if (resultUpdate == 1 && resultImage == 1)
+                        returnNotice = new Notice(notice.id, notice.lnName, notice.lnBirthDate, notice.lnPlace, notice.lnLostDate, notice.lnDetail, notice.lnAdder, notice.lnPhone, imagePath);
+
                 }
 
             } catch (Exception e) {
                 Log.i("custom_check", e.toString());
             }
 
-            return notice;
+            return returnNotice;
         }
 
         @Override
@@ -494,33 +488,30 @@ public class ServerRequest {
             dataToSend.put("seenPlace", seenInfo.seenPlace);
             dataToSend.put("seenDetail", seenInfo.seenDetail);
             dataToSend.put("seenAdder", seenInfo.seenAdder);
+            dataToSend.put("imageString", seenInfo.imagePath);
+
+            SeenInfo returnSeenInfo = null;
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "StoreSeenInfoData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreSeenInfoData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String error = jObj.getString("error");
-                    String seenDate = jObj.getString("seenDate");
-                    String seenPlace = jObj.getString("seenPlace");
-                    String seenDetail = jObj.getString("seenDetail");
-                    String seenAdder = jObj.getString("seenAdder");
-                    String seenPhone = jObj.getString("seenPhone");
                     int seenId = jObj.getInt("seenId");
+                    int resultInfo = jObj.getInt("resultInfo");
+                    int resultImage = jObj.getInt("resultImage");
 
-                    if (error.equals("null")) {
-                        seenInfo = new SeenInfo(seenId, seenDate, seenPlace, seenDetail, seenAdder, seenPhone);
-                    } else {
-                        seenInfo = null;
-                    }
+                    if (resultImage == 1 && resultInfo == 1)
+                        returnSeenInfo = new SeenInfo(seenId, seenInfo.seenDate, seenInfo.seenPlace, seenInfo.seenDetail, seenInfo.seenAdder, seenInfo.seenPhone, "");
+
                 }
             } catch (Exception e) {
                 Log.e("custom_check", e.toString());
             }
-            return seenInfo;
+            return returnSeenInfo;
         }
 
         @Override
@@ -548,36 +539,35 @@ public class ServerRequest {
             Map<String, String> dataToSend = new HashMap<>();
             dataToSend.put("infoId", infoId + "");
 
-            seenInfo = null;
+            SeenInfo returnSeenInfo = null;
 
             try {
 
-                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "FetchSeenInfoData.php");
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchSeenInfoData.php");
                 Log.i("custom_check", line);
 
                 JSONObject jObj = new JSONObject(line);
 
                 if (jObj.length() != 0) {
-                    String error = jObj.getString("error");
                     String seenDate = jObj.getString("seenDate");
                     String seenPlace = jObj.getString("seenPlace");
                     String seenDetail = jObj.getString("seenDetail");
                     String seenAdder = jObj.getString("seenAdder");
                     String seenPhone = jObj.getString("seenPhone");
+                    String imagePath = ADDRESS + jObj.getString("imagePath");
                     int seenId = jObj.getInt("seenId");
+                    int resultInfo = jObj.getInt("resultInfo");
+                    int resultImage = jObj.getInt("resultImage");
 
-                    if (error.equals("null")) {
-                        seenInfo = new SeenInfo(seenId, seenDate, seenPlace, seenDetail, seenAdder, seenPhone);
-                    } else {
-                        seenInfo = null;
-                    }
+                    if (resultInfo == 1 && resultImage == 1)
+                        returnSeenInfo = new SeenInfo(seenId, seenDate, seenPlace, seenDetail, seenAdder, seenPhone, imagePath);
                 }
 
             } catch (Exception e) {
                 Log.i("custom_check", e.toString());
             }
 
-            return seenInfo;
+            return returnSeenInfo;
         }
 
         @Override
@@ -585,6 +575,60 @@ public class ServerRequest {
             progressDialog.dismiss();
             seenInfoCallback.done(seenInfo);
             super.onPostExecute(seenInfo);
+
+        }
+    }
+
+    public class FetchNoticeItemGridAsyncTask extends AsyncTask<Void, Void, ArrayList<NoticeItem>> {
+        GetItemCallback itemCallback;
+        HttpRequest httpRequest;
+        ArrayList<NoticeItem> noticeItems;
+        int offset;
+
+        public FetchNoticeItemGridAsyncTask(int offset, GetItemCallback itemCallback) {
+            this.itemCallback = itemCallback;
+            httpRequest = new HttpRequest();
+            this.offset = offset;
+            noticeItems = new ArrayList<>();
+        }
+
+        @Override
+        public ArrayList<NoticeItem> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("offset", offset + "");
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchNoticeItemGrid.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    JSONArray noticeArray = jObj.getJSONArray("gridItem");
+                    for (int i = 0; i < noticeArray.length(); i++) {
+                        JSONObject item = noticeArray.getJSONObject(i);
+                        int id = item.getInt("lnId");
+                        String imagePath = item.getString("imgURL");
+                        String textLine1 = item.getString("lnName");
+                        String textLine2 = item.getString("lnLostDate");
+                        Log.d("custom_check", id + " , " + imagePath + " , " + textLine1 + " , " + textLine2);
+                        noticeItems.add(new NoticeItem(id, imagePath, textLine1, textLine2));
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return noticeItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<NoticeItem> noticeItems) {
+            progressDialog.dismiss();
+            itemCallback.done(noticeItems);
+            super.onPostExecute(noticeItems);
 
         }
     }

@@ -5,17 +5,17 @@ package bolona_pig.proj_imgapp.ObjectClass;
  */
 public class User {
 
-    public String username, password, name, nationId, email, telephone;
+    public String username, password, name, nationId, email, telephone, imagePath;
 
 
-    public User(String username, String password, String name, String nationId, String email, String telephone) {
+    public User(String username, String password, String name, String nationId, String email, String telephone, String imagePath) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.nationId = nationId;
         this.email = email;
         this.telephone = telephone;
-
+        this.imagePath = imagePath;
     }
 
     public User(String username, String password) {
@@ -25,6 +25,7 @@ public class User {
         this.nationId = "";
         this.email = "";
         this.telephone = "";
+        this.imagePath = "";
     }
 
 }

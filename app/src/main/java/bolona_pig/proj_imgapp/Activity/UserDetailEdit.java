@@ -1,16 +1,24 @@
 package bolona_pig.proj_imgapp.Activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import bolona_pig.proj_imgapp.GetUserCallBack;
-import bolona_pig.proj_imgapp.ObjectClass.SecureModule;
+import com.squareup.picasso.Picasso;
+
+import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
+import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
@@ -21,8 +29,9 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
     TextView edtUsername, edtID, edtPassword;
     EditText edtName, edtEmail, edtTelephone;
     UserLocalStore userLocalStore;
-    SecureModule secureModule;
-
+    EncCheckModule encCheckModule;
+    ImageView imageView;
+    boolean imageChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,29 +46,28 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         edtID = (TextView) findViewById(R.id.edtID);
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtTelephone = (EditText) findViewById(R.id.edtPhone);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         btUpdate.setOnClickListener(this);
         btChangePW.setOnClickListener(this);
+        imageView.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
-        secureModule = new SecureModule();
-
+        encCheckModule = new EncCheckModule();
+        imageChange = false;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        displayUserDetail();
-    }
-
-    private void displayUserDetail() {
         User user = userLocalStore.getLoggedInUser();
         edtUsername.setText(user.username);
-        edtPassword.setText(user.password);
         edtName.setText(user.name);
         edtID.setText(user.nationId);
         edtEmail.setText(user.email);
         edtTelephone.setText(user.telephone);
+        if (!imageChange) Picasso.with(this).load(user.imagePath).into(imageView);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -77,21 +85,24 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
 
                 if (email.isEmpty()) {
                     text = "Email cannot be empty.";
-                    secureModule.printError(this, text);
+                    encCheckModule.printError(this, text);
                     break;
                 }
-                if (!secureModule.isValidEmail(email)) {
+                if (!encCheckModule.isValidEmail(email)) {
                     text = "Email is not valid";
-                    secureModule.printError(this, text);
+                    encCheckModule.printError(this, text);
                     break;
                 }
                 if (telephone.isEmpty()) {
                     text = "Telephone cannot be empty.";
-                    secureModule.printError(this, text);
+                    encCheckModule.printError(this, text);
                     break;
                 }
 
-                User user = new User(username, password, name, nationId, email, telephone);
+                Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                String imageStr = encCheckModule.bitmapToString(image);
+
+                User user = new User(username, password, name, nationId, email, telephone, imageStr);
 
                 ServerRequest serverRequest = new ServerRequest(this);
                 serverRequest.updateUserDataInBG(user, new GetUserCallBack() {
@@ -111,6 +122,10 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                 intent = new Intent(UserDetailEdit.this, UserPasswordChange.class);
                 startActivityForResult(intent, 111);
                 break;
+            case R.id.imageView:
+                Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryAct, 222);
+                break;
         }
     }
 
@@ -121,6 +136,12 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
             if (resultCode == RESULT_OK) {
                 finish();
             }
+        } else if (requestCode == 222 && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            imageView.setImageURI(imageUri);
+            imageChange = true;
+            getIntent().putExtra("imageChange", true);
+            setResult(RESULT_OK, getIntent());
         }
     }
 }

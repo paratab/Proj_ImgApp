@@ -8,8 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import bolona_pig.proj_imgapp.GetUserCallBack;
-import bolona_pig.proj_imgapp.ObjectClass.SecureModule;
+import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
+import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
@@ -19,7 +20,7 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
     EditText edtPassword, edtNewPassword, edtReplyNewPassword;
     Button btSavePassword;
     UserLocalStore userLocalStore;
-    SecureModule secureModule;
+    EncCheckModule encCheckModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
 
         btSavePassword.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
-        secureModule = new SecureModule();
+        encCheckModule = new EncCheckModule();
     }
 
     @Override
@@ -44,9 +45,9 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
                 String newPassword = edtNewPassword.getText().toString();
                 String replyNewPassword = edtReplyNewPassword.getText().toString();
 
-                password = secureModule.getSHA1Hash(password);
-                newPassword = secureModule.getSHA1Hash(newPassword);
-                replyNewPassword = secureModule.getSHA1Hash(replyNewPassword);
+                password = encCheckModule.getSHA1Hash(password);
+                newPassword = encCheckModule.getSHA1Hash(newPassword);
+                replyNewPassword = encCheckModule.getSHA1Hash(replyNewPassword);
 
                 User user = userLocalStore.getLoggedInUser();
                 if (!password.equals(user.password)) {

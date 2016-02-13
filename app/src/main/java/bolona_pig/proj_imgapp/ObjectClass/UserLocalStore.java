@@ -23,6 +23,7 @@ public class UserLocalStore {
         spEdt.putString("nationId", user.nationId);
         spEdt.putString("email", user.email);
         spEdt.putString("telephone", user.telephone);
+        spEdt.putString("imagePath", user.imagePath);
         spEdt.apply();
     }
 
@@ -33,9 +34,9 @@ public class UserLocalStore {
         String nationId = userLocalDB.getString("nationId", "");
         String email = userLocalDB.getString("email", "");
         String telephone = userLocalDB.getString("telephone", "");
+        String imagePath = userLocalDB.getString("imagePath", "");
 
-
-        return new User(username, password, name, nationId, email, telephone);
+        return new User(username, password, name, nationId, email, telephone, imagePath);
     }
 
     public void setUserLoggedIn(Boolean loggedIn) {

@@ -1,30 +1,41 @@
 package bolona_pig.proj_imgapp.Activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
+import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.Notice;
+import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
 
 public class NoticeAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
+    public final int SELECT_IMAGE = 1;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
     Button btAddNotice;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     DateTime dateTime;
+    ImageView imageView;
+    EncCheckModule encCheckModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +50,10 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
         btAddNotice = (Button) findViewById(R.id.btNoticeAdd);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         btAddNotice.setOnClickListener(this);
+        imageView.setOnClickListener(this);
 
         edtLnBirthDate.setOnFocusChangeListener(this);
         edtLnBirthDate.setOnClickListener(this);
@@ -51,6 +64,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
         dateTime = new DateTime(this);
+        encCheckModule = new EncCheckModule();
     }
 
     @Override
@@ -61,6 +75,15 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         tvLnPhone.setText(user.telephone);
         edtLnLostDate.setText(dateTime.getCurrentDate());
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            imageView.setImageURI(imageUri);
+        }
     }
 
     @Override
@@ -85,6 +108,11 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
                         edtLnLostDate.setText(date);
                     }
                 });
+                break;
+            case R.id.imageView:
+                Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryAct, SELECT_IMAGE);
+                break;
         }
     }
 
@@ -99,7 +127,19 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         String lnAdder = user.username;
         String lnPhone = user.telephone;
 
-        Notice notice = new Notice(lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone);
+        Bitmap image;
+        String imageStr;
+
+        try {
+            image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            imageStr = encCheckModule.bitmapToString(image);
+        } catch (Exception e) {
+            Log.e("custom_check", "Image is null, " + e.toString());
+            Toast.makeText(this, "You not select any Picture yet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Notice notice = new Notice(-1, lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone, imageStr);
         serverRequest.storeNoticeDataInBG(notice, new GetNoticeCallBack() {
             @Override
             public void done(Notice returnNotice) {
@@ -113,13 +153,14 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     }
 
     public void showError() {
-        Toast.makeText(this, "Added Error, 3G not Working os Same Notice Detail", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Added Error, 3G not Working or Same Notice Detail", Toast.LENGTH_SHORT).show();
     }
 
     public void showResult(Notice notice) {
         Intent intent = new Intent();
         intent.putExtra("ID", notice.id + "");
         setResult(RESULT_OK, intent);
+        Toast.makeText(this, "Notice Added", Toast.LENGTH_SHORT).show();
         finish();
     }
 

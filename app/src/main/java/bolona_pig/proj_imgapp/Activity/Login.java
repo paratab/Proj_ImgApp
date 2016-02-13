@@ -11,7 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
-import bolona_pig.proj_imgapp.ObjectClass.SecureModule;
+import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
+import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
@@ -23,7 +24,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     TextView tvRegister;
 
     UserLocalStore userLocalStore;
-    SecureModule secureModule;
+    EncCheckModule encCheckModule;
 
 
     @Override
@@ -40,7 +41,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         tvRegister.setOnClickListener(this);
 
         userLocalStore = new UserLocalStore(this);
-        secureModule = new SecureModule();
+        encCheckModule = new EncCheckModule();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     break;
                 }
 
-                password = secureModule.getSHA1Hash(password);
+                password = encCheckModule.getSHA1Hash(password);
 
                 User user = new User(username, password);
 

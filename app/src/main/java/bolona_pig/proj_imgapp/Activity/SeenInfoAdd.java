@@ -1,18 +1,26 @@
 package bolona_pig.proj_imgapp.Activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 import bolona_pig.proj_imgapp.CallBack.GetSeenInfoCallback;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
+import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.SeenInfo;
+import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
@@ -20,6 +28,7 @@ import bolona_pig.proj_imgapp.R;
 
 public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
+    public final int SELECT_IMAGE = 1;
     Button btSeenAdd;
     EditText edtSeenDate, edtSeenPlace, edtSeenDetail;
     TextView tvSeenAdder, tvSeenPhone;
@@ -27,6 +36,8 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
     DateTime dateTime;
     User user;
     ServerRequest serverRequest;
+    ImageView imageView;
+    EncCheckModule encCheckModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,21 +50,23 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
         tvSeenAdder = (TextView) findViewById(R.id.tvSeenAdder);
         tvSeenPhone = (TextView) findViewById(R.id.tvSeenPhone);
         btSeenAdd = (Button) findViewById(R.id.btSeenAdd);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         edtSeenDate.setOnClickListener(this);
         edtSeenDate.setOnFocusChangeListener(this);
         btSeenAdd.setOnClickListener(this);
+        imageView.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
         dateTime = new DateTime(this);
         user = userLocalStore.getLoggedInUser();
         serverRequest = new ServerRequest(this);
+        encCheckModule = new EncCheckModule();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         tvSeenAdder.setText(user.name);
         tvSeenPhone.setText(user.telephone);
     }
@@ -72,6 +85,19 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
             case R.id.btSeenAdd:
                 seenInfoAdd();
                 break;
+            case R.id.imageView:
+                Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryAct, SELECT_IMAGE);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            imageView.setImageURI(imageUri);
         }
     }
 
@@ -82,7 +108,19 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
         String seenAdder = user.username;
         String seenPhone = user.telephone;
 
-        SeenInfo info = new SeenInfo(-1, seenDate, seenPlace, seenDetail, seenAdder, seenPhone);
+        Bitmap image;
+        String imageStr;
+
+        try {
+            image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            imageStr = encCheckModule.bitmapToString(image);
+        } catch (Exception e) {
+            Log.e("custom_check", "Image is null, " + e.toString());
+            Toast.makeText(this, "You not select any Picture yet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        SeenInfo info = new SeenInfo(-1, seenDate, seenPlace, seenDetail, seenAdder, seenPhone, imageStr);
         serverRequest.storeSeenInfoDataInBG(info, new GetSeenInfoCallback() {
             @Override
             public void done(SeenInfo returnInfo) {

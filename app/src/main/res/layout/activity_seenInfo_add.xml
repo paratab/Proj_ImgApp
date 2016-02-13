@@ -1,76 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="15dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seen Date" />
-
-    <EditText
-        android:id="@+id/edtSeenDate"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:inputType="none"
-        android:nextFocusDown="@+id/edtSeenPlace" />
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seen Location" />
+        <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/image_border"/>
 
-    <EditText
-        android:id="@+id/edtSeenPlace"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:inputType="text"
-        android:nextFocusDown="@+id/edtSeenDetail" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seen Location"
+            android:textSize="15sp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seen Detail" />
+        <EditText
+            android:id="@+id/edtSeenPlace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:inputType="text"
+            android:nextFocusDown="@+id/edtSeenDate" />
 
-    <EditText
-        android:id="@+id/edtSeenDetail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:inputType="text" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seen Date"
+            android:textSize="15sp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seen Adder" />
+        <EditText
+            android:id="@+id/edtSeenDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="วว-ดด-ปปปป"
+            android:inputType="text"
+            android:nextFocusDown="@+id/edtSeenDetail" />
 
-    <TextView
-        android:id="@+id/tvSeenAdder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seen Detail"
+            android:textSize="15sp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seen Contacts" />
+        <EditText
+            android:id="@+id/edtSeenDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:inputType="textMultiLine"
+            android:lines="2"
+            android:maxLines="5"/>
 
-    <TextView
-        android:id="@+id/tvSeenPhone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Seen Adder"
+            android:textSize="15sp"/>
 
-    <Button
-        android:id="@+id/btSeenAdd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Seen Detail" />
+        <TextView
+            android:id="@+id/tvSeenAdder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="16sp"/>
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Seen Contacts"
+            android:textSize="15sp"/>
 
+        <TextView
+            android:id="@+id/tvSeenPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/btSeenAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Seen Detail" />
+
+    </LinearLayout>
+</ScrollView>
 
