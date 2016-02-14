@@ -1,11 +1,13 @@
 package bolona_pig.proj_imgapp.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,8 @@ import bolona_pig.proj_imgapp.R;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
+    public final int SELECT_IMAGE_GALLERY = 1;
+    public final int SELECT_IMAGE_CAMERA = 2;
     Button btRegister;
     EditText edtUsername, edtPassword, edtReplyPassword, edtName, edtID, edtEmail, edtTelephone;
     EncCheckModule encCheckModule;
@@ -57,10 +61,34 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 111 && resultCode == RESULT_OK && data != null) {
+        if (requestCode == SELECT_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            imageView.setImageURI(imageUri);
+        } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
         }
+    }
+
+    public void selectImage() {
+        final CharSequence[] items = {"ถ่ายรูป", "เลือกจากคลังภาพ", "ยกเลิก"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("เลือกรูปภาพ");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (items[which].equals("ถ่ายรูป")) {
+                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, SELECT_IMAGE_CAMERA);
+                } else if (items[which].equals("เลือกจากคลังภาพ")) {
+                    Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryAct, SELECT_IMAGE_GALLERY);
+                } else if (items[which].equals("ยกเลิก")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -100,8 +128,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
                 break;
             case R.id.imageUpload:
-                Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryAct, 111);
+                selectImage();
                 break;
         }
     }

@@ -1,11 +1,13 @@
 package bolona_pig.proj_imgapp.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +30,8 @@ import bolona_pig.proj_imgapp.R;
 
 public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
-    public final int SELECT_IMAGE = 1;
+    public final int SELECT_IMAGE_GALLERY = 1;
+    public final int SELECT_IMAGE_CAMERA = 2;
     Button btSeenAdd;
     EditText edtSeenDate, edtSeenPlace, edtSeenDetail;
     TextView tvSeenAdder, tvSeenPhone;
@@ -86,16 +89,38 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
                 seenInfoAdd();
                 break;
             case R.id.imageView:
-                Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryAct, SELECT_IMAGE);
-                break;
+                selectImage();
         }
+    }
+
+    public void selectImage() {
+        final CharSequence[] items = {"ถ่ายรูป", "เลือกจากคลังภาพ", "ยกเลิก"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("เลือกรูปภาพ");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (items[which].equals("ถ่ายรูป")) {
+                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, SELECT_IMAGE_CAMERA);
+                } else if (items[which].equals("เลือกจากคลังภาพ")) {
+                    Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryAct, SELECT_IMAGE_GALLERY);
+                } else if (items[which].equals("ยกเลิก")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK && data != null) {
+        if (requestCode == SELECT_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            imageView.setImageURI(imageUri);
+        } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
         }
