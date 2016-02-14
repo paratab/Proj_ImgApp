@@ -15,15 +15,14 @@ import java.util.ArrayList;
 import bolona_pig.proj_imgapp.R;
 
 /**
- * Created by DreamMii on 13/2/2559.
+ * Created by DreamMii on 14/2/2559.
  */
-public class NoticeAdapter extends BaseAdapter {
-
+public class NoticeListAdapter extends BaseAdapter {
     DateTime dateTime;
     private Context mContext;
     private ArrayList<GridItem> mGridData = new ArrayList<>();
 
-    public NoticeAdapter(Context mContext, ArrayList<GridItem> mGridData) {
+    public NoticeListAdapter(Context mContext, ArrayList<GridItem> mGridData) {
         this.mContext = mContext;
         this.mGridData = mGridData;
         dateTime = new DateTime(mContext);
@@ -36,7 +35,7 @@ public class NoticeAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return mGridData.get(position);
+        return null;
     }
 
     @Override
@@ -53,17 +52,17 @@ public class NoticeAdapter extends BaseAdapter {
 
         if (convertView == null) {
 
-            gridView = inflater.inflate(R.layout.grid_item_layout, null);
+            gridView = inflater.inflate(R.layout.list_item_layout, null);
 
-            TextView textView1 = (TextView) gridView.findViewById(R.id.grid_title1);
-            TextView textView2 = (TextView) gridView.findViewById(R.id.grid_title2);
-            ImageView imageView = (ImageView) gridView.findViewById(R.id.grid_item_image);
+            TextView textView1 = (TextView) gridView.findViewById(R.id.textView1);
+            TextView textView2 = (TextView) gridView.findViewById(R.id.textView2);
+            ImageView imageView = (ImageView) gridView.findViewById(R.id.imageView);
 
             GridItem item = mGridData.get(position);
 
             String temp = "ชื่อ : " + item.title1;
             textView1.setText(temp);
-            temp = "อายุ : " + dateTime.getAge(item.title2) + " ปี";
+            temp = "วันที่หายตัว : " + item.title2;
             textView2.setText(temp);
             Picasso.with(mContext).load(item.image).into(imageView);
         } else {
@@ -73,8 +72,9 @@ public class NoticeAdapter extends BaseAdapter {
         return gridView;
     }
 
-    public void setGridData(ArrayList<GridItem> mGridData) {
+    public void setListData(ArrayList<GridItem> mGridData) {
         this.mGridData = mGridData;
         notifyDataSetChanged();
     }
 }
+

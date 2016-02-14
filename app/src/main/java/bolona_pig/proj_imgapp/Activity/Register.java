@@ -84,7 +84,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     imageStr = encCheckModule.bitmapToString(image);
                 } catch (Exception e) {
                     Log.e("custom_check", "Image is null, " + e.toString());
-                    Toast.makeText(this, "You not select any Picture yet.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -112,10 +112,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             @Override
             public void done(User returnedUser) {
                 if (returnedUser != null) {
-                    Toast.makeText(Register.this, "Register Completed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "ลงทะเบียนเรียบร้อย", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(Register.this, "Register not successful. Make sure you enable internet.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "ลงทะเบียนผิดพลาด", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -125,42 +125,42 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
         CharSequence text;
         if (username.isEmpty()) {
-            text = "Username cannot be empty.";
+            text = "กรุญากรอกชื่อผู้ใช้งาน";
             encCheckModule.printError(this, text);
             return false;
         }
         if (!encCheckModule.isValidUsername(username)) {
-            text = "Username invalid. Username must be more than 3 char and contain only [A-Z,a-z,0-9,_,-]";
+            text = "ชื่อผู้ใช้งานไม่ถูกต้อง ควรมี 3-20 ตัว เป็นภาษาอังกฤษหรือตัวเลข";
             encCheckModule.printError(this, text);
             return false;
         }
         if (password.isEmpty()) {
-            text = "Password cannot be empty";
+            text = "กรุณากรอกรหัสผ่าน";
             encCheckModule.printError(this, text);
             return false;
         }
         if (!password.equals(replyPassword)) {
-            text = "Password and Reply Password is not equal.";
+            text = "รหัสผ่านกับยืนยันรหัสผ่านไม่ตรงกัน";
             encCheckModule.printError(this, text);
             return false;
         }
         if (nationId.length() != 13) {
-            text = "National ID must has 13 digits";
+            text = "เลขประจำตัวประชาชนต้องมี 13 ตัว";
             encCheckModule.printError(this, text);
             return false;
         }
         if (email.isEmpty()) {
-            text = "Email cannot be empty.";
+            text = "กรุณากรอกอีเมล";
             encCheckModule.printError(this, text);
             return false;
         }
         if (!encCheckModule.isValidEmail(email)) {
-            text = "Email is not valid";
+            text = "รุปแบบอีเมลผิดพลาด";
             encCheckModule.printError(this, text);
             return false;
         }
         if (telephone.isEmpty()) {
-            text = "Telephone cannot be empty.";
+            text = "กรุณากรอกหมายเลขโทรศัพท์";
             encCheckModule.printError(this, text);
             return false;
         }

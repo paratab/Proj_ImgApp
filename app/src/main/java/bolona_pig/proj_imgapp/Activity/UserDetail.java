@@ -17,10 +17,10 @@ import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
 
-public class UserManagement extends AppCompatActivity implements View.OnClickListener {
+public class UserDetail extends AppCompatActivity implements View.OnClickListener {
 
     public final int USER_EDIT = 1;
-    Button btLogout, btEditData;
+    Button btLogout, btEditData, btnNoticeList, btnSeenList;
     TextView edtUsername, edtID, edtPassword, edtTelephone, edtName, edtEmail;
     UserLocalStore userLocalStore;
     ImageView imageView;
@@ -30,7 +30,7 @@ public class UserManagement extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_management);
+        setContentView(R.layout.activity_user_detail);
 
         btLogout = (Button) findViewById(R.id.btLogout);
         btEditData = (Button) findViewById(R.id.btEditData);
@@ -41,9 +41,13 @@ public class UserManagement extends AppCompatActivity implements View.OnClickLis
         edtEmail = (TextView) findViewById(R.id.edtEmail);
         edtTelephone = (TextView) findViewById(R.id.edtPhone);
         imageView = (ImageView) findViewById(R.id.imageView);
+        btnNoticeList = (Button) findViewById(R.id.btNoticeList);
+        btnSeenList = (Button) findViewById(R.id.btSeenList);
 
         btLogout.setOnClickListener(this);
         btEditData.setOnClickListener(this);
+        btnSeenList.setOnClickListener(this);
+        btnNoticeList.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
         encCheckModule = new EncCheckModule();
         imageChange = false;
@@ -85,6 +89,12 @@ public class UserManagement extends AppCompatActivity implements View.OnClickLis
             case R.id.btEditData:
                 intent = new Intent(this, UserDetailEdit.class);
                 startActivityForResult(intent, USER_EDIT);
+                break;
+            case R.id.btNoticeList:
+                startActivity(new Intent(this, UserNoticeList.class));
+                break;
+            case R.id.btSeenList:
+                startActivity(new Intent(this, UserSeenInfoList.class));
                 break;
         }
     }

@@ -15,7 +15,7 @@ import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
 
-public class UserPasswordChange extends AppCompatActivity implements View.OnClickListener {
+public class UserPassChange extends AppCompatActivity implements View.OnClickListener {
 
     EditText edtPassword, edtNewPassword, edtReplyNewPassword;
     Button btSavePassword;
@@ -25,7 +25,7 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_password_change);
+        setContentView(R.layout.activity_user_pass_change);
 
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtNewPassword = (EditText) findViewById(R.id.edtNewPassword);
@@ -51,11 +51,11 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
 
                 User user = userLocalStore.getLoggedInUser();
                 if (!password.equals(user.password)) {
-                    Toast.makeText(this, "Current password is not correct.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "รหัสผ่านปัจจุบัน", Toast.LENGTH_SHORT).show();
                     break;
                 }
                 if (!newPassword.equals(replyNewPassword)) {
-                    Toast.makeText(this, "Reply password is no same as New Password.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "รหัสผ่านใหม่กับยืนยันรหัสผ่านไม่ตรงกัน", Toast.LENGTH_SHORT).show();
                     break;
                 }
 
@@ -65,12 +65,12 @@ public class UserPasswordChange extends AppCompatActivity implements View.OnClic
                     public void done(User returnedUser) {
                         if (returnedUser != null) {
                             userLocalStore.storeUserData(returnedUser);
-                            Toast.makeText(UserPasswordChange.this, "Password Changed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserPassChange.this, "เปลี่ยนรหัสผ่านเสร็จสิ้น", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent();
                             setResult(RESULT_OK, intent);
                             finish();
                         } else {
-                            Toast.makeText(UserPasswordChange.this, "Password cannot be change. Make sure internet is working.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserPassChange.this, "ไม่สามารถเปลี่ยนรหัสผ่าน", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

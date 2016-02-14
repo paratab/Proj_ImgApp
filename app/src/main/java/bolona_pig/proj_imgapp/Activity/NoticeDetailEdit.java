@@ -29,7 +29,7 @@ import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
 
-public class NoticeEdit extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     public final int SELECT_IMAGE = 1;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
@@ -151,7 +151,7 @@ public class NoticeEdit extends AppCompatActivity implements View.OnClickListene
             imageStr = encCheckModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
-            Toast.makeText(this, "You not select any Picture yet.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -174,7 +174,7 @@ public class NoticeEdit extends AppCompatActivity implements View.OnClickListene
     }
 
     public void printError() {
-        Toast.makeText(this, "Cannot Update Notice, Make sure internet is working.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ไม่สามารถแก้ไขข้อมูลประกาศได้", Toast.LENGTH_SHORT).show();
     }
 
     @Override

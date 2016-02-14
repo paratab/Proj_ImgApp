@@ -84,17 +84,17 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                 String telephone = edtTelephone.getText().toString();
 
                 if (email.isEmpty()) {
-                    text = "Email cannot be empty.";
+                    text = "กรุณากรอกอีเมล";
                     encCheckModule.printError(this, text);
                     break;
                 }
                 if (!encCheckModule.isValidEmail(email)) {
-                    text = "Email is not valid";
+                    text = "รุปแบบอีเมลผิดพลาด";
                     encCheckModule.printError(this, text);
                     break;
                 }
                 if (telephone.isEmpty()) {
-                    text = "Telephone cannot be empty.";
+                    text = "กรุณากรอกหมายเลขโทรศัพท์";
                     encCheckModule.printError(this, text);
                     break;
                 }
@@ -110,16 +110,16 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                     public void done(User returnedUser) {
                         if (returnedUser != null) {
                             userLocalStore.storeUserData(returnedUser);
-                            Toast.makeText(UserDetailEdit.this, "Updated", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserDetailEdit.this, "บันทึกข้อมูลเรียบร้อย", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(UserDetailEdit.this, "Error on Update", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserDetailEdit.this, "ไม่สามารถบันทึกข้อมูลได้", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 break;
             case R.id.btChangePW:
-                intent = new Intent(UserDetailEdit.this, UserPasswordChange.class);
+                intent = new Intent(UserDetailEdit.this, UserPassChange.class);
                 startActivityForResult(intent, 111);
                 break;
             case R.id.imageView:

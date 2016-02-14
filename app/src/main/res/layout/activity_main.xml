@@ -38,6 +38,7 @@
         fab:menu_colorNormal="#43A047"
         fab:menu_colorPressed="#2E7D32"
         fab:menu_colorRipple="#1B5E20"
+        fab:menu_icon="@drawable/ic_menu"
         fab:menu_labels_ellipsize="end">
 
         <com.github.clans.fab.FloatingActionButton
@@ -48,7 +49,7 @@
             android:layout_marginEnd="5dp"
             android:src="@drawable/ic_note_add_white_24dp"
             fab:fabSize="normal"
-            fab:fab_label="สร้างประกาศคนหาย" />
+            fab:fab_label="@string/fabNotice" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabSeenInfo"
@@ -58,7 +59,7 @@
             android:layout_marginEnd="5dp"
             android:src="@drawable/ic_description_white_24dp"
             fab:fabSize="normal"
-            fab:fab_label="แจ้งเบอะแสการพบเห็น" />
+            fab:fab_label="@string/fabSeenInfo" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabLogin"
@@ -68,7 +69,17 @@
             android:layout_marginEnd="5dp"
             android:src="@drawable/ic_account_circle_white_24dp"
             fab:fabSize="normal"
-            fab:fab_label="ลงชื่อเข้าใช้ระบบ" />
+            fab:fab_label="@string/login" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabUserDetail"
+            style="@style/MenuButtonsSmall.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/ic_account_circle_white_24dp"
+            fab:fabSize="normal"
+            fab:fab_label="จัดการผู้ใช้งาน" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabMain2"

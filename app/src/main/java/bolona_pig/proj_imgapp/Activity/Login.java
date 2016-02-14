@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
@@ -19,9 +18,8 @@ import bolona_pig.proj_imgapp.R;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
-    Button btLogin;
+    Button btLogin, tvRegister;
     EditText edtUsername, edtPassword;
-    TextView tvRegister;
 
     UserLocalStore userLocalStore;
     EncCheckModule encCheckModule;
@@ -35,7 +33,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         btLogin = (Button) findViewById(R.id.btLogin);
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
-        tvRegister = (TextView) findViewById(R.id.tvRegister);
+        tvRegister = (Button) findViewById(R.id.tvRegister);
 
         btLogin.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
@@ -53,7 +51,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 String password = edtPassword.getText().toString();
 
                 if (username.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(this, "Username or Password is empty!.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "ชื่อผู้ใช้งานหรือรหัสผ่านว่างเปล่า!", Toast.LENGTH_SHORT).show();
                     break;
                 }
 
@@ -87,7 +85,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private void logInUser(User user) {
         userLocalStore.storeUserData(user);
         userLocalStore.setUserLoggedIn(true);
-        Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ลงชื่อเข้าใช้งานเรียบร้อย", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
         finish();
@@ -95,8 +93,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void showErrorMessage() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Login.this);
-        dialogBuilder.setMessage("Username or Password is invalid.");
-        dialogBuilder.setPositiveButton("ok", null);
+        dialogBuilder.setMessage("ชื่อผู้ใช้งาน หรือ รหัสผ่าน ผิดพลาด");
+        dialogBuilder.setPositiveButton("ตกลง", null);
         dialogBuilder.show();
     }
 }

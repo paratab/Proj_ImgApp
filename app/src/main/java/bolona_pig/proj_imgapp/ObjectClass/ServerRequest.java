@@ -16,6 +16,7 @@ import bolona_pig.proj_imgapp.CallBack.GetItemCallback;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetSeenInfoCallback;
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.R;
 
 /**
  * Created by DreamMii on 5/1/2559.
@@ -28,8 +29,8 @@ public class ServerRequest {
     public ServerRequest(Context context) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
-        progressDialog.setTitle("Processing");
-        progressDialog.setMessage("Please wait....");
+        progressDialog.setTitle(R.string.processing);
+        progressDialog.setMessage("กรุณารอซักครู่...");
     }
 
     public void storeUserDataInBG(User user, GetUserCallBack userCallBack) {
@@ -79,6 +80,14 @@ public class ServerRequest {
 
     public void fetchNoticeItemGridInBG(int offset, GetItemCallback itemCallback) {
         new FetchNoticeItemGridAsyncTask(offset, itemCallback).execute();
+    }
+
+    public void fetchUserNoticeListInBG(User user, GetItemCallback itemCallback) {
+        new FetchUserNoticeListAsyncTask(user, itemCallback).execute();
+    }
+
+    public void fetchUserSeenInfoListInBG(User user, GetItemCallback itemCallback) {
+        new FetchUserSeenInfoListAsyncTask(user, itemCallback).execute();
     }
 
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, User> {
@@ -629,4 +638,105 @@ public class ServerRequest {
         }
     }
 
+    public class FetchUserNoticeListAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
+        GetItemCallback itemCallback;
+        HttpRequest httpRequest;
+        ArrayList<GridItem> noticeItems;
+        User user;
+
+        public FetchUserNoticeListAsyncTask(User user, GetItemCallback itemCallback) {
+            this.itemCallback = itemCallback;
+            httpRequest = new HttpRequest();
+            noticeItems = new ArrayList<>();
+            this.user = user;
+        }
+
+        @Override
+        public ArrayList<GridItem> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("username", user.username);
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserNoticeList.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+                JSONArray noticeArray = jObj.getJSONArray("gridItem");
+                GridItem item;
+                for (int i = 0; i < noticeArray.length(); i++) {
+                    JSONObject items = noticeArray.getJSONObject(i);
+                    int id = items.getInt("lnId");
+                    String lnName = items.getString("lnName");
+                    String lnBirthDate = items.getString("lnLostDate");
+                    String imagePath = ADDRESS + items.getString("imagePath");
+                    item = new GridItem(id, lnName, lnBirthDate, imagePath);
+                    noticeItems.add(item);
+                }
+
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return noticeItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<GridItem> noticeItems) {
+            itemCallback.done(noticeItems);
+            super.onPostExecute(noticeItems);
+
+        }
+    }
+
+    public class FetchUserSeenInfoListAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
+        GetItemCallback itemCallback;
+        HttpRequest httpRequest;
+        ArrayList<GridItem> noticeItems;
+        User user;
+
+        public FetchUserSeenInfoListAsyncTask(User user, GetItemCallback itemCallback) {
+            this.itemCallback = itemCallback;
+            httpRequest = new HttpRequest();
+            noticeItems = new ArrayList<>();
+            this.user = user;
+        }
+
+        @Override
+        public ArrayList<GridItem> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("username", user.username);
+
+            try {
+
+                String line = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserSeenList.php");
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+                JSONArray noticeArray = jObj.getJSONArray("gridItem");
+                GridItem item;
+                for (int i = 0; i < noticeArray.length(); i++) {
+                    JSONObject items = noticeArray.getJSONObject(i);
+                    int id = items.getInt("seenId");
+                    String place = items.getString("seenPlace");
+                    String date = items.getString("seenDate");
+                    String imagePath = ADDRESS + items.getString("imagePath");
+                    item = new GridItem(id, place, date, imagePath);
+                    noticeItems.add(item);
+                }
+
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return noticeItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<GridItem> noticeItems) {
+            itemCallback.done(noticeItems);
+            super.onPostExecute(noticeItems);
+
+        }
+    }
 }

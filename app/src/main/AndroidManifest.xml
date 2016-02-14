@@ -30,13 +30,13 @@
             android:name=".Activity.Login"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".Activity.UserManagement"
+            android:name=".Activity.UserDetail"
             android:label="@string/title_activity_user_management" />
         <activity
             android:name=".Activity.UserDetailEdit"
             android:label="@string/title_activity_user_detail_edit" />
         <activity
-            android:name=".Activity.UserPasswordChange"
+            android:name=".Activity.UserPassChange"
             android:label="@string/title_activity_user_password_change" />
         <activity
             android:name=".Activity.NoticeAdd"
@@ -50,20 +50,26 @@
             android:name=".Activity.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".Activity.NoticeManagement"
-            android:label="Notice Management" />
+            android:name=".Activity.NoticeDetail"
+            android:label="@string/title_activity_notice_detail" />
         <activity
-            android:name=".Activity.NoticeEdit"
-            android:label="Notice Edit" />
+            android:name=".Activity.NoticeDetailEdit"
+            android:label="@string/title_activity_notice_detail_edit" />
         <activity
             android:name=".Activity.SeenInfoAdd"
             android:label="@string/title_activity_seen_info_add" />
-        <activity android:name=".Activity.SeenInfoDetail" />
         <activity
-            android:name=".Activity.MainActivity2"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.Main2Activity"></activity>
+            android:name=".Activity.SeenInfoDetail"
+            android:label="@string/title_activity_seen_info_detail" />
+        <activity
+            android:name=".Activity.BackOffice"
+            android:label="@string/title_activity_back_office" />
+        <activity
+            android:name=".Activity.UserNoticeList"
+            android:label="@string/title_activity_user_noticelist" />
+        <activity
+            android:name=".Activity.UserSeenInfoList"
+            android:label="@string/title_activity_user_seenlist" />
     </application>
 
 </manifest>

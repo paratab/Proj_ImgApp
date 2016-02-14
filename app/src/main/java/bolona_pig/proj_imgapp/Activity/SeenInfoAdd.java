@@ -116,7 +116,7 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
             imageStr = encCheckModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
-            Toast.makeText(this, "You not select any Picture yet.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -150,7 +150,7 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
     }
 
     public void showError() {
-        Toast.makeText(this, "Added Error, 3G not Working os Same Notice Detail", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ไม่สามารถเพิ่มข้อมูลเบอะแสเข้าสู่ระบบได้", Toast.LENGTH_SHORT).show();
     }
 
     public void showResult(SeenInfo info) {

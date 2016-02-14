@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seen Location"
+            android:text="@string/seenPlace"
             android:textSize="15sp"/>
 
         <EditText
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seen Date"
+            android:text="@string/seenDate"
             android:textSize="15sp"/>
 
         <EditText
@@ -49,7 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seen Detail"
+            android:text="@string/detail"
             android:textSize="15sp"/>
 
         <EditText
@@ -58,14 +58,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:inputType="textMultiLine"
-            android:lines="2"
+            android:lines="3"
             android:maxLines="5"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Seen Adder"
+            android:text="@string/seen_adder"
             android:textSize="15sp"/>
 
         <TextView
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Seen Contacts"
+            android:text="@string/notice_contact"
             android:textSize="15sp"/>
 
         <TextView
@@ -93,7 +93,7 @@
             android:id="@+id/btSeenAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Seen Detail" />
+            android:text="@string/seen_add" />
 
     </LinearLayout>
 </ScrollView>

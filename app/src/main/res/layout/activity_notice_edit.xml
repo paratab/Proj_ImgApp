@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lost Person's name"
+            android:text="@string/lostName"
             android:textSize="15sp" />
 
         <EditText
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lost Person BirthDate"
+            android:text="@string/lostBirthDate"
             android:textSize="15sp" />
 
         <EditText
@@ -49,7 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lost Location"
+            android:text="@string/lostPlace"
             android:textSize="15sp" />
 
         <EditText
@@ -63,7 +63,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lost Date"
+            android:text="@string/lostDate"
             android:textSize="15sp" />
 
         <EditText
@@ -78,7 +78,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lost Detail"
+            android:text="@string/detail"
             android:textSize="15sp" />
 
         <EditText
@@ -92,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Notice Adder"
+            android:text="@string/notice_adder"
             android:textSize="15sp" />
 
         <TextView
@@ -106,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Contact"
+            android:text="@string/notice_contact"
             android:textSize="15sp" />
 
         <TextView
@@ -120,8 +120,7 @@
             android:id="@+id/btNoticeUpdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Update Notice" />
-
+            android:text="@string/update" />
 
     </LinearLayout>
 </ScrollView>

@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Usename" />
+            android:text="@string/username" />
 
         <EditText
             android:id="@+id/edtUsername"
@@ -33,7 +33,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Password" />
+            android:text="@string/password" />
 
         <EditText
             android:id="@+id/edtPassword"
@@ -46,7 +46,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reply Password" />
+            android:text="@string/replyPassword" />
 
         <EditText
             android:id="@+id/edtReplyPassword"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name" />
+            android:text="@string/name" />
 
         <EditText
             android:id="@+id/edtName"
@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="National ID" />
+            android:text="@string/nationID" />
 
         <EditText
             android:id="@+id/edtID"
@@ -85,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email" />
+            android:text="@string/email" />
 
         <EditText
             android:id="@+id/edtEmail"
@@ -98,20 +98,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Telephone Number" />
+            android:text="@string/telephone" />
 
         <EditText
             android:id="@+id/edtPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:inputType="number" />
+            android:inputType="phone" />
 
         <Button
             android:id="@+id/btRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Register" />
+            android:text="@string/registerSave" />
 
 
     </LinearLayout>

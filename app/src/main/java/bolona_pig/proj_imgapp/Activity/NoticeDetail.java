@@ -21,7 +21,7 @@ import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
 
-public class NoticeManagement extends AppCompatActivity implements View.OnClickListener {
+public class NoticeDetail extends AppCompatActivity implements View.OnClickListener {
 
     TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone;
     Button btnEdtNotice;
@@ -35,7 +35,7 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notice_management);
+        setContentView(R.layout.activity_notice_detail);
 
         tvLnName = (TextView) findViewById(R.id.tvLnName);
         tvLnBirthDate = (TextView) findViewById(R.id.tvLnBirthDate);
@@ -71,7 +71,7 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
     }
 
     public void printError() {
-        Toast.makeText(this, "Unable to get Notice Data, Make sure you have internet connection", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ไม่สามารถดึงข้อมูลของประกาศได้", Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -103,7 +103,7 @@ public class NoticeManagement extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btNoticeEdit:
-                Intent intent = new Intent(this, NoticeEdit.class);
+                Intent intent = new Intent(this, NoticeDetailEdit.class);
                 intent.putExtra("notice", recentNotice);
                 startActivityForResult(intent, 111);
                 break;

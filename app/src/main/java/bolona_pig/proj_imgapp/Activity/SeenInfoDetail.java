@@ -62,7 +62,7 @@ public class SeenInfoDetail extends AppCompatActivity {
     }
 
     private void showError() {
-        Toast.makeText(this, "Unable to get Seen Info Data, Make sure you have internet connection", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ไม่สามารถดึงข้อมูลเบอะแสจากระบบ", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

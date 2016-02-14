@@ -135,7 +135,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
             imageStr = encCheckModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
-            Toast.makeText(this, "You not select any Picture yet.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -153,14 +153,14 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     }
 
     public void showError() {
-        Toast.makeText(this, "Added Error, 3G not Working or Same Notice Detail", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ไม่สามารถเพิ่มข้อมูลประกาศได้", Toast.LENGTH_SHORT).show();
     }
 
     public void showResult(Notice notice) {
         Intent intent = new Intent();
         intent.putExtra("ID", notice.id + "");
         setResult(RESULT_OK, intent);
-        Toast.makeText(this, "Notice Added", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "สร้างประกาศเรียบร้อย", Toast.LENGTH_SHORT).show();
         finish();
     }
 

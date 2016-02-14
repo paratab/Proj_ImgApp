@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Recent Password"
+        android:text="@string/recentPassword"
         android:textSize="16sp" />
 
     <EditText
@@ -24,7 +24,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Password"
+        android:text="@string/newPassword"
         android:textSize="16sp" />
 
     <EditText
@@ -37,7 +37,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reply New Password"
+        android:text="@string/replyPassword"
         android:textSize="16sp" />
 
     <EditText

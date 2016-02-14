@@ -9,7 +9,7 @@ import android.widget.Button;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
 
-public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
+public class BackOffice extends AppCompatActivity implements View.OnClickListener {
 
     public final int LOGIN_USER_MANAGEMENT = 1;
     public final int LOGIN_NOTICE_ADD = 2;
@@ -56,7 +56,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
                     intent = new Intent(this, Login.class);
                     startActivityForResult(intent, LOGIN_USER_MANAGEMENT);
                 } else {
-                    intent = new Intent(this, UserManagement.class);
+                    intent = new Intent(this, UserDetail.class);
                     startActivity(intent);
                 }
                 break;
@@ -70,7 +70,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btNoticeEdit:
-                intent = new Intent(this, NoticeManagement.class);
+                intent = new Intent(this, NoticeDetail.class);
                 intent.putExtra("noticeId", "1");
                 startActivity(intent);
                 break;
@@ -100,7 +100,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_USER_MANAGEMENT) {
             if (resultCode == RESULT_OK) {
-                Intent intent = new Intent(this, UserManagement.class);
+                Intent intent = new Intent(this, UserDetail.class);
                 startActivity(intent);
             }
         } else if (requestCode == LOGIN_NOTICE_ADD) {
@@ -111,7 +111,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         } else if (requestCode == NOTICE_ADD_GET_ID) {
             if (resultCode == RESULT_OK) {
                 String id = data.getStringExtra("ID");
-                Intent intent = new Intent(this, NoticeManagement.class);
+                Intent intent = new Intent(this, NoticeDetail.class);
                 intent.putExtra("noticeId", id);
                 startActivity(intent);
             }

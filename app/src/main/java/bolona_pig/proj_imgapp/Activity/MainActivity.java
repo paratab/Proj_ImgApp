@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import bolona_pig.proj_imgapp.CallBack.GetItemCallback;
 import bolona_pig.proj_imgapp.ObjectClass.GridItem;
 import bolona_pig.proj_imgapp.ObjectClass.HttpRequest;
-import bolona_pig.proj_imgapp.ObjectClass.NoticeAdapter;
+import bolona_pig.proj_imgapp.ObjectClass.NoticeGridAdapter;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
@@ -29,16 +30,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final int NOTICE_ADD_GET_ID = 4;
     public final int SEENINFO_ADD_GET_ID = 5;
 
-    FloatingActionButton fabNotice, fabSeenInfo, fabMainPage2, fabLogin;
+    FloatingActionButton fabNotice, fabSeenInfo, fabMainPage2, fabLogin, fabUserDetail;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     FloatingActionMenu floatingActionMenu;
     HttpRequest httpRequest;
     GridView gridView;
     ProgressBar progressBar;
-    NoticeAdapter noticeAdapter;
+    NoticeGridAdapter noticeGridAdapter;
     private ArrayList<GridItem> itemData = new ArrayList<>();
-    private String FEED_URL = "http://www.surawit-sj.xyz/FetchNoticeItemGrid.php";
 
 
     @Override
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fabSeenInfo = (FloatingActionButton) findViewById(R.id.fabSeenInfo);
         fabMainPage2 = (FloatingActionButton) findViewById(R.id.fabMain2);
         fabLogin = (FloatingActionButton) findViewById(R.id.fabLogin);
+        fabUserDetail = (FloatingActionButton) findViewById(R.id.fabUserDetail);
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fabMenu);
 
         gridView = (GridView) findViewById(R.id.gridView);
@@ -59,26 +60,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         serverRequest = new ServerRequest(this);
         httpRequest = new HttpRequest();
 
-        noticeAdapter = new NoticeAdapter(this, itemData);
-        gridView.setAdapter(noticeAdapter);
+        noticeGridAdapter = new NoticeGridAdapter(this, itemData);
+        gridView.setAdapter(noticeGridAdapter);
 
         fabNotice.setOnClickListener(this);
         fabSeenInfo.setOnClickListener(this);
         fabMainPage2.setOnClickListener(this);
         fabLogin.setOnClickListener(this);
+        fabUserDetail.setOnClickListener(this);
         floatingActionMenu.setClosedOnTouchOutside(true);
 
-        serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
-            @Override
-            public void done(ArrayList<GridItem> item) {
-                if (item.size() > 0) {
-                    itemData = item;
-                    noticeAdapter.setGridData(itemData);
-                }
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+//        serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
+//            @Override
+//            public void done(ArrayList<GridItem> item) {
+//                if (item.size() > 0) {
+//                    itemData = item;
+//                    noticeGridAdapter.setGridData(itemData);
+//                }else{
+//                    Toast.makeText(MainActivity.this,"ไม่สามารถดึงข้อมูลจากระบบได้",Toast.LENGTH_SHORT).show();
+//                }
+//                progressBar.setVisibility(View.GONE);
+//            }
+//        });
         progressBar.setVisibility(View.VISIBLE);
+
+        fabMainPage2.setVisibility(View.GONE);
 
         gridView.setOnItemClickListener(this);
     }
@@ -86,9 +92,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        if (userLocalStore.getLoggedInStatus()) {
-            fabLogin.setVisibility(View.GONE);
-        }
+        serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
+            @Override
+            public void done(ArrayList<GridItem> item) {
+                if (item.size() > 0) {
+                    itemData = item;
+                    noticeGridAdapter.setGridData(itemData);
+                } else {
+                    Toast.makeText(MainActivity.this, "ไม่สามารถดึงข้อมูลจากระบบได้", Toast.LENGTH_SHORT).show();
+                }
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+        if (userLocalStore.getLoggedInStatus()) fabLogin.setVisibility(View.GONE);
+        else fabUserDetail.setVisibility(View.GONE);
     }
 
     @Override
@@ -118,9 +135,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(this, Login.class);
                 startActivityForResult(intent, LOGIN_USER_MANAGEMENT);
                 break;
-            case R.id.fabMain2:
-                intent = new Intent(this, Main2Activity.class);
+            case R.id.fabUserDetail:
+                intent = new Intent(this, UserDetail.class);
                 startActivity(intent);
+                break;
+            case R.id.fabMain2:
+                intent = new Intent(this, BackOffice.class);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -129,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_USER_MANAGEMENT) {
             if (resultCode == RESULT_OK) {
-                Intent intent = new Intent(this, UserManagement.class);
+                Intent intent = new Intent(this, UserDetail.class);
                 startActivity(intent);
             }
         } else if (requestCode == LOGIN_NOTICE_ADD) {
@@ -140,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (requestCode == NOTICE_ADD_GET_ID) {
             if (resultCode == RESULT_OK) {
                 String id = data.getStringExtra("ID");
-                Intent intent = new Intent(this, NoticeManagement.class);
+                Intent intent = new Intent(this, NoticeDetail.class);
                 intent.putExtra("noticeId", id);
                 startActivity(intent);
             }
@@ -162,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         GridItem item = (GridItem) parent.getItemAtPosition(position);
-        Intent intent = new Intent(this, NoticeManagement.class);
+        Intent intent = new Intent(this, NoticeDetail.class);
         intent.putExtra("noticeId", item.id + "");
         startActivity(intent);
     }

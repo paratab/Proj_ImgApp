@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Usename"
+            android:text="@string/username"
             android:textSize="14sp" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Password"
+            android:text="@string/password"
             android:textSize="14sp" />
 
         <TextView
@@ -43,14 +43,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="**********"
+            android:text="@string/passHint"
             android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Name"
+            android:text="@string/name"
             android:textSize="14sp" />
 
         <TextView
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="National ID"
+            android:text="@string/nationID"
             android:textSize="14sp" />
 
         <TextView
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Email"
+            android:text="@string/email"
             android:textSize="14sp" />
 
         <TextView
@@ -92,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Telephone Number"
+            android:text="@string/telephone"
             android:textSize="14sp" />
 
         <TextView
@@ -102,18 +102,39 @@
             android:layout_marginBottom="10dp"
             android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btEditData"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Edit Your Information" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btEditData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/editDetail" />
+
+            <Button
+                android:id="@+id/btNoticeList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/allNotice" />
+
+            <Button
+                android:id="@+id/btSeenList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/allSeen" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log out" />
-
+            android:text="@string/logOut" />
 
     </LinearLayout>
 </ScrollView>
