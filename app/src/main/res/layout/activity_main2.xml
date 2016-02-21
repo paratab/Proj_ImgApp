@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp">
@@ -41,7 +40,35 @@
         android:id="@+id/btGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Map" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <EditText
+            android:id="@+id/infoId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:hint="SeenInfo ID" />
+
+        <EditText
+            android:id="@+id/sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:hint="Sec to Notify" />
+
+        <Button
+            android:id="@+id/btPushNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Push" />
+
+    </LinearLayout>
 
 </LinearLayout>
 

@@ -24,6 +24,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     UserLocalStore userLocalStore;
     EncCheckModule encCheckModule;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        edtUsername.setText("testuser1");
+        edtPassword.setText("1212312121");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

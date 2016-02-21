@@ -11,8 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +37,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
     public final int SELECT_IMAGE_CAMERA = 2;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
-    Button btNoticeUpdate;
+    ImageButton btNoticeUpdate;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     Notice recentNotice;
@@ -58,7 +58,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
         edtLnDetail = (EditText) findViewById(R.id.edtLnDetail);
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
-        btNoticeUpdate = (Button) findViewById(R.id.btNoticeUpdate);
+        btNoticeUpdate = (ImageButton) findViewById(R.id.btNoticeUpdate);
         imageView = (ImageView) findViewById(R.id.imageView);
 
         btNoticeUpdate.setOnClickListener(this);

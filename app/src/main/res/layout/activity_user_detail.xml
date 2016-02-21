@@ -29,7 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -58,7 +59,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,7 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -86,7 +89,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -99,42 +103,55 @@
             android:id="@+id/edtPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="16sp" />
+            android:layout_marginBottom="15dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <GridLayout
+            android:id="@+id/gridUser"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:columnCount="3"
+            android:padding="5dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btEditData"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/editDetail" />
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="20dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/edit_profile" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btNoticeList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="@string/allNotice" />
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="20dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/notice" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btSeenList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="@string/allSeen" />
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/clue" />
 
-        </LinearLayout>
+        </GridLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/btLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/logOut" />
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logout" />
 
     </LinearLayout>
 </ScrollView>

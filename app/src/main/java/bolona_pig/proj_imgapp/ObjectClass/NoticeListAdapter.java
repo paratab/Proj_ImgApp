@@ -35,7 +35,7 @@ public class NoticeListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return mGridData.get(position);
     }
 
     @Override
@@ -53,21 +53,22 @@ public class NoticeListAdapter extends BaseAdapter {
         if (convertView == null) {
 
             gridView = inflater.inflate(R.layout.list_item_layout, null);
-
-            TextView textView1 = (TextView) gridView.findViewById(R.id.textView1);
-            TextView textView2 = (TextView) gridView.findViewById(R.id.textView2);
-            ImageView imageView = (ImageView) gridView.findViewById(R.id.imageView);
-
-            GridItem item = mGridData.get(position);
-
-            String temp = "ชื่อ : " + item.title1;
-            textView1.setText(temp);
-            temp = "วันที่หายตัว : " + item.title2;
-            textView2.setText(temp);
-            Picasso.with(mContext).load(item.image).into(imageView);
         } else {
             gridView = convertView;
         }
+
+        TextView textView1 = (TextView) gridView.findViewById(R.id.textView1);
+        TextView textView2 = (TextView) gridView.findViewById(R.id.textView2);
+        ImageView imageView = (ImageView) gridView.findViewById(R.id.imageView);
+
+        GridItem item = mGridData.get(position);
+        //Log.d("custom_check", "position : " + position + " id : " + item.id + " Name :" + item.title1 + " BirthDate : " + item.title2);
+
+        String temp = "ชื่อ : " + item.title1;
+        textView1.setText(temp);
+        temp = "วันที่หายตัว : " + item.title2;
+        textView2.setText(temp);
+        Picasso.with(mContext).load(item.image).into(imageView);
 
         return gridView;
     }

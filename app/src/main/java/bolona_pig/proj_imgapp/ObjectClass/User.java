@@ -6,7 +6,7 @@ package bolona_pig.proj_imgapp.ObjectClass;
 public class User {
 
     public String username, password, name, nationId, email, telephone, imagePath;
-
+    public boolean isAdmin;
 
     public User(String username, String password, String name, String nationId, String email, String telephone, String imagePath) {
         this.username = username;
@@ -16,6 +16,7 @@ public class User {
         this.email = email;
         this.telephone = telephone;
         this.imagePath = imagePath;
+        isAdmin = false;
     }
 
     public User(String username, String password) {
@@ -26,6 +27,6 @@ public class User {
         this.email = "";
         this.telephone = "";
         this.imagePath = "";
+        isAdmin = false;
     }
-
 }

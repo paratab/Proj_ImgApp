@@ -54,7 +54,7 @@ public class EncCheckModule {
 
     public String bitmapToString(Bitmap in) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        in.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        in.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
         return Base64.encodeToString(bytes.toByteArray(), Base64.DEFAULT);
     }
 

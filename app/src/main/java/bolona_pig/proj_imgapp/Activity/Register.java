@@ -11,8 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,7 +26,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     public final int SELECT_IMAGE_GALLERY = 1;
     public final int SELECT_IMAGE_CAMERA = 2;
-    Button btRegister;
+    ImageButton btRegister;
     EditText edtUsername, edtPassword, edtReplyPassword, edtName, edtID, edtEmail, edtTelephone;
     EncCheckModule encCheckModule;
     ImageView imageView;
@@ -35,6 +35,13 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onStart() {
         super.onStart();
+        edtUsername.setText("testuser1");
+        edtPassword.setText("1212312121");
+        edtReplyPassword.setText("1212312121");
+        edtName.setText("Test User");
+        edtID.setText("1591425369876");
+        edtEmail.setText("testemail@email.com");
+        edtTelephone.setText("0820638770");
     }
 
     @Override
@@ -42,7 +49,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        btRegister = (Button) findViewById(R.id.btRegister);
+        btRegister = (ImageButton) findViewById(R.id.btRegister);
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtReplyPassword = (EditText) findViewById(R.id.edtReplyPassword);

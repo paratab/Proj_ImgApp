@@ -1,10 +1,21 @@
 package bolona_pig.proj_imgapp.Activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
@@ -16,10 +27,16 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
     public final int LOGIN_SEENINFO_ADD = 3;
     public final int NOTICE_ADD_GET_ID = 4;
     public final int SEENINFO_ADD_GET_ID = 5;
-    Button btUserManagement, btNoticeAdd, btGoogle, btNoticeEdit, btSeenAdd, btSeenInfo;
+    public final int NOTIFY_ID = 999;
+
+    Button btUserManagement, btNoticeAdd, btGoogle, btNoticeEdit, btSeenAdd, btSeenInfo, btPushNotify;
     UserLocalStore userLocalStore;
 
-    @Override
+    EditText sec, info;
+
+    android.support.v4.app.NotificationCompat.Builder notifyBuilder;
+    NotificationManager notifyManager;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
@@ -30,6 +47,9 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
         btNoticeEdit = (Button) findViewById(R.id.btNoticeEdit);
         btSeenAdd = (Button) findViewById(R.id.btSeenAdd);
         btSeenInfo = (Button) findViewById(R.id.btSeenInfo);
+        btPushNotify = (Button) findViewById(R.id.btPushNotify);
+        sec = (EditText) findViewById(R.id.sec);
+        info = (EditText) findViewById(R.id.infoId);
 
         userLocalStore = new UserLocalStore(this);
 
@@ -39,6 +59,7 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
         btNoticeEdit.setOnClickListener(this);
         btSeenAdd.setOnClickListener(this);
         btSeenInfo.setOnClickListener(this);
+        btPushNotify.setOnClickListener(this);
     }
 
     @Override
@@ -88,11 +109,44 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
                 intent.putExtra("seenId", "1");
                 startActivity(intent);
                 break;
-            case R.id.btGoogle:
-                intent = new Intent(this, MapsActivity.class);
-                startActivity(intent);
+//            case R.id.btGoogle:
+//                intent = new Intent(this, MapsActivity.class);
+//                startActivity(intent);
+//                break;
+            case R.id.btPushNotify:
+
+                int seco = Integer.parseInt(sec.getText().toString());
+
+                int millis = seco * 1000;
+
+                Log.i("custom_check", "Timer start");
+
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Log.i("custom_check", "Timer stop");
+                        NotifyPush();
+                    }
+                }, millis);
                 break;
         }
+    }
+
+    private void NotifyPush() {
+        Intent intent = new Intent(this, SeenInfoDetail.class);
+        intent.putExtra("seenId", info.getText().toString());
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_description_white_24dp);
+
+        notifyBuilder = new NotificationCompat.Builder(this).setTicker("มีเบาะแสใหม่ !").setSmallIcon(R.drawable.ic_description_white_24dp).setLargeIcon(icon)
+                .setContentTitle("มีเบาะแสใหม่แจ้งเข้าสู่ระบบ").setContentText("มีบุคคลแจ้งเบาะเเสเข้ามา และระบบคาดว่าจะจะเบาะแสเกี่ยวข้องกับประกาศของคุณ").setContentIntent(pIntent)
+                .setAutoCancel(true).setDefaults(Notification.DEFAULT_SOUND).setVibrate(new long[]{100, 3000, 500, 1000});
+
+        Notification notification = notifyBuilder.build();
+
+        notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notifyManager.notify(NOTIFY_ID, notification);
     }
 
     @Override

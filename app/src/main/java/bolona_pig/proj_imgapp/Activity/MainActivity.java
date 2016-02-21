@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        });
         progressBar.setVisibility(View.VISIBLE);
 
-        fabMainPage2.setVisibility(View.GONE);
+        //fabMainPage2.setVisibility(View.GONE);
 
         gridView.setOnItemClickListener(this);
     }
@@ -187,5 +187,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, NoticeDetail.class);
         intent.putExtra("noticeId", item.id + "");
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (floatingActionMenu != null && floatingActionMenu.isOpened()) {
+            floatingActionMenu.close(true);
+        } else {
+            super.onBackPressed();  // optional depending on your needs
+        }
     }
 }

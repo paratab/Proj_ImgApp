@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "bolona_pig.proj_imgapp"
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -24,7 +24,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-    compile 'com.google.android.gms:play-services:8.4.0'
+//    compile 'com.google.android.gms:play-services:8.4.0'
     compile 'joda-time:joda-time:2.9.2'
     compile 'com.github.clans:fab:1.6.2'
     compile 'com.squareup.picasso:picasso:2.5.2'

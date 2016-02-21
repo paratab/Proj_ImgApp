@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +20,7 @@ import bolona_pig.proj_imgapp.R;
 public class UserDetail extends AppCompatActivity implements View.OnClickListener {
 
     public final int USER_EDIT = 1;
-    Button btLogout, btEditData, btnNoticeList, btnSeenList;
+    ImageButton btLogout, btEditData, btnNoticeList, btnSeenList;
     TextView edtUsername, edtID, edtPassword, edtTelephone, edtName, edtEmail;
     UserLocalStore userLocalStore;
     ImageView imageView;
@@ -32,8 +32,8 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
 
-        btLogout = (Button) findViewById(R.id.btLogout);
-        btEditData = (Button) findViewById(R.id.btEditData);
+        btLogout = (ImageButton) findViewById(R.id.btLogout);
+        btEditData = (ImageButton) findViewById(R.id.btEditData);
         edtUsername = (TextView) findViewById(R.id.edtUsername);
         edtPassword = (TextView) findViewById(R.id.edtPassword);
         edtName = (TextView) findViewById(R.id.edtName);
@@ -41,8 +41,8 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
         edtEmail = (TextView) findViewById(R.id.edtEmail);
         edtTelephone = (TextView) findViewById(R.id.edtPhone);
         imageView = (ImageView) findViewById(R.id.imageView);
-        btnNoticeList = (Button) findViewById(R.id.btNoticeList);
-        btnSeenList = (Button) findViewById(R.id.btSeenList);
+        btnNoticeList = (ImageButton) findViewById(R.id.btNoticeList);
+        btnSeenList = (ImageButton) findViewById(R.id.btSeenList);
 
         btLogout.setOnClickListener(this);
         btEditData.setOnClickListener(this);

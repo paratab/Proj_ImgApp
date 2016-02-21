@@ -117,15 +117,18 @@
             android:id="@+id/tvLnPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="25dp"
             android:textSize="16sp" />
 
-        <Button
+
+        <ImageButton
             android:id="@+id/btNoticeAdd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/create_notice"
-            android:textSize="15sp" />
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/save" />
 
 
     </LinearLayout>

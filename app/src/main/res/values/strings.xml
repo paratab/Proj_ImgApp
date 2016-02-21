@@ -9,13 +9,13 @@
     <string name="title_activity_user_password_change">เปลี่ยนรหัสผ่าน</string>
     <string name="title_activity_maps">แผนที่</string>
     <string name="title_activity_add_notice">สร้างประกาศคนหาย</string>
-    <string name="title_activity_seen_info_add">แจ้งข้อมูลเบอะแส</string>
+    <string name="title_activity_seen_info_add">แจ้งข้อมูลเบาะแส</string>
     <string name="title_activity_back_office">หลังบ้าน</string>
     <string name="title_activity_notice_detail">รายละเอียดประกาศคนหาย</string>
     <string name="title_activity_notice_detail_edit">แก้ไขประกาศ</string>
-    <string name="title_activity_seen_info_detail">รายละเอียดข้อมูลเบอะแส</string>
+    <string name="title_activity_seen_info_detail">รายละเอียดข้อมูลเบาะแส</string>
     <string name="title_activity_user_noticelist">รายการประกาศที่สร้าง</string>
-    <string name="title_activity_user_seenlist">รายการข้อมูลเบอะแสที่แจ้ง</string>
+    <string name="title_activity_user_seenlist">รายการข้อมูลเบาะแสที่แจ้ง</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -39,7 +39,7 @@
     <string name="login">ลงชื่อเข้าใช้งาน</string>
     <string name="register">ยังไม่เป็นสมาชิก สมัครที่นี่</string>
     <string name="fabNotice">สร้างประกาศคนหาย</string>
-    <string name="fabSeenInfo">แจ้งเบอะแสการพบเห็น</string>
+    <string name="fabSeenInfo">แจ้งเบาะแสการพบเห็น</string>
     <string name="fabUserDetail">จัดการผู้ใช้งาน</string>
     <string name="lostName">ชื่อผู้สูญหาย</string>
     <string name="lostBirthDate">วันเกิดผู้สูญหาย</string>
@@ -55,6 +55,6 @@
     <string name="seenPlace">สถานที่พบเห็น</string>
     <string name="seenDate">วันที่พบเห็น</string>
     <string name="seen_adder">ผู้ลงข้อมูล</string>
-    <string name="seen_add">แจ้งเบอะแส</string>
+    <string name="seen_add">แจ้งเบาะแส</string>
     <string name="processing">กำลังดำเนินการ</string>
 </resources>

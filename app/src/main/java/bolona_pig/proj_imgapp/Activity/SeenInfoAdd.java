@@ -11,8 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +32,7 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
 
     public final int SELECT_IMAGE_GALLERY = 1;
     public final int SELECT_IMAGE_CAMERA = 2;
-    Button btSeenAdd;
+    ImageButton btSeenAdd;
     EditText edtSeenDate, edtSeenPlace, edtSeenDetail;
     TextView tvSeenAdder, tvSeenPhone;
     UserLocalStore userLocalStore;
@@ -52,7 +52,7 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
         edtSeenDetail = (EditText) findViewById(R.id.edtSeenDetail);
         tvSeenAdder = (TextView) findViewById(R.id.tvSeenAdder);
         tvSeenPhone = (TextView) findViewById(R.id.tvSeenPhone);
-        btSeenAdd = (Button) findViewById(R.id.btSeenAdd);
+        btSeenAdd = (ImageButton) findViewById(R.id.btSeenAdd);
         imageView = (ImageView) findViewById(R.id.imageView);
 
         edtSeenDate.setOnClickListener(this);
@@ -70,6 +70,9 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onStart() {
         super.onStart();
+        edtSeenDate.setText("21-Feb-2016");
+        edtSeenPlace.setText("ใต้สพาน ตลาดสุวรรณภูมิ");
+        edtSeenDetail.setText("พบเห็นมาถามทาง จึงขอถ่ายรูปมาช่วยตามหาผู้ปกครอง");
         tvSeenAdder.setText(user.name);
         tvSeenPhone.setText(user.telephone);
     }

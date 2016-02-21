@@ -1,10 +1,12 @@
 package bolona_pig.proj_imgapp.Activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,13 +26,14 @@ import bolona_pig.proj_imgapp.R;
 public class NoticeDetail extends AppCompatActivity implements View.OnClickListener {
 
     TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone;
-    Button btnEdtNotice;
     ServerRequest serverRequest;
     UserLocalStore userLocalStore;
     Notice recentNotice;
     DateTime dateTime;
     ImageView imageView;
     boolean imageChange;
+    ImageButton imbTel, ImbMessage, imbMarkFin, imbEdit, imbDel;
+    GridLayout gridUser, gridOwner, gridAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +47,25 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         tvLnDetail = (TextView) findViewById(R.id.tvLnDetail);
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
-        btnEdtNotice = (Button) findViewById(R.id.btNoticeEdit);
         imageView = (ImageView) findViewById(R.id.imageView);
+        imbTel = (ImageButton) findViewById(R.id.imbTelephone);
+        ImbMessage = (ImageButton) findViewById(R.id.imbMessage);
+        imbMarkFin = (ImageButton) findViewById(R.id.imbOwnMark);
+        imbEdit = (ImageButton) findViewById(R.id.imbOwnEdit);
+        imbDel = (ImageButton) findViewById(R.id.imbAdminDelete);
+        gridUser = (GridLayout) findViewById(R.id.gridUser);
+        gridOwner = (GridLayout) findViewById(R.id.gridOwner);
+        gridAdmin = (GridLayout) findViewById(R.id.gridAdmin);
+
         serverRequest = new ServerRequest(this);
         userLocalStore = new UserLocalStore(this);
         dateTime = new DateTime(this);
 
-        btnEdtNotice.setOnClickListener(this);
+        imbTel.setOnClickListener(this);
+        ImbMessage.setOnClickListener(this);
+        imbMarkFin.setOnClickListener(this);
+        imbEdit.setOnClickListener(this);
+        imbDel.setOnClickListener(this);
         imageChange = false;
     }
 
@@ -68,6 +83,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
     }
 
     public void printError() {
@@ -92,20 +108,43 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         imageChange = false;
 
         User user = userLocalStore.getLoggedInUser();
-        if (user.name.equals(notice.lnAdder) && user.telephone.equals(notice.lnPhone)) {
-            View v = findViewById(R.id.btNoticeEdit);
-            v.setVisibility(View.VISIBLE);
+        if (user.name.equals(recentNotice.lnAdder) && user.telephone.equals(recentNotice.lnPhone)) {
+            gridOwner.setVisibility(View.VISIBLE);
+        } else {
+            gridUser.setVisibility(View.VISIBLE);
         }
+        if (user.isAdmin) gridAdmin.setVisibility(View.VISIBLE);
+//        gridOwner.setVisibility(View.VISIBLE);
+//        gridUser.setVisibility(View.VISIBLE);
+//        gridAdmin.setVisibility(View.VISIBLE);
     }
 
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
-            case R.id.btNoticeEdit:
-                Intent intent = new Intent(this, NoticeDetailEdit.class);
+            case R.id.imbTelephone:
+                String uri = "tel:" + tvLnPhone.getText();
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse(uri));
+                startActivity(intent);
+                break;
+            case R.id.imbMessage:
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.setType("vnd.android-dir/mms-sms");
+                intent.putExtra("address", tvLnPhone.getText());
+                startActivity(intent);
+                break;
+            case R.id.imbOwnMark:
+                Toast.makeText(this, "กดเพื่อบันทึกว่าพบตัวแล้ว", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.imbOwnEdit:
+                intent = new Intent(this, NoticeDetailEdit.class);
                 intent.putExtra("notice", recentNotice);
                 startActivityForResult(intent, 111);
+                break;
+            case R.id.imbAdminDelete:
+                Toast.makeText(this, "กดเพื่อลบประกาศ", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

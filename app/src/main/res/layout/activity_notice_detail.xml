@@ -122,12 +122,84 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btNoticeEdit"
-            android:layout_width="match_parent"
+        <GridLayout
+            android:id="@+id/gridUser"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/notice_edit"
-            android:visibility="gone" />
+            android:layout_gravity="center"
+            android:columnCount="2"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/imbTelephone"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="30dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/phone" />
+
+            <ImageButton
+                android:id="@+id/imbMessage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/message" />
+
+        </GridLayout>
+
+        <GridLayout
+            android:id="@+id/gridOwner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:columnCount="2"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/imbOwnMark"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="30dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/markfin" />
+
+            <ImageButton
+                android:id="@+id/imbOwnEdit"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/edit" />
+
+        </GridLayout>
+
+        <GridLayout
+            android:id="@+id/gridAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:columnCount="3"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/imbAdminDelete"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/delete" />
+
+        </GridLayout>
+
 
     </LinearLayout>
+
+
 </ScrollView>

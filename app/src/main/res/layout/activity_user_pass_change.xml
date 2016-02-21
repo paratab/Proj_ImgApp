@@ -44,13 +44,16 @@
         android:id="@+id/edtReplyNewPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="15dp"
         android:inputType="textPassword" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btSavePassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/save" />
 
 </LinearLayout>

@@ -52,23 +52,22 @@ public class SeenListAdapter extends BaseAdapter {
         View gridView;
 
         if (convertView == null) {
-
             gridView = inflater.inflate(R.layout.list_item_layout, null);
-
-            TextView textView1 = (TextView) gridView.findViewById(R.id.textView1);
-            TextView textView2 = (TextView) gridView.findViewById(R.id.textView2);
-            ImageView imageView = (ImageView) gridView.findViewById(R.id.imageView);
-
-            GridItem item = mGridData.get(position);
-
-            String temp = "สถานที่ :" + item.title1;
-            textView1.setText(temp);
-            temp = "วันที่แจ้ง : " + item.title2;
-            textView2.setText(temp);
-            Picasso.with(mContext).load(item.image).into(imageView);
         } else {
             gridView = convertView;
         }
+
+        TextView textView1 = (TextView) gridView.findViewById(R.id.textView1);
+        TextView textView2 = (TextView) gridView.findViewById(R.id.textView2);
+        ImageView imageView = (ImageView) gridView.findViewById(R.id.imageView);
+
+        GridItem item = mGridData.get(position);
+
+        String temp = "สถานที่ :" + item.title1;
+        textView1.setText(temp);
+        temp = "วันที่แจ้ง : " + item.title2;
+        textView2.setText(temp);
+        Picasso.with(mContext).load(item.image).into(imageView);
 
         return gridView;
     }

@@ -10,8 +10,8 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +29,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
 
     public final int SELECT_IMAGE_GALLERY = 1;
     public final int SELECT_IMAGE_CAMERA = 2;
-    Button btUpdate, btChangePW;
+    ImageButton btUpdate, btChangePW;
     TextView edtUsername, edtID, edtPassword;
     EditText edtName, edtEmail, edtTelephone;
     UserLocalStore userLocalStore;
@@ -42,8 +42,8 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail_edit);
 
-        btUpdate = (Button) findViewById(R.id.btUpdate);
-        btChangePW = (Button) findViewById(R.id.btChangePW);
+        btUpdate = (ImageButton) findViewById(R.id.btUpdate);
+        btChangePW = (ImageButton) findViewById(R.id.btChangePW);
         edtUsername = (TextView) findViewById(R.id.edtUsername);
         edtPassword = (TextView) findViewById(R.id.edtPassword);
         edtName = (EditText) findViewById(R.id.edtName);

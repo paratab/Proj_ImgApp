@@ -100,7 +100,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -113,14 +114,18 @@
             android:id="@+id/tvLnPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="16sp" />
+            android:layout_marginBottom="25dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btNoticeUpdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/update" />
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/save" />
 
     </LinearLayout>
 </ScrollView>

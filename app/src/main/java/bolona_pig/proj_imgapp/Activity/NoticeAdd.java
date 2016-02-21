@@ -11,8 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +33,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     public final int SELECT_IMAGE_CAMERA = 2;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
-    Button btAddNotice;
+    ImageButton btAddNotice;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     DateTime dateTime;
@@ -52,7 +52,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         edtLnDetail = (EditText) findViewById(R.id.edtLnDetail);
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
-        btAddNotice = (Button) findViewById(R.id.btNoticeAdd);
+        btAddNotice = (ImageButton) findViewById(R.id.btNoticeAdd);
         imageView = (ImageView) findViewById(R.id.imageView);
 
         btAddNotice.setOnClickListener(this);
@@ -74,6 +74,11 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     public void onStart() {
         super.onStart();
         User user = userLocalStore.getLoggedInUser();
+        edtLnName.setText("Test Lost Data1");
+        edtLnBirthDate.setText("19-May-1995");
+        edtLnPlace.setText("ECC KMITL");
+        edtLnLostDate.setText("20-Feb-2016");
+        edtLnDetail.setText("เป็นชาย สูง ท้วม หายออกจากตึก ecc kmitl");
         tvLnAdder.setText(user.name);
         tvLnPhone.setText(user.telephone);
         edtLnLostDate.setText(dateTime.getCurrentDate());
