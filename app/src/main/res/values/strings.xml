@@ -57,4 +57,15 @@
     <string name="seen_adder">ผู้ลงข้อมูล</string>
     <string name="seen_add">แจ้งเบาะแส</string>
     <string name="processing">กำลังดำเนินการ</string>
+    <string name="sex">เพศ</string>
+    <string name="male">ชาย</string>
+    <string name="female">หญิง</string>
+    <string name="lnSex">เพศ</string>
+    <string name="errorNotConnectInternet">กรุณาเชื่อมต่ออินเตอร์เน็ตเพื่อใช้งานระบบ</string>
+    <string name="errorCannotConnectToServer">ไม่สามารถเชื่อมต่อกับระบบได้ กรุณาลองใหม่ในภายหลัง</string>
+    <string name="errorUsernameExisted">ชื่อผู้ใช้ถูกใช้งานแล้ว</string>
+    <string name="errorSystemWorkingIncorrectly">ระบบทำงานไม่ถูกต้อง กรุณาลองใหม่อีกครั้งภายหลัง</string>
+    <string name="errorNoNoticeExist">ไม่พบประกาศคนหายในระบบ</string>
+    <string name="errorNoClueExist">ไม่พบข้อมูลเบาะแสในระบบ</string>
+    <string name="errorUserOrPassIncorrect">ข้อมูลชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</string>
 </resources>

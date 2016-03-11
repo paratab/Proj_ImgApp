@@ -8,18 +8,37 @@ import java.io.Serializable;
 public class Notice implements Serializable {
 
     public int id;
-    public String lnName, lnBirthDate, lnPlace, lnLostDate, lnDetail, lnAdder, lnPhone, imagePath;
+    public String name, birthDate, lostPlace, lostDate,
+            detail, adderName, telephone, imagePath, sex, adderUsername;
 
-    public Notice(int id, String lnName, String lnBirthDate, String lnPlace, String lnLostDate, String lnDetail, String lnAdder, String lnPhone, String imagePath) {
+    public Notice(int id, String name, String sex, String birthDate, String lostPlace, String lostDate,
+                  String detail, String adderUsername, String adderName,
+                  String telephone, String imagePath) {
         this.id = id;
-        this.lnName = lnName;
-        this.lnBirthDate = lnBirthDate;
-        this.lnPlace = lnPlace;
-        this.lnLostDate = lnLostDate;
-        this.lnDetail = lnDetail;
-        this.lnAdder = lnAdder;
-        this.lnPhone = lnPhone;
+        this.name = name;
+        this.sex = sex;
+        this.birthDate = birthDate;
+        this.lostPlace = lostPlace;
+        this.lostDate = lostDate;
+        this.detail = detail;
+        this.adderUsername = adderUsername;
+        this.adderName = adderName;
+        this.telephone = telephone;
         this.imagePath = imagePath;
+    }
+
+    public Notice(int id) {
+        this.id = id;
+        this.name = "";
+        this.sex = "";
+        this.birthDate = "";
+        this.lostPlace = "";
+        this.lostDate = "";
+        this.detail = "";
+        this.adderUsername = "";
+        this.adderName = "";
+        this.telephone = "";
+        this.imagePath = "";
     }
 
 

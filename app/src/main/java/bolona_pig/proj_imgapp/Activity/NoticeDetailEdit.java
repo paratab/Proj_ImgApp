@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +25,11 @@ import com.squareup.picasso.Picasso;
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
-import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.Notice;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -44,7 +45,9 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
     DateTime dateTime;
     ImageView imageView;
     Boolean imageChange;
-    EncCheckModule encCheckModule;
+    mixMidModule mixMidModule;
+    String sex;
+    RadioButton radioMale, radioFemale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
         btNoticeUpdate = (ImageButton) findViewById(R.id.btNoticeUpdate);
         imageView = (ImageView) findViewById(R.id.imageView);
+        radioMale = (RadioButton) findViewById(R.id.sexMale);
+        radioFemale = (RadioButton) findViewById(R.id.sexFemale);
 
         btNoticeUpdate.setOnClickListener(this);
         imageView.setOnClickListener(this);
@@ -72,7 +77,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
 
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
-        encCheckModule = new EncCheckModule();
+        mixMidModule = new mixMidModule();
         dateTime = new DateTime(this);
         imageChange = false;
 
@@ -81,13 +86,18 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
 
     protected void onStart() {
         super.onStart();
-        edtLnName.setText(recentNotice.lnName);
-        edtLnBirthDate.setText(recentNotice.lnBirthDate);
-        edtLnPlace.setText(recentNotice.lnPlace);
-        edtLnLostDate.setText(recentNotice.lnLostDate);
-        edtLnDetail.setText(recentNotice.lnDetail);
-        tvLnAdder.setText(recentNotice.lnAdder);
-        tvLnPhone.setText(recentNotice.lnPhone);
+        edtLnName.setText(recentNotice.name);
+        edtLnBirthDate.setText(recentNotice.birthDate);
+        edtLnPlace.setText(recentNotice.lostPlace);
+        edtLnLostDate.setText(recentNotice.lostDate);
+        edtLnDetail.setText(recentNotice.detail);
+        tvLnAdder.setText(recentNotice.adderName);
+        tvLnPhone.setText(recentNotice.telephone);
+        sex = recentNotice.sex;
+
+        if (sex.equals("ชาย")) radioMale.setChecked(true);
+        else radioFemale.setChecked(true);
+
         if (!imageChange)
             Picasso.with(this).load(recentNotice.imagePath).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).into(imageView);
     }
@@ -165,32 +175,30 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
         User user = userLocalStore.getLoggedInUser();
 
         int id = recentNotice.id;
-        String lnName = edtLnName.getText().toString();
-        String lnBirthDate = edtLnBirthDate.getText().toString();
-        String lnPlace = edtLnPlace.getText().toString();
-        String lnDate = edtLnLostDate.getText().toString();
-        String lnDetail = edtLnDetail.getText().toString();
-        String lnAdder = user.username;
-        String lnPhone = user.telephone;
+        String name = edtLnName.getText().toString();
+        String birthDate = edtLnBirthDate.getText().toString();
+        String lostPlace = edtLnPlace.getText().toString();
+        String lostDate = edtLnLostDate.getText().toString();
+        String detail = edtLnDetail.getText().toString();
 
         Bitmap image;
         String imageStr;
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = encCheckModule.bitmapToString(image);
+            imageStr = mixMidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
             Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Notice notice = new Notice(id, lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone, imageStr);
+        Notice notice = new Notice(id, name, sex, birthDate, lostPlace, lostDate, detail, user.username, user.name, user.telephone, imageStr);
         serverRequest.updateNoticeDataInBG(notice, new GetNoticeCallBack() {
             @Override
-            public void done(Notice returnNotice) {
+            public void done(Notice returnNotice, String resultStr) {
                 if (returnNotice == null) {
-                    printError();
+                    mixMidModule.showAlertDialog(resultStr, NoticeDetailEdit.this);
                 } else {
                     showResult();
                 }
@@ -199,7 +207,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
     }
 
     public void showResult() {
-        Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "แก้ไขข้อมูลเรียบร้อย", Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -232,5 +240,19 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
             }
         }
 
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        switch (view.getId()) {
+            case R.id.sexMale:
+                if (checked)
+                    sex = "ชาย";
+                break;
+            case R.id.sexFemale:
+                if (checked)
+                    sex = "หญิง";
+                break;
+        }
     }
 }

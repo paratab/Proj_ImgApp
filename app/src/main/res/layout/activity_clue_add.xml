@@ -14,120 +14,115 @@
             android:layout_width="200dp"
             android:layout_height="160dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/image_border" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/username"
-            android:textSize="14sp" />
+            android:text="@string/sex"
+            android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/edtUsername"
+        <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/password"
-            android:textSize="14sp" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
-
-            <TextView
-                android:id="@+id/edtPassword"
-                android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/sexMale"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/btChangePW"
-                android:text="@string/passHint"
-                android:textSize="16sp" />
+                android:layout_marginRight="15dp"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/male"
+                android:textSize="15sp" />
 
-            <ImageButton
-                android:id="@+id/btChangePW"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:scaleType="centerCrop"
-                android:src="@drawable/edit_icon_small" />
+            <RadioButton
+                android:id="@+id/sexFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/female"
+                android:textSize="15sp" />
 
-        </RelativeLayout>
-
+        </RadioGroup>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/name"
-            android:textSize="14sp" />
+            android:text="@string/seenPlace"
+            android:textSize="15sp" />
 
         <EditText
-            android:id="@+id/edtName"
+            android:id="@+id/edtCluePlace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:inputType="text"
+            android:nextFocusDown="@+id/edtClueDate" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/nationID"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/edtID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/email"
-            android:textSize="14sp" />
+            android:text="@string/seenDate"
+            android:textSize="15sp" />
 
         <EditText
-            android:id="@+id/edtEmail"
+            android:id="@+id/edtClueDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:hint="วว-ดด-ปปปป"
+            android:inputType="text"
+            android:nextFocusDown="@+id/edtClueDetail" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/edtClueDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:maxLines="5" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="@string/telephone"
-            android:textSize="14sp" />
+            android:text="@string/seen_adder"
+            android:textSize="15sp" />
 
-
-        <EditText
-            android:id="@+id/edtPhone"
+        <TextView
+            android:id="@+id/tvClueAdder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp" />
+            android:layout_marginBottom="10dp"
+            android:textSize="16sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/notice_contact"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvCluePhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp" />
 
         <ImageButton
-            android:id="@+id/btUpdate"
+            android:id="@+id/btClueAdd"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
@@ -135,6 +130,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/save" />
 
-
     </LinearLayout>
 </ScrollView>
+

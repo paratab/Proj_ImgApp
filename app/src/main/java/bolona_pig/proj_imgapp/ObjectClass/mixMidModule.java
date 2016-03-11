@@ -3,6 +3,7 @@ package bolona_pig.proj_imgapp.ObjectClass;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,9 +16,9 @@ import java.util.regex.Pattern;
 /**
  * Created by DreamMii on 17/1/2559.
  */
-public class EncCheckModule {
+public class mixMidModule {
 
-    public EncCheckModule() {
+    public mixMidModule() {
     }
 
     public boolean isValidUsername(String username) {
@@ -61,6 +62,13 @@ public class EncCheckModule {
     public Bitmap stringToBitmap(String in) {
         byte[] bytes = Base64.decode(in, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    public void showAlertDialog(String resultString, Context context) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setMessage(resultString);
+        dialogBuilder.setPositiveButton("รับทราบ", null);
+        dialogBuilder.show();
     }
 
 }

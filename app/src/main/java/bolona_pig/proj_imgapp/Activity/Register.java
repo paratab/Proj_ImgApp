@@ -16,10 +16,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import bolona_pig.proj_imgapp.CallBack.GetBooleanCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
-import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
+import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
@@ -28,20 +29,20 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     public final int SELECT_IMAGE_CAMERA = 2;
     ImageButton btRegister;
     EditText edtUsername, edtPassword, edtReplyPassword, edtName, edtID, edtEmail, edtTelephone;
-    EncCheckModule encCheckModule;
+    mixMidModule mixMidModule;
     ImageView imageView;
-
+    boolean isUsernameAvailable = false;
 
     @Override
     protected void onStart() {
         super.onStart();
-        edtUsername.setText("testuser1");
-        edtPassword.setText("1212312121");
-        edtReplyPassword.setText("1212312121");
-        edtName.setText("Test User");
-        edtID.setText("1591425369876");
-        edtEmail.setText("testemail@email.com");
-        edtTelephone.setText("0820638770");
+//        edtUsername.setText("testuser1");
+//        edtPassword.setText("1212312121");
+//        edtReplyPassword.setText("1212312121");
+//        edtName.setText("Test User");
+//        edtID.setText("1591425369876");
+//        edtEmail.setText("testemail@email.com");
+//        edtTelephone.setText("0820638770");
     }
 
     @Override
@@ -59,10 +60,31 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         edtTelephone = (EditText) findViewById(R.id.edtPhone);
         imageView = (ImageView) findViewById(R.id.imageUpload);
 
-        encCheckModule = new EncCheckModule();
+        mixMidModule = new mixMidModule();
 
         btRegister.setOnClickListener(this);
         imageView.setOnClickListener(this);
+        edtUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String username = edtUsername.getText().toString();
+                    ServerRequest serverRequest = new ServerRequest(Register.this);
+                    serverRequest.checkUsernameExisted(username, new GetBooleanCallBack() {
+                        @Override
+                        public void done(Boolean flag, String resultStr) {
+                            if (flag != null && !flag) {
+                                Toast.makeText(Register.this, "ชื่อผู้ใช้ถูกใช้งานแล้ว กรุณาเปลี่ยนใหม่", Toast.LENGTH_LONG).show();
+                            } else if (flag == null) {
+                                Toast.makeText(Register.this, resultStr, Toast.LENGTH_LONG).show();
+                            } else {
+                                isUsernameAvailable = flag;
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -116,7 +138,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
                 try {
                     image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                    imageStr = encCheckModule.bitmapToString(image);
+                    imageStr = mixMidModule.bitmapToString(image);
                 } catch (Exception e) {
                     Log.e("custom_check", "Image is null, " + e.toString());
                     Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
@@ -124,10 +146,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 }
 
                 if (!checkInput(username, password, replyPassword, nationId, email, telephone)) {
-                    break;
+                    return;
                 }
 
-                password = encCheckModule.getSHA1Hash(password);
+                password = mixMidModule.getSHA1Hash(password);
 
                 User user = new User(username, password, name, nationId, email, telephone, imageStr);
 
@@ -144,12 +166,12 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         ServerRequest serverRequest = new ServerRequest(this);
         serverRequest.storeUserDataInBG(user, new GetUserCallBack() {
             @Override
-            public void done(User returnedUser) {
+            public void done(User returnedUser, String resultStr) {
                 if (returnedUser != null) {
-                    Toast.makeText(Register.this, "ลงทะเบียนเรียบร้อย", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "ลงทะเบียนเสร็จสิ้น", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(Register.this, "ลงทะเบียนผิดพลาด", Toast.LENGTH_SHORT).show();
+                    mixMidModule.showAlertDialog(resultStr, Register.this);
                 }
             }
         });
@@ -160,42 +182,47 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         CharSequence text;
         if (username.isEmpty()) {
             text = "กรุญากรอกชื่อผู้ใช้งาน";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
-        if (!encCheckModule.isValidUsername(username)) {
+        if (!isUsernameAvailable) {
+            text = "ชื่อผู้ใช้ถูกใช้งานแล้ว กรุณาเปลี่ยนชื่อผู้ใช้งาน";
+            mixMidModule.printError(this, text);
+            return false;
+        }
+        if (!mixMidModule.isValidUsername(username)) {
             text = "ชื่อผู้ใช้งานไม่ถูกต้อง ควรมี 3-20 ตัว เป็นภาษาอังกฤษหรือตัวเลข";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
         if (password.isEmpty()) {
             text = "กรุณากรอกรหัสผ่าน";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
         if (!password.equals(replyPassword)) {
             text = "รหัสผ่านกับยืนยันรหัสผ่านไม่ตรงกัน";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
         if (nationId.length() != 13) {
             text = "เลขประจำตัวประชาชนต้องมี 13 ตัว";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
         if (email.isEmpty()) {
             text = "กรุณากรอกอีเมล";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
-        if (!encCheckModule.isValidEmail(email)) {
+        if (!mixMidModule.isValidEmail(email)) {
             text = "รุปแบบอีเมลผิดพลาด";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
         if (telephone.isEmpty()) {
             text = "กรุณากรอกหมายเลขโทรศัพท์";
-            encCheckModule.printError(this, text);
+            mixMidModule.printError(this, text);
             return false;
         }
 

@@ -14,82 +14,85 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import bolona_pig.proj_imgapp.CallBack.GetClueCallback;
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
-import bolona_pig.proj_imgapp.CallBack.GetSeenInfoCallback;
+import bolona_pig.proj_imgapp.ObjectClass.Clue;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
-import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
-import bolona_pig.proj_imgapp.ObjectClass.SeenInfo;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 
-public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class ClueAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     public final int SELECT_IMAGE_GALLERY = 1;
     public final int SELECT_IMAGE_CAMERA = 2;
-    ImageButton btSeenAdd;
-    EditText edtSeenDate, edtSeenPlace, edtSeenDetail;
-    TextView tvSeenAdder, tvSeenPhone;
+    ImageButton btClueAdd;
+    EditText edtClueDate, edtCluePlace, edtClueDetail;
+    TextView tvClueAdder, tvCluePhone;
     UserLocalStore userLocalStore;
     DateTime dateTime;
     User user;
     ServerRequest serverRequest;
     ImageView imageView;
-    EncCheckModule encCheckModule;
+    mixMidModule mixMidModule;
+    Boolean isSexSelected = false;
+    String sex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seeninfo_add);
+        setContentView(R.layout.activity_clue_add);
 
-        edtSeenDate = (EditText) findViewById(R.id.edtSeenDate);
-        edtSeenPlace = (EditText) findViewById(R.id.edtSeenPlace);
-        edtSeenDetail = (EditText) findViewById(R.id.edtSeenDetail);
-        tvSeenAdder = (TextView) findViewById(R.id.tvSeenAdder);
-        tvSeenPhone = (TextView) findViewById(R.id.tvSeenPhone);
-        btSeenAdd = (ImageButton) findViewById(R.id.btSeenAdd);
+        edtClueDate = (EditText) findViewById(R.id.edtClueDate);
+        edtCluePlace = (EditText) findViewById(R.id.edtCluePlace);
+        edtClueDetail = (EditText) findViewById(R.id.edtClueDetail);
+        tvClueAdder = (TextView) findViewById(R.id.tvClueAdder);
+        tvCluePhone = (TextView) findViewById(R.id.tvCluePhone);
+        btClueAdd = (ImageButton) findViewById(R.id.btClueAdd);
         imageView = (ImageView) findViewById(R.id.imageView);
 
-        edtSeenDate.setOnClickListener(this);
-        edtSeenDate.setOnFocusChangeListener(this);
-        btSeenAdd.setOnClickListener(this);
+        edtClueDate.setOnClickListener(this);
+        edtClueDate.setOnFocusChangeListener(this);
+        btClueAdd.setOnClickListener(this);
         imageView.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
         dateTime = new DateTime(this);
         user = userLocalStore.getLoggedInUser();
         serverRequest = new ServerRequest(this);
-        encCheckModule = new EncCheckModule();
+        mixMidModule = new mixMidModule();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        edtSeenDate.setText("21-Feb-2016");
-        edtSeenPlace.setText("ใต้สพาน ตลาดสุวรรณภูมิ");
-        edtSeenDetail.setText("พบเห็นมาถามทาง จึงขอถ่ายรูปมาช่วยตามหาผู้ปกครอง");
-        tvSeenAdder.setText(user.name);
-        tvSeenPhone.setText(user.telephone);
+        edtClueDate.setText("21-Feb-2016");
+        edtCluePlace.setText("ใต้สพาน ตลาดสุวรรณภูมิ");
+        edtClueDetail.setText("พบเห็นมาถามทาง จึงขอถ่ายรูปมาช่วยตามหาผู้ปกครอง");
+        tvClueAdder.setText(user.name);
+        tvCluePhone.setText(user.telephone);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.edtSeenDate:
+            case R.id.edtClueDate:
                 dateTime.showDatePickup(new GetDateCallback() {
                     @Override
                     public void done(String date) {
-                        edtSeenDate.setText(date);
+                        edtClueDate.setText(date);
                     }
                 });
                 break;
-            case R.id.btSeenAdd:
-                seenInfoAdd();
+            case R.id.btClueAdd:
+                ClueInfoAdd();
                 break;
             case R.id.imageView:
                 selectImage();
@@ -129,31 +132,29 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void seenInfoAdd() {
-        String seenDate = edtSeenDate.getText().toString();
-        String seenPlace = edtSeenPlace.getText().toString();
-        String seenDetail = edtSeenDetail.getText().toString();
-        String seenAdder = user.username;
-        String seenPhone = user.telephone;
+    private void ClueInfoAdd() {
+        String date = edtClueDate.getText().toString();
+        String place = edtCluePlace.getText().toString();
+        String detail = edtClueDetail.getText().toString();
 
         Bitmap image;
         String imageStr;
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = encCheckModule.bitmapToString(image);
+            imageStr = mixMidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
-            Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "กรุณาเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        SeenInfo info = new SeenInfo(-1, seenDate, seenPlace, seenDetail, seenAdder, seenPhone, imageStr);
-        serverRequest.storeSeenInfoDataInBG(info, new GetSeenInfoCallback() {
+        Clue info = new Clue(-1, sex, date, place, detail, user.username, user.name, user.telephone, imageStr);
+        serverRequest.storeClueDataInBG(info, new GetClueCallback() {
             @Override
-            public void done(SeenInfo returnInfo) {
+            public void done(Clue returnInfo, String resultStr) {
                 if (returnInfo == null) {
-                    showError();
+                    mixMidModule.showAlertDialog(resultStr, ClueAdd.this);
                 } else {
                     showResult(returnInfo);
                 }
@@ -165,11 +166,11 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             switch (v.getId()) {
-                case R.id.edtSeenDate:
+                case R.id.edtClueDate:
                     dateTime.showDatePickup(new GetDateCallback() {
                         @Override
                         public void done(String date) {
-                            edtSeenDate.setText(date);
+                            edtClueDate.setText(date);
                         }
                     });
                     break;
@@ -181,10 +182,25 @@ public class SeenInfoAdd extends AppCompatActivity implements View.OnClickListen
         Toast.makeText(this, "ไม่สามารถเพิ่มข้อมูลเบอะแสเข้าสู่ระบบได้", Toast.LENGTH_SHORT).show();
     }
 
-    public void showResult(SeenInfo info) {
+    public void showResult(Clue info) {
         Intent intent = new Intent();
-        intent.putExtra("seenId", info.seenId + "");
+        intent.putExtra("ClueId", info.id + "");
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        isSexSelected = checked;
+        switch (view.getId()) {
+            case R.id.sexMale:
+                if (checked)
+                    sex = "ชาย";
+                break;
+            case R.id.sexFemale:
+                if (checked)
+                    sex = "หญิง";
+                break;
+        }
     }
 }

@@ -5,6 +5,6 @@ package bolona_pig.proj_imgapp.CallBack;
  */
 public interface GetDateCallback {
 
-    void done(String date);
+    void done(String returnDate);
 
 }

@@ -1,13 +1,14 @@
 package bolona_pig.proj_imgapp.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -46,13 +47,27 @@ public class UserNoticeList extends AppCompatActivity implements AdapterView.OnI
 
         serverRequest.fetchUserNoticeListInBG(user, new GetItemCallback() {
             @Override
-            public void done(ArrayList<GridItem> item) {
+            public void done(ArrayList<GridItem> item, String resultStr) {
                 if (item.size() > 0) {
                     listItem = item;
                     noticeListAdapter.setListData(listItem);
                 } else {
-                    Toast.makeText(UserNoticeList.this, "ไม่สามารถดึงข้อมูลจากระบบได้ หรือ ไม่มีประกาศในระบบ", Toast.LENGTH_SHORT).show();
-                    finish();
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(UserNoticeList.this);
+                    dialogBuilder.setTitle("ข้อผิดพลาด");
+                    dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            finish();
+                        }
+                    });
+                    dialogBuilder.setMessage(resultStr);
+                    dialogBuilder.setNegativeButton("ออก", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                    dialogBuilder.show();
                 }
                 progressBar.setVisibility(View.GONE);
             }

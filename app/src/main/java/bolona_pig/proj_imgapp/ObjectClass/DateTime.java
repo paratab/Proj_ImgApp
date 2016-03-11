@@ -4,9 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.widget.DatePicker;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
-
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -22,7 +19,6 @@ public class DateTime {
     Context context;
     GetDateCallback dateCallback;
 
-
     public DateTime(Context context) {
         this.context = context;
     }
@@ -36,11 +32,19 @@ public class DateTime {
     }
 
     public String getAge(String date) {
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
         String[] day = date.split("-");
-        LocalDate start = new LocalDate(Integer.parseInt(day[2]), getMonthInt(day[1]), Integer.parseInt(day[0]));
-        LocalDate end = LocalDate.now();
-        Years years = Years.yearsBetween(start, end);
-        return "" + years.getYears();
+        dob.set(Integer.parseInt(day[2]), getMonthInt(day[1]), Integer.parseInt(day[0]));
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+
+        return (Integer.valueOf(age)).toString();
     }
 
     public int getMonthInt(String str) {

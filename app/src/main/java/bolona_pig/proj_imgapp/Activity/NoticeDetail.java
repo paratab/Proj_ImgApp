@@ -25,7 +25,7 @@ import bolona_pig.proj_imgapp.R;
 
 public class NoticeDetail extends AppCompatActivity implements View.OnClickListener {
 
-    TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone;
+    TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone, tvLnSex;
     ServerRequest serverRequest;
     UserLocalStore userLocalStore;
     Notice recentNotice;
@@ -47,6 +47,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         tvLnDetail = (TextView) findViewById(R.id.tvLnDetail);
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
+        tvLnSex = (TextView) findViewById(R.id.tvLnSex);
         imageView = (ImageView) findViewById(R.id.imageView);
         imbTel = (ImageButton) findViewById(R.id.imbTelephone);
         ImbMessage = (ImageButton) findViewById(R.id.imbMessage);
@@ -75,9 +76,10 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         int noticeId = Integer.parseInt(getIntent().getExtras().getString("noticeId"));
         serverRequest.fetchNoticeDataInBG(noticeId, new GetNoticeCallBack() {
             @Override
-            public void done(Notice returnNotice) {
+            public void done(Notice returnNotice, String resultStr) {
                 if (returnNotice == null) {
-                    printError();
+                    Toast.makeText(NoticeDetail.this, resultStr, Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     showNotice(returnNotice);
                 }
@@ -86,19 +88,15 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void printError() {
-        Toast.makeText(this, "ไม่สามารถดึงข้อมูลของประกาศได้", Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
     public void showNotice(Notice notice) {
-        tvLnName.setText(notice.lnName);
-        tvLnBirthDate.setText(dateTime.getAge(notice.lnBirthDate));
-        tvLnPlace.setText(notice.lnPlace);
-        tvLnLostDate.setText(notice.lnLostDate);
-        tvLnDetail.setText(notice.lnDetail);
-        tvLnAdder.setText(notice.lnAdder);
-        tvLnPhone.setText(notice.lnPhone);
+        tvLnName.setText(notice.name);
+        tvLnSex.setText(notice.sex);
+        tvLnBirthDate.setText(notice.birthDate);
+        tvLnPlace.setText(notice.lostPlace);
+        tvLnLostDate.setText(notice.lostDate);
+        tvLnDetail.setText(notice.detail);
+        tvLnAdder.setText(notice.adderName);
+        tvLnPhone.setText(notice.telephone);
         recentNotice = notice;
 
         if (!imageChange) Picasso.with(this).load(notice.imagePath).into(imageView);
@@ -108,15 +106,12 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         imageChange = false;
 
         User user = userLocalStore.getLoggedInUser();
-        if (user.name.equals(recentNotice.lnAdder) && user.telephone.equals(recentNotice.lnPhone)) {
+        if (user.username.equals(notice.adderUsername)) {
             gridOwner.setVisibility(View.VISIBLE);
         } else {
             gridUser.setVisibility(View.VISIBLE);
         }
-        if (user.isAdmin) gridAdmin.setVisibility(View.VISIBLE);
-//        gridOwner.setVisibility(View.VISIBLE);
-//        gridUser.setVisibility(View.VISIBLE);
-//        gridAdmin.setVisibility(View.VISIBLE);
+        if (user.isAdmin()) gridAdmin.setVisibility(View.VISIBLE);
     }
 
 

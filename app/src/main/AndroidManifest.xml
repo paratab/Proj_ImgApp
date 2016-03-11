@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,14 +13,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".Activity.MainActivity"
-            android:label="@string/app_name">
-
-            <!-- android:theme="@style/AppTheme.NoActionBar"> -->
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -46,9 +42,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".Activity.MapsActivity"
-            android:label="@string/title_activity_maps" />
+        <!--<activity-->
+        <!--android:name=".Activity.MapsActivity"-->
+        <!--android:label="@string/title_activity_maps" />-->
         <activity
             android:name=".Activity.NoticeDetail"
             android:label="@string/title_activity_notice_detail" />
@@ -56,10 +52,10 @@
             android:name=".Activity.NoticeDetailEdit"
             android:label="@string/title_activity_notice_detail_edit" />
         <activity
-            android:name=".Activity.SeenInfoAdd"
+            android:name=".Activity.ClueAdd"
             android:label="@string/title_activity_seen_info_add" />
         <activity
-            android:name=".Activity.SeenInfoDetail"
+            android:name=".Activity.ClueDetail"
             android:label="@string/title_activity_seen_info_detail" />
         <activity
             android:name=".Activity.BackOffice"
@@ -68,7 +64,7 @@
             android:name=".Activity.UserNoticeList"
             android:label="@string/title_activity_user_noticelist" />
         <activity
-            android:name=".Activity.UserSeenInfoList"
+            android:name=".Activity.UserClueList"
             android:label="@string/title_activity_user_seenlist" />
     </application>
 

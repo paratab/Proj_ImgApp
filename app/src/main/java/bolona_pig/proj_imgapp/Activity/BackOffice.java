@@ -100,17 +100,17 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
                     intent = new Intent(this, Login.class);
                     startActivityForResult(intent, LOGIN_SEENINFO_ADD);
                 } else {
-                    intent = new Intent(this, SeenInfoAdd.class);
+                    intent = new Intent(this, ClueAdd.class);
                     startActivityForResult(intent, SEENINFO_ADD_GET_ID);
                 }
                 break;
             case R.id.btSeenInfo:
-                intent = new Intent(this, SeenInfoDetail.class);
-                intent.putExtra("seenId", "1");
+                intent = new Intent(this, ClueDetail.class);
+                intent.putExtra("clueId", "1");
                 startActivity(intent);
                 break;
 //            case R.id.btGoogle:
-//                intent = new Intent(this, MapsActivity.class);
+//                intent = new Intent(this, Main3Activity.class);
 //                startActivity(intent);
 //                break;
             case R.id.btPushNotify:
@@ -133,7 +133,7 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
     }
 
     private void NotifyPush() {
-        Intent intent = new Intent(this, SeenInfoDetail.class);
+        Intent intent = new Intent(this, ClueDetail.class);
         intent.putExtra("seenId", info.getText().toString());
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_description_white_24dp);
@@ -171,13 +171,13 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
             }
         } else if (requestCode == LOGIN_SEENINFO_ADD) {
             if (resultCode == RESULT_OK) {
-                Intent intent = new Intent(this, SeenInfoAdd.class);
+                Intent intent = new Intent(this, ClueAdd.class);
                 startActivity(intent);
             }
         } else if (requestCode == SEENINFO_ADD_GET_ID) {
             if (resultCode == RESULT_OK) {
                 String id = data.getStringExtra("seenId");
-                Intent intent = new Intent(this, SeenInfoDetail.class);
+                Intent intent = new Intent(this, ClueDetail.class);
                 intent.putExtra("seenId", id);
                 startActivity(intent);
             }

@@ -70,18 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fabUserDetail.setOnClickListener(this);
         floatingActionMenu.setClosedOnTouchOutside(true);
 
-//        serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
-//            @Override
-//            public void done(ArrayList<GridItem> item) {
-//                if (item.size() > 0) {
-//                    itemData = item;
-//                    noticeGridAdapter.setGridData(itemData);
-//                }else{
-//                    Toast.makeText(MainActivity.this,"ไม่สามารถดึงข้อมูลจากระบบได้",Toast.LENGTH_SHORT).show();
-//                }
-//                progressBar.setVisibility(View.GONE);
-//            }
-//        });
         progressBar.setVisibility(View.VISIBLE);
 
         //fabMainPage2.setVisibility(View.GONE);
@@ -94,12 +82,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
         serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
             @Override
-            public void done(ArrayList<GridItem> item) {
+            public void done(ArrayList<GridItem> item, String resultStr) {
                 if (item.size() > 0) {
                     itemData = item;
                     noticeGridAdapter.setGridData(itemData);
                 } else {
-                    Toast.makeText(MainActivity.this, "ไม่สามารถดึงข้อมูลจากระบบได้", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, resultStr, Toast.LENGTH_SHORT).show();
                 }
                 progressBar.setVisibility(View.GONE);
             }
@@ -127,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent = new Intent(this, Login.class);
                     startActivityForResult(intent, LOGIN_SEENINFO_ADD);
                 } else {
-                    intent = new Intent(this, SeenInfoAdd.class);
+                    intent = new Intent(this, ClueAdd.class);
                     startActivityForResult(intent, SEENINFO_ADD_GET_ID);
                 }
                 break;
@@ -168,13 +156,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else if (requestCode == LOGIN_SEENINFO_ADD) {
             if (resultCode == RESULT_OK) {
-                Intent intent = new Intent(this, SeenInfoAdd.class);
+                Intent intent = new Intent(this, ClueAdd.class);
                 startActivity(intent);
             }
         } else if (requestCode == SEENINFO_ADD_GET_ID) {
             if (resultCode == RESULT_OK) {
-                String id = data.getStringExtra("seenId");
-                Intent intent = new Intent(this, SeenInfoDetail.class);
+                String id = data.getStringExtra("clueId");
+                Intent intent = new Intent(this, ClueDetail.class);
                 intent.putExtra("seenId", id);
                 startActivity(intent);
             }

@@ -19,10 +19,10 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
-import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class UserDetailEdit extends AppCompatActivity implements View.OnClickListener {
@@ -33,7 +33,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
     TextView edtUsername, edtID, edtPassword;
     EditText edtName, edtEmail, edtTelephone;
     UserLocalStore userLocalStore;
-    EncCheckModule encCheckModule;
+    mixMidModule mixMidModule;
     ImageView imageView;
     boolean imageChange;
 
@@ -56,7 +56,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         btChangePW.setOnClickListener(this);
         imageView.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
-        encCheckModule = new EncCheckModule();
+        mixMidModule = new mixMidModule();
         imageChange = false;
     }
 
@@ -79,9 +79,8 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         CharSequence text;
         switch (v.getId()) {
             case R.id.btUpdate:
-
                 String username = edtUsername.getText().toString();
-                String password = edtPassword.getText().toString();
+                String password = userLocalStore.getLoggedInUser().password;
                 String name = edtName.getText().toString();
                 String nationId = edtID.getText().toString();
                 String email = edtEmail.getText().toString();
@@ -89,35 +88,35 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
 
                 if (email.isEmpty()) {
                     text = "กรุณากรอกอีเมล";
-                    encCheckModule.printError(this, text);
+                    mixMidModule.printError(this, text);
                     break;
                 }
-                if (!encCheckModule.isValidEmail(email)) {
-                    text = "รุปแบบอีเมลผิดพลาด";
-                    encCheckModule.printError(this, text);
+                if (!mixMidModule.isValidEmail(email)) {
+                    text = "อีเมลไม่ถูกต้อง";
+                    mixMidModule.printError(this, text);
                     break;
                 }
                 if (telephone.isEmpty()) {
                     text = "กรุณากรอกหมายเลขโทรศัพท์";
-                    encCheckModule.printError(this, text);
+                    mixMidModule.printError(this, text);
                     break;
                 }
 
                 Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                String imageStr = encCheckModule.bitmapToString(image);
+                String imageStr = mixMidModule.bitmapToString(image);
 
                 User user = new User(username, password, name, nationId, email, telephone, imageStr);
 
                 ServerRequest serverRequest = new ServerRequest(this);
                 serverRequest.updateUserDataInBG(user, new GetUserCallBack() {
                     @Override
-                    public void done(User returnedUser) {
+                    public void done(User returnedUser, String resultStr) {
                         if (returnedUser != null) {
                             userLocalStore.storeUserData(returnedUser);
                             Toast.makeText(UserDetailEdit.this, "บันทึกข้อมูลเรียบร้อย", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(UserDetailEdit.this, "ไม่สามารถบันทึกข้อมูลได้", Toast.LENGTH_SHORT).show();
+                            mixMidModule.showAlertDialog(resultStr, UserDetailEdit.this);
                         }
                     }
                 });

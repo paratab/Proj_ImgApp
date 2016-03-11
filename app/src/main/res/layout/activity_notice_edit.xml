@@ -11,8 +11,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="200dp"
+            android:layout_height="160dp"
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
             android:background="@drawable/image_border" />
@@ -30,6 +30,38 @@
             android:layout_marginBottom="10dp"
             android:inputType="text"
             android:nextFocusDown="@+id/edtLnBirthDate" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lnSex"
+            android:textSize="15sp" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/sexMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/male"
+                android:textSize="15sp" />
+
+            <RadioButton
+                android:id="@+id/sexFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/female"
+                android:textSize="15sp" />
+
+        </RadioGroup>
 
         <TextView
             android:layout_width="wrap_content"

@@ -7,6 +7,6 @@ import bolona_pig.proj_imgapp.ObjectClass.Notice;
  */
 public interface GetNoticeCallBack {
 
-    void done(Notice returnNotice);
+    void done(Notice returnNotice, String resultStr);
 
 }

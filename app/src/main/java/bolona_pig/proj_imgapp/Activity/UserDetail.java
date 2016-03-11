@@ -12,9 +12,9 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class UserDetail extends AppCompatActivity implements View.OnClickListener {
@@ -24,7 +24,7 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
     TextView edtUsername, edtID, edtPassword, edtTelephone, edtName, edtEmail;
     UserLocalStore userLocalStore;
     ImageView imageView;
-    EncCheckModule encCheckModule;
+    mixMidModule mixMidModule;
     Boolean imageChange;
 
     @Override
@@ -49,7 +49,7 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
         btnSeenList.setOnClickListener(this);
         btnNoticeList.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
-        encCheckModule = new EncCheckModule();
+        mixMidModule = new mixMidModule();
         imageChange = false;
     }
 
@@ -94,7 +94,7 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
                 startActivity(new Intent(this, UserNoticeList.class));
                 break;
             case R.id.btSeenList:
-                startActivity(new Intent(this, UserSeenInfoList.class));
+                startActivity(new Intent(this, UserClueList.class));
                 break;
         }
     }

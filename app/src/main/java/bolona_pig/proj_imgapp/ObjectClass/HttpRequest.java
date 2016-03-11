@@ -1,5 +1,7 @@
 package bolona_pig.proj_imgapp.ObjectClass;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,10 +17,14 @@ import java.util.Map;
  */
 public class HttpRequest {
 
+    String returnString;
+    int responseCode;
+
     public HttpRequest() {
+        returnString = "";
     }
 
-    public String makeHttpRequest(Map<String, String> data, String address) {
+    public int makeHttpRequest(Map<String, String> data, String address) {
 
         String encodeData = getEncodeData(data);
         BufferedReader reader = null; // Read some data from server
@@ -33,6 +39,10 @@ public class HttpRequest {
             OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
             writer.write(encodeData);
             writer.flush();
+            writer.close();
+
+            responseCode = con.getResponseCode();
+            Log.i("custom_check", "HttpRequest: Post to " + address + "\nRespondCode :" + responseCode);
 
             StringBuilder strb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -41,7 +51,7 @@ public class HttpRequest {
             while ((line = reader.readLine()) != null) {
                 strb.append(line + "\n");
             }
-            line = strb.toString();
+            returnString = strb.toString();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +65,7 @@ public class HttpRequest {
             }
         }
 
-        return line;
+        return responseCode;
     }
 
     private String getEncodeData(Map<String, String> data) {
@@ -76,5 +86,8 @@ public class HttpRequest {
         return sb.toString();
     }
 
+    public String getReturnString() {
+        return returnString;
+    }
 
 }

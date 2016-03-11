@@ -9,6 +9,6 @@ import bolona_pig.proj_imgapp.ObjectClass.GridItem;
  */
 public interface GetItemCallback {
 
-    void done(ArrayList<GridItem> item);
+    void done(ArrayList<GridItem> item, String resultStr);
 
 }

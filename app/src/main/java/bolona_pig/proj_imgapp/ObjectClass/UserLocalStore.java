@@ -24,6 +24,7 @@ public class UserLocalStore {
         spEdt.putString("email", user.email);
         spEdt.putString("telephone", user.telephone);
         spEdt.putString("imagePath", user.imagePath);
+        spEdt.putBoolean("isAdmin", user.isAdmin());
         spEdt.apply();
     }
 
@@ -35,8 +36,12 @@ public class UserLocalStore {
         String email = userLocalDB.getString("email", "");
         String telephone = userLocalDB.getString("telephone", "");
         String imagePath = userLocalDB.getString("imagePath", "");
+        Boolean isAdmin = userLocalDB.getBoolean("isAdmin", false);
 
-        return new User(username, password, name, nationId, email, telephone, imagePath);
+        User user = new User(username, password, name, nationId, email, telephone, imagePath);
+        if (isAdmin) user.setAsAdmin();
+
+        return user;
     }
 
     public void setUserLoggedIn(Boolean loggedIn) {

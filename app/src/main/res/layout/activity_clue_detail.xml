@@ -14,18 +14,18 @@
             android:layout_width="200dp"
             android:layout_height="160dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/image_border" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="@string/username"
-            android:textSize="14sp" />
+            android:text="@string/sex"
+            android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/edtUsername"
+            android:id="@+id/tvSex"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -36,105 +36,105 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="@string/password"
-            android:textSize="14sp" />
+            android:text="@string/seenPlace"
+            android:textSize="15sp" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/tvCluePlace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/seenDate"
+            android:textSize="15sp" />
 
-            <TextView
-                android:id="@+id/edtPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/btChangePW"
-                android:text="@string/passHint"
-                android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tvClueDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/detail"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvClueDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/seen_adder"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvClueAdder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/notice_contact"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvCluePhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/gridUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:columnCount="2"
+            android:padding="5dp"
+            android:visibility="gone">
 
             <ImageButton
-                android:id="@+id/btChangePW"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center"
+                android:id="@+id/imbTelephone"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="30dp"
                 android:background="@null"
                 android:scaleType="centerCrop"
-                android:src="@drawable/edit_icon_small" />
+                android:src="@drawable/phone" />
 
-        </RelativeLayout>
+            <ImageButton
+                android:id="@+id/imbMessage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/message" />
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/name"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/edtName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/nationID"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/edtID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/email"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/edtEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/telephone"
-            android:textSize="14sp" />
-
-
-        <EditText
-            android:id="@+id/edtPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp" />
-
-
-        <ImageButton
-            android:id="@+id/btUpdate"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:scaleType="centerCrop"
-            android:src="@drawable/save" />
-
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
+

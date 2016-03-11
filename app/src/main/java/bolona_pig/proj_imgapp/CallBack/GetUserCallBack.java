@@ -7,6 +7,6 @@ import bolona_pig.proj_imgapp.ObjectClass.User;
  */
 public interface GetUserCallBack {
 
-    void done(User returnedUser);
+    void done(User returnedUser, String resultStr);
 
 }

@@ -14,17 +14,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
-import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.Notice;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class NoticeAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -38,7 +39,9 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     ServerRequest serverRequest;
     DateTime dateTime;
     ImageView imageView;
-    EncCheckModule encCheckModule;
+    mixMidModule mixMidModule;
+    Boolean isSexSelected = false;
+    String sex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,22 +70,21 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
         dateTime = new DateTime(this);
-        encCheckModule = new EncCheckModule();
+        mixMidModule = new mixMidModule();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         User user = userLocalStore.getLoggedInUser();
-        edtLnName.setText("Test Lost Data1");
-        edtLnBirthDate.setText("19-May-1995");
-        edtLnPlace.setText("ECC KMITL");
-        edtLnLostDate.setText("20-Feb-2016");
-        edtLnDetail.setText("เป็นชาย สูง ท้วม หายออกจากตึก ecc kmitl");
+//        edtLnName.setText("Test Lost Data1");
+//        edtLnBirthDate.setText("19-May-1995");
+//        edtLnPlace.setText("ECC KMITL");
+//        edtLnLostDate.setText("20-Feb-2016");
+//        edtLnDetail.setText("เป็นชาย สูง ท้วม หายออกจากตึก ecc kmitl");
         tvLnAdder.setText(user.name);
         tvLnPhone.setText(user.telephone);
         edtLnLostDate.setText(dateTime.getCurrentDate());
-
     }
 
     public void selectImage(){
@@ -120,7 +122,6 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        Intent intent;
         switch (v.getId()) {
             case R.id.btNoticeAdd:
                 noticeAddMethod();
@@ -150,32 +151,35 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     private void noticeAddMethod() {
         User user = userLocalStore.getLoggedInUser();
 
-        String lnName = edtLnName.getText().toString();
-        String lnBirthDate = edtLnBirthDate.getText().toString();
-        String lnPlace = edtLnPlace.getText().toString();
-        String lnDate = edtLnLostDate.getText().toString();
-        String lnDetail = edtLnDetail.getText().toString();
-        String lnAdder = user.username;
-        String lnPhone = user.telephone;
+        String name = edtLnName.getText().toString();
+        String birthDate = edtLnBirthDate.getText().toString();
+        String lostPlace = edtLnPlace.getText().toString();
+        String lostDate = edtLnLostDate.getText().toString();
+        String detail = edtLnDetail.getText().toString();
 
         Bitmap image;
         String imageStr;
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = encCheckModule.bitmapToString(image);
+            imageStr = mixMidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
-            Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "กรุณาเลือกรูปภาพ.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Notice notice = new Notice(-1, lnName, lnBirthDate, lnPlace, lnDate, lnDetail, lnAdder, lnPhone, imageStr);
+        if (!isSexSelected) {
+            Toast.makeText(NoticeAdd.this, "กรุณาเลือกเพศของผู้สูญหาย", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Notice notice = new Notice(-1, name, sex, birthDate, lostPlace, lostDate, detail, user.username, user.name, user.telephone, imageStr);
         serverRequest.storeNoticeDataInBG(notice, new GetNoticeCallBack() {
             @Override
-            public void done(Notice returnNotice) {
+            public void done(Notice returnNotice, String resultStr) {
                 if (returnNotice == null) {
-                    showError();
+                    mixMidModule.showAlertDialog(resultStr, NoticeAdd.this);
                 } else {
                     showResult(returnNotice);
                 }
@@ -183,15 +187,11 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         });
     }
 
-    public void showError() {
-        Toast.makeText(this, "ไม่สามารถเพิ่มข้อมูลประกาศได้", Toast.LENGTH_SHORT).show();
-    }
-
     public void showResult(Notice notice) {
         Intent intent = new Intent();
         intent.putExtra("ID", notice.id + "");
         setResult(RESULT_OK, intent);
-        Toast.makeText(this, "สร้างประกาศเรียบร้อย", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "สร้างประกาศเสร็จสิ้น", Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -216,6 +216,21 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
                     });
                     break;
             }
+        }
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        isSexSelected = checked;
+        switch (view.getId()) {
+            case R.id.sexMale:
+                if (checked)
+                    sex = "ชาย";
+                break;
+            case R.id.sexFemale:
+                if (checked)
+                    sex = "หญิง";
+                break;
         }
     }
 }

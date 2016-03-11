@@ -9,10 +9,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
-import bolona_pig.proj_imgapp.ObjectClass.EncCheckModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
+import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class UserPassChange extends AppCompatActivity implements View.OnClickListener {
@@ -20,7 +20,7 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
     EditText edtPassword, edtNewPassword, edtReplyNewPassword;
     ImageButton btSavePassword;
     UserLocalStore userLocalStore;
-    EncCheckModule encCheckModule;
+    mixMidModule mixMidModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
 
         btSavePassword.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
-        encCheckModule = new EncCheckModule();
+        mixMidModule = new mixMidModule();
     }
 
     @Override
@@ -45,9 +45,9 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
                 String newPassword = edtNewPassword.getText().toString();
                 String replyNewPassword = edtReplyNewPassword.getText().toString();
 
-                password = encCheckModule.getSHA1Hash(password);
-                newPassword = encCheckModule.getSHA1Hash(newPassword);
-                replyNewPassword = encCheckModule.getSHA1Hash(replyNewPassword);
+                password = mixMidModule.getSHA1Hash(password);
+                newPassword = mixMidModule.getSHA1Hash(newPassword);
+                replyNewPassword = mixMidModule.getSHA1Hash(replyNewPassword);
 
                 User user = userLocalStore.getLoggedInUser();
                 if (!password.equals(user.password)) {
@@ -62,7 +62,7 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
                 ServerRequest serverRequest = new ServerRequest(this);
                 serverRequest.updateUserPasswordInBG(user, newPassword, new GetUserCallBack() {
                     @Override
-                    public void done(User returnedUser) {
+                    public void done(User returnedUser, String resultStr) {
                         if (returnedUser != null) {
                             userLocalStore.storeUserData(returnedUser);
                             Toast.makeText(UserPassChange.this, "เปลี่ยนรหัสผ่านเสร็จสิ้น", Toast.LENGTH_SHORT).show();
@@ -70,11 +70,10 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
                             setResult(RESULT_OK, intent);
                             finish();
                         } else {
-                            Toast.makeText(UserPassChange.this, "ไม่สามารถเปลี่ยนรหัสผ่าน", Toast.LENGTH_SHORT).show();
+                            mixMidModule.showAlertDialog(resultStr, UserPassChange.this);
                         }
                     }
                 });
-
 
                 break;
         }
