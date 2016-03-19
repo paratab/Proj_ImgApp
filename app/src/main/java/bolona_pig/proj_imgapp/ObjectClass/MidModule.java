@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 /**
  * Created by DreamMii on 17/1/2559.
  */
-public class mixMidModule {
+public class MidModule {
 
-    public mixMidModule() {
+    public MidModule() {
     }
 
     public boolean isValidUsername(String username) {
@@ -66,6 +66,7 @@ public class mixMidModule {
 
     public void showAlertDialog(String resultString, Context context) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle("ข้อผิดพลาด");
         dialogBuilder.setMessage(resultString);
         dialogBuilder.setPositiveButton("รับทราบ", null);
         dialogBuilder.show();

@@ -18,9 +18,9 @@ import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetBooleanCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
-import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
@@ -29,7 +29,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     public final int SELECT_IMAGE_CAMERA = 2;
     ImageButton btRegister;
     EditText edtUsername, edtPassword, edtReplyPassword, edtName, edtID, edtEmail, edtTelephone;
-    mixMidModule mixMidModule;
+    MidModule MidModule;
     ImageView imageView;
     boolean isUsernameAvailable = false;
 
@@ -60,7 +60,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         edtTelephone = (EditText) findViewById(R.id.edtPhone);
         imageView = (ImageView) findViewById(R.id.imageUpload);
 
-        mixMidModule = new mixMidModule();
+        MidModule = new MidModule();
 
         btRegister.setOnClickListener(this);
         imageView.setOnClickListener(this);
@@ -138,7 +138,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
                 try {
                     image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                    imageStr = mixMidModule.bitmapToString(image);
+                    imageStr = MidModule.bitmapToString(image);
                 } catch (Exception e) {
                     Log.e("custom_check", "Image is null, " + e.toString());
                     Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
@@ -149,7 +149,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     return;
                 }
 
-                password = mixMidModule.getSHA1Hash(password);
+                password = MidModule.getSHA1Hash(password);
 
                 User user = new User(username, password, name, nationId, email, telephone, imageStr);
 
@@ -171,7 +171,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     Toast.makeText(Register.this, "ลงทะเบียนเสร็จสิ้น", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    mixMidModule.showAlertDialog(resultStr, Register.this);
+                    MidModule.showAlertDialog(resultStr, Register.this);
                 }
             }
         });
@@ -182,47 +182,47 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         CharSequence text;
         if (username.isEmpty()) {
             text = "กรุญากรอกชื่อผู้ใช้งาน";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
         if (!isUsernameAvailable) {
             text = "ชื่อผู้ใช้ถูกใช้งานแล้ว กรุณาเปลี่ยนชื่อผู้ใช้งาน";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
-        if (!mixMidModule.isValidUsername(username)) {
+        if (!MidModule.isValidUsername(username)) {
             text = "ชื่อผู้ใช้งานไม่ถูกต้อง ควรมี 3-20 ตัว เป็นภาษาอังกฤษหรือตัวเลข";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
         if (password.isEmpty()) {
             text = "กรุณากรอกรหัสผ่าน";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
         if (!password.equals(replyPassword)) {
             text = "รหัสผ่านกับยืนยันรหัสผ่านไม่ตรงกัน";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
         if (nationId.length() != 13) {
             text = "เลขประจำตัวประชาชนต้องมี 13 ตัว";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
         if (email.isEmpty()) {
             text = "กรุณากรอกอีเมล";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
-        if (!mixMidModule.isValidEmail(email)) {
+        if (!MidModule.isValidEmail(email)) {
             text = "รุปแบบอีเมลผิดพลาด";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
         if (telephone.isEmpty()) {
             text = "กรุณากรอกหมายเลขโทรศัพท์";
-            mixMidModule.printError(this, text);
+            MidModule.printError(this, text);
             return false;
         }
 

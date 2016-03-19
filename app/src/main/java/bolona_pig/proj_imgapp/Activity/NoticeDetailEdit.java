@@ -25,11 +25,11 @@ import com.squareup.picasso.Picasso;
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.Notice;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
-import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -45,7 +45,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
     DateTime dateTime;
     ImageView imageView;
     Boolean imageChange;
-    mixMidModule mixMidModule;
+    MidModule MidModule;
     String sex;
     RadioButton radioMale, radioFemale;
 
@@ -77,7 +77,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
 
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
-        mixMidModule = new mixMidModule();
+        MidModule = new MidModule();
         dateTime = new DateTime(this);
         imageChange = false;
 
@@ -186,7 +186,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = mixMidModule.bitmapToString(image);
+            imageStr = MidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
             Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
@@ -198,7 +198,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
             @Override
             public void done(Notice returnNotice, String resultStr) {
                 if (returnNotice == null) {
-                    mixMidModule.showAlertDialog(resultStr, NoticeDetailEdit.this);
+                    MidModule.showAlertDialog(resultStr, NoticeDetailEdit.this);
                 } else {
                     showResult();
                 }

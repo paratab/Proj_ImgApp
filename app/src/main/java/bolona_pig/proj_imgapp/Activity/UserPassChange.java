@@ -9,10 +9,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
-import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class UserPassChange extends AppCompatActivity implements View.OnClickListener {
@@ -20,7 +20,7 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
     EditText edtPassword, edtNewPassword, edtReplyNewPassword;
     ImageButton btSavePassword;
     UserLocalStore userLocalStore;
-    mixMidModule mixMidModule;
+    MidModule MidModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
 
         btSavePassword.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
-        mixMidModule = new mixMidModule();
+        MidModule = new MidModule();
     }
 
     @Override
@@ -45,9 +45,9 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
                 String newPassword = edtNewPassword.getText().toString();
                 String replyNewPassword = edtReplyNewPassword.getText().toString();
 
-                password = mixMidModule.getSHA1Hash(password);
-                newPassword = mixMidModule.getSHA1Hash(newPassword);
-                replyNewPassword = mixMidModule.getSHA1Hash(replyNewPassword);
+                password = MidModule.getSHA1Hash(password);
+                newPassword = MidModule.getSHA1Hash(newPassword);
+                replyNewPassword = MidModule.getSHA1Hash(replyNewPassword);
 
                 User user = userLocalStore.getLoggedInUser();
                 if (!password.equals(user.password)) {
@@ -70,7 +70,7 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
                             setResult(RESULT_OK, intent);
                             finish();
                         } else {
-                            mixMidModule.showAlertDialog(resultStr, UserPassChange.this);
+                            MidModule.showAlertDialog(resultStr, UserPassChange.this);
                         }
                     }
                 });

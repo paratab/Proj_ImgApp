@@ -18,14 +18,15 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import bolona_pig.proj_imgapp.CallBack.GetBooleanCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.Notice;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
-import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class NoticeAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -39,7 +40,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     ServerRequest serverRequest;
     DateTime dateTime;
     ImageView imageView;
-    mixMidModule mixMidModule;
+    MidModule MidModule;
     Boolean isSexSelected = false;
     String sex;
 
@@ -70,13 +71,36 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
         dateTime = new DateTime(this);
-        mixMidModule = new mixMidModule();
+        MidModule = new MidModule();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         User user = userLocalStore.getLoggedInUser();
+        serverRequest.checkUserNoticeNumberInBG(user.username, new GetBooleanCallBack() {
+            @Override
+            public void done(Boolean flag, String resultStr) {
+                if (flag == null || !flag) {
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NoticeAdd.this);
+                    dialogBuilder.setTitle("ข้อผิดพลาด");
+                    dialogBuilder.setMessage(resultStr);
+                    dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            finish();
+                        }
+                    });
+                    dialogBuilder.setNegativeButton("รับทราบ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                    dialogBuilder.show();
+                }
+            }
+        });
 //        edtLnName.setText("Test Lost Data1");
 //        edtLnBirthDate.setText("19-May-1995");
 //        edtLnPlace.setText("ECC KMITL");
@@ -87,20 +111,20 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         edtLnLostDate.setText(dateTime.getCurrentDate());
     }
 
-    public void selectImage(){
-        final CharSequence[] items = {"ถ่ายรูป","เลือกจากคลังภาพ","ยกเลิก"};
+    public void selectImage() {
+        final CharSequence[] items = {"ถ่ายรูป", "เลือกจากคลังภาพ", "ยกเลิก"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("เลือกรูปภาพ");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(items[which].equals("ถ่ายรูป")){
+                if (items[which].equals("ถ่ายรูป")) {
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(takePicture, SELECT_IMAGE_CAMERA);
-                }else if(items[which].equals("เลือกจากคลังภาพ")){
+                } else if (items[which].equals("เลือกจากคลังภาพ")) {
                     Intent galleryAct = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(galleryAct, SELECT_IMAGE_GALLERY);
-                }else if(items[which].equals("ยกเลิก")){
+                } else if (items[which].equals("ยกเลิก")) {
                     dialog.dismiss();
                 }
             }
@@ -114,7 +138,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         if (requestCode == SELECT_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
-        }else if(requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null){
+        } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
         }
@@ -162,7 +186,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = mixMidModule.bitmapToString(image);
+            imageStr = MidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
             Toast.makeText(this, "กรุณาเลือกรูปภาพ.", Toast.LENGTH_SHORT).show();
@@ -179,7 +203,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
             @Override
             public void done(Notice returnNotice, String resultStr) {
                 if (returnNotice == null) {
-                    mixMidModule.showAlertDialog(resultStr, NoticeAdd.this);
+                    MidModule.showAlertDialog(resultStr, NoticeAdd.this);
                 } else {
                     showResult(returnNotice);
                 }
@@ -189,7 +213,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
 
     public void showResult(Notice notice) {
         Intent intent = new Intent();
-        intent.putExtra("ID", notice.id + "");
+        intent.putExtra("noticeId", notice.id + "");
         setResult(RESULT_OK, intent);
         Toast.makeText(this, "สร้างประกาศเสร็จสิ้น", Toast.LENGTH_SHORT).show();
         finish();

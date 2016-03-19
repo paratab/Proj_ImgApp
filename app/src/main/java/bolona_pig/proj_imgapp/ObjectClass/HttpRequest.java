@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class HttpRequest {
 
+    final int TIMEOUT = 120 * 1000;
     String returnString;
     int responseCode;
 
@@ -35,6 +36,7 @@ public class HttpRequest {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
+            con.setConnectTimeout(TIMEOUT);
             con.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
             writer.write(encodeData);

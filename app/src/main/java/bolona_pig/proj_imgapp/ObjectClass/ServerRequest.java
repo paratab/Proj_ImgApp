@@ -99,6 +99,22 @@ public class ServerRequest {
         new CheckUsernameExistInBG(username, stringCallBack).execute();
     }
 
+    public void updateNoticeStatus(int id, String username, GetBooleanCallBack booleanCallBack) {
+        progressDialog.show();
+        new UpdateNoticeStatusAsyncTask(id, username, booleanCallBack).execute();
+    }
+
+    public void customSearchInBG(String sex, int minAge, int maxAge, GetItemCallback itemCallback) {
+        progressDialog.show();
+        new CustomSearchAsyncTask(sex, minAge, maxAge, itemCallback).execute();
+    }
+
+    public void checkUserNoticeNumberInBG(String username, GetBooleanCallBack booleanCallback) {
+        progressDialog.setMessage("เช็คจำนวนประกาศที่สร้างไว้แล้ว");
+        progressDialog.show();
+        new CheckUserNoticeNumberAsyncTask(username, booleanCallback).execute();
+    }
+
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1057,6 +1073,224 @@ public class ServerRequest {
         protected void onPostExecute(Boolean isUsernameAvailable) {
             booleanCallBack.done(isUsernameAvailable, resultStr);
             super.onPostExecute(isUsernameAvailable);
+        }
+    }
+
+    public class UpdateNoticeStatusAsyncTask extends AsyncTask<Void, Void, Boolean> {
+        GetBooleanCallBack booleanCallBack;
+        HttpRequest httpRequest;
+        int id;
+        String resultStr, username;
+
+        public UpdateNoticeStatusAsyncTask(int id, String username, GetBooleanCallBack booleanCallBack) {
+            this.booleanCallBack = booleanCallBack;
+            httpRequest = new HttpRequest();
+            this.id = id;
+            this.username = username;
+        }
+
+        @Override
+        public Boolean doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("username", username);
+            dataToSend.put("id", this.id + "");
+
+            Boolean isUpdateSuccess = null;
+
+            try {
+
+                if (!isNetworkAvailable()) {
+                    resultStr = context.getResources().getString(R.string.errorNotConnectInternet);
+                    return null;
+                }
+
+                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateNoticeStatus.php");
+                if (resultConnection != 200) {
+                    resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    return null;
+                }
+
+                String line = httpRequest.getReturnString();
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+                if (jObj.length() != 0) {
+                    int resultDBConnection = jObj.getInt("resultDBConnection");
+                    int resultUpdateStatus = jObj.getInt("resultUpdateStatus");
+                    int resultNoticeStatus = jObj.getInt("resultNoticeStatus");
+
+                    if (resultDBConnection == 1 && resultUpdateStatus == 1 && resultNoticeStatus == 1) {
+                        isUpdateSuccess = true;
+                    } else if (resultDBConnection == 0)
+                        resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    else
+                        resultStr = context.getResources().getString(R.string.errorSystemWorkingIncorrectly);
+                }
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return isUpdateSuccess;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isUpdateSuccess) {
+            progressDialog.dismiss();
+            booleanCallBack.done(isUpdateSuccess, resultStr);
+            super.onPostExecute(isUpdateSuccess);
+        }
+    }
+
+    public class CustomSearchAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
+        GetItemCallback itemCallback;
+        HttpRequest httpRequest;
+        int minAge, maxAge;
+        String resultStr, sex;
+        ArrayList<GridItem> noticeItems;
+
+        public CustomSearchAsyncTask(String sex, int minAge, int maxAge, GetItemCallback itemCallback) {
+            this.itemCallback = itemCallback;
+            noticeItems = new ArrayList<>();
+            httpRequest = new HttpRequest();
+            this.minAge = minAge;
+            this.maxAge = maxAge;
+            this.sex = sex;
+        }
+
+        @Override
+        public ArrayList<GridItem> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("sex", sex);
+            dataToSend.put("minAge", minAge + "");
+            dataToSend.put("maxAge", maxAge + "");
+
+            if (sex.equals(context.getResources().getString(R.string.sexBoth))) {
+                dataToSend.put("mode", "2");
+            } else if (minAge == 0 && maxAge == 0) {
+                dataToSend.put("mode", "1");
+            } else {
+                dataToSend.put("mode", "3");
+            }
+
+            try {
+
+                if (!isNetworkAvailable()) {
+                    resultStr = context.getResources().getString(R.string.errorNotConnectInternet);
+                    return noticeItems;
+                }
+
+                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/NoticeCustomSearch.php");
+                if (resultConnection != 200) {
+                    resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    return noticeItems;
+                }
+
+                String line = httpRequest.getReturnString();
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+
+                if (jObj.length() != 0) {
+                    int resultDBConnection = jObj.getInt("resultDBConnection");
+                    int resultFetchNoticeData = jObj.getInt("resultFetchNoticeData");
+
+                    if (resultDBConnection == 1 && resultFetchNoticeData == 1) {
+                        JSONArray noticeArray = jObj.getJSONArray("gridItem");
+                        GridItem item;
+                        if (noticeArray.length() != 0) {
+                            for (int i = 0; i < noticeArray.length(); i++) {
+                                JSONObject items = noticeArray.getJSONObject(i);
+                                int id = items.getInt("id");
+                                String name = items.getString("name");
+                                String birthDate = items.getString("birthDate");
+                                String imagePath = ADDRESS + items.getString("imagePath");
+                                item = new GridItem(id, name, birthDate, imagePath);
+                                noticeItems.add(item);
+                            }
+                        } else {
+                            resultStr = context.getResources().getString(R.string.noNoticeSameWithSearch);
+                        }
+                    } else if (resultDBConnection == 0)
+                        resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    else
+                        resultStr = context.getResources().getString(R.string.errorSystemWorkingIncorrectly);
+                }
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return noticeItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<GridItem> returnArray) {
+            progressDialog.dismiss();
+            itemCallback.done(returnArray, resultStr);
+            super.onPostExecute(returnArray);
+        }
+    }
+
+    public class CheckUserNoticeNumberAsyncTask extends AsyncTask<Void, Void, Boolean> {
+        GetBooleanCallBack booleanCallBack;
+        HttpRequest httpRequest;
+        String username;
+        String resultStr;
+
+        public CheckUserNoticeNumberAsyncTask(String username, GetBooleanCallBack booleanCallBack) {
+            this.booleanCallBack = booleanCallBack;
+            httpRequest = new HttpRequest();
+            this.username = username;
+        }
+
+        @Override
+        public Boolean doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("username", this.username);
+
+            Boolean isAbleToCreateNotice = null;
+
+            try {
+
+                if (!isNetworkAvailable()) {
+                    resultStr = context.getResources().getString(R.string.errorNotConnectInternet);
+                    return null;
+                }
+
+                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/CheckUserNoticeNumber.php");
+                if (resultConnection != 200) {
+                    resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    return null;
+                }
+
+                String line = httpRequest.getReturnString();
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+                if (jObj.length() != 0) {
+                    int resultDBConnection = jObj.getInt("resultDBConnection");
+                    int resultUserNoticeCheck = jObj.getInt("resultUserNoticeCheck");
+
+                    if (resultDBConnection == 1 && resultUserNoticeCheck == 1) {
+                        isAbleToCreateNotice = jObj.getBoolean("isAbleToCreateNotice");
+                        if (!isAbleToCreateNotice)
+                            resultStr = context.getString(R.string.errorNoticeOverThree);
+                    } else if (resultDBConnection == 0)
+                        resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    else
+                        resultStr = context.getResources().getString(R.string.errorSystemWorkingIncorrectly);
+                }
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return isAbleToCreateNotice;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isAbleToCreateNotice) {
+            progressDialog.dismiss();
+            booleanCallBack.done(isAbleToCreateNotice, resultStr);
+            super.onPostExecute(isAbleToCreateNotice);
         }
     }
 }

@@ -55,4 +55,10 @@
         <item name="fab_colorRipple">#1B5E20</item>
     </style>
 
+    <style name="NavDrawerTextStyle" parent="Base.TextAppearance.AppCompat">
+        <!--<item name="android:textColor">@color/colorPrimaryDark</item>-->
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>

@@ -22,10 +22,10 @@ import bolona_pig.proj_imgapp.CallBack.GetClueCallback;
 import bolona_pig.proj_imgapp.CallBack.GetDateCallback;
 import bolona_pig.proj_imgapp.ObjectClass.Clue;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
-import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 
@@ -41,7 +41,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
     User user;
     ServerRequest serverRequest;
     ImageView imageView;
-    mixMidModule mixMidModule;
+    MidModule MidModule;
     Boolean isSexSelected = false;
     String sex;
 
@@ -66,16 +66,16 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
         dateTime = new DateTime(this);
         user = userLocalStore.getLoggedInUser();
         serverRequest = new ServerRequest(this);
-        mixMidModule = new mixMidModule();
+        MidModule = new MidModule();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        edtClueDate.setText("21-Feb-2016");
-        edtCluePlace.setText("ใต้สพาน ตลาดสุวรรณภูมิ");
-        edtClueDetail.setText("พบเห็นมาถามทาง จึงขอถ่ายรูปมาช่วยตามหาผู้ปกครอง");
+//        edtClueDate.setText("21-Feb-2016");
+//        edtCluePlace.setText("ใต้สพาน ตลาดสุวรรณภูมิ");
+//        edtClueDetail.setText("พบเห็นมาถามทาง จึงขอถ่ายรูปมาช่วยตามหาผู้ปกครอง");
         tvClueAdder.setText(user.name);
         tvCluePhone.setText(user.telephone);
     }
@@ -142,7 +142,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = mixMidModule.bitmapToString(image);
+            imageStr = MidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
             Toast.makeText(this, "กรุณาเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
@@ -154,7 +154,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
             @Override
             public void done(Clue returnInfo, String resultStr) {
                 if (returnInfo == null) {
-                    mixMidModule.showAlertDialog(resultStr, ClueAdd.this);
+                    MidModule.showAlertDialog(resultStr, ClueAdd.this);
                 } else {
                     showResult(returnInfo);
                 }
@@ -176,10 +176,6 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
                     break;
             }
         }
-    }
-
-    public void showError() {
-        Toast.makeText(this, "ไม่สามารถเพิ่มข้อมูลเบอะแสเข้าสู่ระบบได้", Toast.LENGTH_SHORT).show();
     }
 
     public void showResult(Clue info) {

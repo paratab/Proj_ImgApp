@@ -9,10 +9,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
-import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -21,7 +21,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     EditText edtUsername, edtPassword;
 
     UserLocalStore userLocalStore;
-    mixMidModule mixMidModule;
+    MidModule MidModule;
 
     @Override
     protected void onStart() {
@@ -42,7 +42,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         tvRegister.setOnClickListener(this);
 
         userLocalStore = new UserLocalStore(this);
-        mixMidModule = new mixMidModule();
+        MidModule = new MidModule();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     break;
                 }
 
-                password = mixMidModule.getSHA1Hash(password);
+                password = MidModule.getSHA1Hash(password);
 
                 User user = new User(username, password);
 
@@ -80,7 +80,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void done(User returnedUser, String resultStr) {
                 if (returnedUser == null) {
-                    mixMidModule.showAlertDialog(resultStr, Login.this);
+                    MidModule.showAlertDialog(resultStr, Login.this);
                 } else {
                     logInUser(returnedUser);
                 }

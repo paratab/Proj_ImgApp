@@ -68,4 +68,24 @@
     <string name="errorNoNoticeExist">ไม่พบประกาศคนหายในระบบ</string>
     <string name="errorNoClueExist">ไม่พบข้อมูลเบาะแสในระบบ</string>
     <string name="errorUserOrPassIncorrect">ข้อมูลชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</string>
+    <string name="title_activity_main3">Main3Activity</string>
+    <string name="nav_user_logout">ลงชื่อออกจากระบบ</string>
+    <string name="nav_user_login">ลงชื่อเข้าใช้งานระบบ</string>
+    <string name="nav_user_clue">เบาะแสที่แจ้งไว้ทั้งหมด</string>
+    <string name="nav_user_notice">ประกาศคนหายที่สร้างทั้งหมด</string>
+    <string name="nav_user_detail">รายละเอียดผู้ใช้งาน</string>
+    <string name="nav_title">ส่วนจัดการผู้ใช้งาน</string>
+    <string name="nav_exit">ออกจากแอพพลิเคชัน</string>
+    <string name="action_search">ค้นหา</string>
+    <string name="age_range">ช่วงอายุ</string>
+    <string name="notice_list_title">รายการประกาศคนหาย</string>
+    <string name="sexBoth">ไม่ระบุ</string>
+    <string name="caption">* ในกรณีไม่กำหนดช่วงอายุให้กำหนดเป็น 0 - 0</string>
+    <string name="custom_search_Bar">ผลการค้นหา</string>
+    <string name="noNoticeSameWithSearch">ไม่พบประกาศที่ตรงกับตัวเลือกในการค้นหา</string>
+    <string name="errorNoticeOverThree">ผู้ใช้ได้สร้างประกาศที่ใช้งานอยู่ครบ 3 ประกาศแล้ว</string>
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Location permission is required for this demo.</string>
 </resources>

@@ -44,9 +44,9 @@ public class UserClueList extends AppCompatActivity implements AdapterView.OnIte
         userLocalStore = new UserLocalStore(this);
         user = userLocalStore.getLoggedInUser();
 
-        loadClueList();
-
         progressBar.setVisibility(View.VISIBLE);
+
+        loadClueList();
 
         listView.setOnItemClickListener(this);
     }

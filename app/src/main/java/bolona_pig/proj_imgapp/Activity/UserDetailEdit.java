@@ -19,10 +19,10 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
-import bolona_pig.proj_imgapp.ObjectClass.mixMidModule;
 import bolona_pig.proj_imgapp.R;
 
 public class UserDetailEdit extends AppCompatActivity implements View.OnClickListener {
@@ -33,7 +33,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
     TextView edtUsername, edtID, edtPassword;
     EditText edtName, edtEmail, edtTelephone;
     UserLocalStore userLocalStore;
-    mixMidModule mixMidModule;
+    MidModule MidModule;
     ImageView imageView;
     boolean imageChange;
 
@@ -56,7 +56,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         btChangePW.setOnClickListener(this);
         imageView.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
-        mixMidModule = new mixMidModule();
+        MidModule = new MidModule();
         imageChange = false;
     }
 
@@ -88,22 +88,22 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
 
                 if (email.isEmpty()) {
                     text = "กรุณากรอกอีเมล";
-                    mixMidModule.printError(this, text);
+                    MidModule.printError(this, text);
                     break;
                 }
-                if (!mixMidModule.isValidEmail(email)) {
+                if (!MidModule.isValidEmail(email)) {
                     text = "อีเมลไม่ถูกต้อง";
-                    mixMidModule.printError(this, text);
+                    MidModule.printError(this, text);
                     break;
                 }
                 if (telephone.isEmpty()) {
                     text = "กรุณากรอกหมายเลขโทรศัพท์";
-                    mixMidModule.printError(this, text);
+                    MidModule.printError(this, text);
                     break;
                 }
 
                 Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                String imageStr = mixMidModule.bitmapToString(image);
+                String imageStr = MidModule.bitmapToString(image);
 
                 User user = new User(username, password, name, nationId, email, telephone, imageStr);
 
@@ -116,7 +116,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                             Toast.makeText(UserDetailEdit.this, "บันทึกข้อมูลเรียบร้อย", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            mixMidModule.showAlertDialog(resultStr, UserDetailEdit.this);
+                            MidModule.showAlertDialog(resultStr, UserDetailEdit.this);
                         }
                     }
                 });

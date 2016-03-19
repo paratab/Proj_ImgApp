@@ -39,7 +39,7 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_back_office);
 
         btUserManagement = (Button) findViewById(R.id.btUserManagement);
         btGoogle = (Button) findViewById(R.id.btGoogle);
@@ -109,10 +109,10 @@ public class BackOffice extends AppCompatActivity implements View.OnClickListene
                 intent.putExtra("clueId", "1");
                 startActivity(intent);
                 break;
-//            case R.id.btGoogle:
-//                intent = new Intent(this, Main3Activity.class);
-//                startActivity(intent);
-//                break;
+            case R.id.btGoogle:
+                intent = new Intent(this, MapsActivity.class);
+                startActivity(intent);
+                break;
             case R.id.btPushNotify:
 
                 int seco = Integer.parseInt(sec.getText().toString());

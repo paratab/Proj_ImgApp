@@ -1,8 +1,10 @@
 package bolona_pig.proj_imgapp.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.GridLayout;
@@ -15,8 +17,10 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import bolona_pig.proj_imgapp.CallBack.GetBooleanCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetNoticeCallBack;
 import bolona_pig.proj_imgapp.ObjectClass.DateTime;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.Notice;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
@@ -131,7 +135,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.imbOwnMark:
-                Toast.makeText(this, "กดเพื่อบันทึกว่าพบตัวแล้ว", Toast.LENGTH_SHORT).show();
+                updateNoticeStatus(userLocalStore.getLoggedInUser().username);
                 break;
             case R.id.imbOwnEdit:
                 intent = new Intent(this, NoticeDetailEdit.class);
@@ -139,9 +143,34 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(intent, 111);
                 break;
             case R.id.imbAdminDelete:
-                Toast.makeText(this, "กดเพื่อลบประกาศ", Toast.LENGTH_SHORT).show();
+                updateNoticeStatus(recentNotice.adderUsername);
                 break;
         }
+    }
+
+    private void updateNoticeStatus(final String username) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("ยืนยันข้อมูล");
+        builder.setMessage("คุณแน่ใจที่จะ\"ปรับสถานะเป็นพบตัวแล้ว\"\nหรือไม่ ");
+        builder.setNegativeButton("ยกเลิก", null);
+        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                serverRequest.updateNoticeStatus(recentNotice.id, username, new GetBooleanCallBack() {
+                    @Override
+                    public void done(Boolean flag, String resultStr) {
+                        if (flag != null && flag) {
+                            Toast.makeText(NoticeDetail.this, "แก้ไขสถานะเสร็จสิ้น", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            MidModule midModule = new MidModule();
+                            midModule.showAlertDialog(resultStr, NoticeDetail.this);
+                        }
+                    }
+                });
+            }
+        });
+        builder.show();
     }
 
     @Override

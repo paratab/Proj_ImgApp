@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/nav_title">
+        <menu>
+            <item
+                android:id="@+id/nav_user_detail"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/nav_user_detail"
+                android:visible="false" />
+            <item
+                android:id="@+id/nav_user_notice"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/nav_user_notice"
+                android:visible="false" />
+            <item
+                android:id="@+id/nav_user_clue"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/nav_user_clue"
+                android:visible="false" />
+            <item
+                android:id="@+id/nav_user_login"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/nav_user_login"
+                android:visible="false" />
+            <item
+                android:id="@+id/nav_user_logout"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/nav_user_logout"
+                android:visible="false" />
+            <item
+                android:id="@+id/nav_exit"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/nav_exit" />
+        </menu>
+    </item>
+
+</menu>

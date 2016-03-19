@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f0f0f0">
+    android:padding="5dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="bolona_pig.proj_imgapp.Activity.Main3Activity"
+    tools:showIn="@layout/app_bar_main3">
+
+    <TextView
+        android:id="@+id/customSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <GridView
         android:id="@+id/gridView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/customSearchBar"
         android:layout_margin="7dp"
         android:drawSelectorOnTop="true"
         android:gravity="center"
@@ -29,16 +43,16 @@
         android:layout_above="@+id/gridView"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
         fab:menu_animationDelayPerItem="0"
         fab:menu_backgroundColor="#ccf0f0f0"
         fab:menu_colorNormal="#43A047"
         fab:menu_colorPressed="#2E7D32"
         fab:menu_colorRipple="#1B5E20"
-        fab:menu_icon="@drawable/ic_menu"
+        fab:menu_icon="@drawable/ic_star"
         fab:menu_labels_ellipsize="end">
 
         <com.github.clans.fab.FloatingActionButton
@@ -46,7 +60,7 @@
             style="@style/MenuButtonsSmall.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:src="@drawable/ic_note_add_white_24dp"
             fab:fabSize="normal"
             fab:fab_label="@string/fabNotice" />
@@ -56,30 +70,10 @@
             style="@style/MenuButtonsSmall.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:src="@drawable/ic_description_white_24dp"
             fab:fabSize="normal"
             fab:fab_label="@string/fabSeenInfo" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fabLogin"
-            style="@style/MenuButtonsSmall.Green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:src="@drawable/ic_account_circle_white_24dp"
-            fab:fabSize="normal"
-            fab:fab_label="@string/login" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fabUserDetail"
-            style="@style/MenuButtonsSmall.Green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:src="@drawable/ic_account_circle_white_24dp"
-            fab:fabSize="normal"
-            fab:fab_label="จัดการผู้ใช้งาน" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabMain2"
@@ -91,6 +85,5 @@
             fab:fab_label="ไปยังหน้าหลัก 2" />
 
     </com.github.clans.fab.FloatingActionMenu>
-
 
 </RelativeLayout>

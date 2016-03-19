@@ -45,6 +45,8 @@ public class UserNoticeList extends AppCompatActivity implements AdapterView.OnI
         userLocalStore = new UserLocalStore(this);
         user = userLocalStore.getLoggedInUser();
 
+        progressBar.setVisibility(View.VISIBLE);
+
         serverRequest.fetchUserNoticeListInBG(user, new GetItemCallback() {
             @Override
             public void done(ArrayList<GridItem> item, String resultStr) {
@@ -61,7 +63,7 @@ public class UserNoticeList extends AppCompatActivity implements AdapterView.OnI
                         }
                     });
                     dialogBuilder.setMessage(resultStr);
-                    dialogBuilder.setNegativeButton("ออก", new DialogInterface.OnClickListener() {
+                    dialogBuilder.setNegativeButton("รับทราบ", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
@@ -72,7 +74,6 @@ public class UserNoticeList extends AppCompatActivity implements AdapterView.OnI
                 progressBar.setVisibility(View.GONE);
             }
         });
-        progressBar.setVisibility(View.VISIBLE);
 
         listView.setOnItemClickListener(this);
     }
