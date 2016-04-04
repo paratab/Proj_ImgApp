@@ -34,11 +34,13 @@ import bolona_pig.proj_imgapp.R;
 
 public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
-    public final int SELECT_IMAGE_GALLERY = 1;
-    public final int SELECT_IMAGE_CAMERA = 2;
+
+    final int SELECT_IMAGE_GALLERY = 1;
+    final int SELECT_IMAGE_CAMERA = 2;
+    final int MAP_LOCATION_REQUEST = 3;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
-    ImageButton btNoticeUpdate;
+    ImageButton btNoticeUpdate, location;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     Notice recentNotice;
@@ -65,6 +67,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
         imageView = (ImageView) findViewById(R.id.imageView);
         radioMale = (RadioButton) findViewById(R.id.sexMale);
         radioFemale = (RadioButton) findViewById(R.id.sexFemale);
+        location = (ImageButton) findViewById(R.id.location);
 
         btNoticeUpdate.setOnClickListener(this);
         imageView.setOnClickListener(this);
@@ -74,6 +77,8 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
 
         edtLnLostDate.setOnClickListener(this);
         edtLnLostDate.setOnFocusChangeListener(this);
+
+        location.setOnClickListener(this);
 
         userLocalStore = new UserLocalStore(this);
         serverRequest = new ServerRequest(this);
@@ -127,6 +132,12 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
             case R.id.imageView:
                 selectImage();
                 break;
+            case R.id.location:
+                Intent intent = new Intent(this, MapsActivity.class);
+                String temp = edtLnPlace.getText().toString();
+                intent.putExtra("latlng", temp);
+                startActivityForResult(intent, MAP_LOCATION_REQUEST);
+                break;
         }
     }
 
@@ -168,6 +179,11 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
             Intent intent = getIntent();
             intent.putExtra("imageChange", true);
             setResult(RESULT_OK, getIntent());
+        } else if (requestCode == MAP_LOCATION_REQUEST && resultCode == RESULT_OK && data != null) {
+            double lat = data.getDoubleExtra("lat", 0.0);
+            double lng = data.getDoubleExtra("lng", 0.0);
+            String temp = "[Lat/Lng] : [" + lat + "," + lng + "]";
+            edtLnPlace.setText(temp);
         }
     }
 

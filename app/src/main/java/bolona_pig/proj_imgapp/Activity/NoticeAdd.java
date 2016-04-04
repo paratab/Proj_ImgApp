@@ -31,11 +31,12 @@ import bolona_pig.proj_imgapp.R;
 
 public class NoticeAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
-    public final int SELECT_IMAGE_GALLERY = 1;
-    public final int SELECT_IMAGE_CAMERA = 2;
+    final int SELECT_IMAGE_GALLERY = 1;
+    final int SELECT_IMAGE_CAMERA = 2;
+    final int MAP_LOCATION_REQUEST = 3;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
-    ImageButton btAddNotice;
+    ImageButton btAddNotice, location;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     DateTime dateTime;
@@ -43,6 +44,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     MidModule MidModule;
     Boolean isSexSelected = false;
     String sex;
+    boolean firstCheck = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +60,11 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
         btAddNotice = (ImageButton) findViewById(R.id.btNoticeAdd);
         imageView = (ImageView) findViewById(R.id.imageView);
+        location = (ImageButton) findViewById(R.id.location);
 
         btAddNotice.setOnClickListener(this);
         imageView.setOnClickListener(this);
+        location.setOnClickListener(this);
 
         edtLnBirthDate.setOnFocusChangeListener(this);
         edtLnBirthDate.setOnClickListener(this);
@@ -78,29 +82,32 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     public void onStart() {
         super.onStart();
         User user = userLocalStore.getLoggedInUser();
-        serverRequest.checkUserNoticeNumberInBG(user.username, new GetBooleanCallBack() {
-            @Override
-            public void done(Boolean flag, String resultStr) {
-                if (flag == null || !flag) {
-                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NoticeAdd.this);
-                    dialogBuilder.setTitle("ข้อผิดพลาด");
-                    dialogBuilder.setMessage(resultStr);
-                    dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            finish();
-                        }
-                    });
-                    dialogBuilder.setNegativeButton("รับทราบ", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    });
-                    dialogBuilder.show();
+        if (firstCheck) {
+            serverRequest.checkUserNoticeNumberInBG(user.username, new GetBooleanCallBack() {
+                @Override
+                public void done(Boolean flag, String resultStr) {
+                    if (flag == null || !flag) {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NoticeAdd.this);
+                        dialogBuilder.setTitle("ข้อผิดพลาด");
+                        dialogBuilder.setMessage(resultStr);
+                        dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                finish();
+                            }
+                        });
+                        dialogBuilder.setNegativeButton("รับทราบ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        dialogBuilder.show();
+                    }
                 }
-            }
-        });
+            });
+            firstCheck = false;
+        }
 //        edtLnName.setText("Test Lost Data1");
 //        edtLnBirthDate.setText("19-May-1995");
 //        edtLnPlace.setText("ECC KMITL");
@@ -141,6 +148,11 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
+        } else if (requestCode == MAP_LOCATION_REQUEST && resultCode == RESULT_OK && data != null) {
+            double lat = data.getDoubleExtra("lat", 0.0);
+            double lng = data.getDoubleExtra("lng", 0.0);
+            String temp = "[Lat/Lng] : [" + lat + "," + lng + "]";
+            edtLnPlace.setText(temp);
         }
     }
 
@@ -168,6 +180,12 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
                 break;
             case R.id.imageView:
                 selectImage();
+                break;
+            case R.id.location:
+                Intent intent = new Intent(this, MapsActivity.class);
+                String temp = edtLnPlace.getText().toString();
+                intent.putExtra("latlng", temp);
+                startActivityForResult(intent, MAP_LOCATION_REQUEST);
                 break;
         }
     }

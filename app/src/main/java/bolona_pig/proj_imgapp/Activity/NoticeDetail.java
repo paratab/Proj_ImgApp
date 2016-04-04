@@ -36,7 +36,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
     DateTime dateTime;
     ImageView imageView;
     boolean imageChange;
-    ImageButton imbTel, ImbMessage, imbMarkFin, imbEdit, imbDel;
+    ImageButton imbTel, ImbMessage, imbMarkFin, imbEdit, imbDel, location;
     GridLayout gridUser, gridOwner, gridAdmin;
 
     @Override
@@ -61,6 +61,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         gridUser = (GridLayout) findViewById(R.id.gridUser);
         gridOwner = (GridLayout) findViewById(R.id.gridOwner);
         gridAdmin = (GridLayout) findViewById(R.id.gridAdmin);
+        location = (ImageButton) findViewById(R.id.location);
 
         serverRequest = new ServerRequest(this);
         userLocalStore = new UserLocalStore(this);
@@ -71,6 +72,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         imbMarkFin.setOnClickListener(this);
         imbEdit.setOnClickListener(this);
         imbDel.setOnClickListener(this);
+        location.setOnClickListener(this);
         imageChange = false;
     }
 
@@ -116,6 +118,11 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
             gridUser.setVisibility(View.VISIBLE);
         }
         if (user.isAdmin()) gridAdmin.setVisibility(View.VISIBLE);
+
+        String temp = notice.lostPlace;
+        if (temp.startsWith("[Lat/Lng]")) {
+            location.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -144,6 +151,12 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.imbAdminDelete:
                 updateNoticeStatus(recentNotice.adderUsername);
+                break;
+            case R.id.location:
+                intent = new Intent(this, Maps2Activity.class);
+                String temp = tvLnPlace.getText().toString();
+                intent.putExtra("latlng", temp);
+                startActivity(intent);
                 break;
         }
     }

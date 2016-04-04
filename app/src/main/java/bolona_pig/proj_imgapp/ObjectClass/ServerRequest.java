@@ -110,9 +110,11 @@ public class ServerRequest {
     }
 
     public void checkUserNoticeNumberInBG(String username, GetBooleanCallBack booleanCallback) {
-        progressDialog.setMessage("เช็คจำนวนประกาศที่สร้างไว้แล้ว");
-        progressDialog.show();
         new CheckUserNoticeNumberAsyncTask(username, booleanCallback).execute();
+    }
+
+    public void storeGCMTokenInBG(String token, String username, GetBooleanCallBack booleanCallback) {
+        new StoreGCMTokenAsyncTask(token, username, booleanCallback).execute();
     }
 
     public boolean isNetworkAvailable() {
@@ -1293,4 +1295,70 @@ public class ServerRequest {
             super.onPostExecute(isAbleToCreateNotice);
         }
     }
+
+    public class StoreGCMTokenAsyncTask extends AsyncTask<Void, Void, Boolean> {
+        GetBooleanCallBack booleanCallBack;
+        HttpRequest httpRequest;
+        String token, username;
+        String resultStr;
+
+        public StoreGCMTokenAsyncTask(String token, String username, GetBooleanCallBack booleanCallBack) {
+            this.booleanCallBack = booleanCallBack;
+            httpRequest = new HttpRequest();
+            this.token = token;
+            this.username = username;
+        }
+
+        @Override
+        public Boolean doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("token", this.token);
+            dataToSend.put("username", this.username);
+            String result = "GCM Register fail!1";
+
+            Boolean isConnected = null;
+
+            try {
+
+                if (!isNetworkAvailable()) {
+                    resultStr = result;
+                    return null;
+                }
+
+                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreGCMToken.php");
+                if (resultConnection != 200) {
+                    resultStr = result;
+                    return null;
+                }
+
+                String line = httpRequest.getReturnString();
+                Log.i("custom_check", line);
+
+                JSONObject jObj = new JSONObject(line);
+                if (jObj.length() != 0) {
+                    int resultDBConnection = jObj.getInt("resultDBConnection");
+                    int resultTokenCheck = jObj.getInt("resultTokenCheck");
+                    int resultStoreToken = jObj.getInt("resultStoreToken");
+
+                    if (resultDBConnection == 1 && resultTokenCheck == 1 && resultStoreToken == 1) {
+                        isConnected = true;
+                    } else
+                        resultStr = result;
+                }
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return isConnected;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isConnected) {
+            progressDialog.dismiss();
+            booleanCallBack.done(isConnected, resultStr);
+            super.onPostExecute(isConnected);
+        }
+    }
+
+
 }

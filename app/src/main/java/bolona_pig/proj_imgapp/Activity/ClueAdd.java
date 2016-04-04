@@ -31,9 +31,11 @@ import bolona_pig.proj_imgapp.R;
 
 public class ClueAdd extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
-    public final int SELECT_IMAGE_GALLERY = 1;
-    public final int SELECT_IMAGE_CAMERA = 2;
-    ImageButton btClueAdd;
+    final int SELECT_IMAGE_GALLERY = 1;
+    final int SELECT_IMAGE_CAMERA = 2;
+    final int MAP_LOCATION_REQUEST = 3;
+
+    ImageButton btClueAdd, location;
     EditText edtClueDate, edtCluePlace, edtClueDetail;
     TextView tvClueAdder, tvCluePhone;
     UserLocalStore userLocalStore;
@@ -44,6 +46,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
     MidModule MidModule;
     Boolean isSexSelected = false;
     String sex;
+    boolean isDirectMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +60,13 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
         tvCluePhone = (TextView) findViewById(R.id.tvCluePhone);
         btClueAdd = (ImageButton) findViewById(R.id.btClueAdd);
         imageView = (ImageView) findViewById(R.id.imageView);
+        location = (ImageButton) findViewById(R.id.location);
 
         edtClueDate.setOnClickListener(this);
         edtClueDate.setOnFocusChangeListener(this);
         btClueAdd.setOnClickListener(this);
         imageView.setOnClickListener(this);
+        location.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
         dateTime = new DateTime(this);
         user = userLocalStore.getLoggedInUser();
@@ -76,6 +81,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
 //        edtClueDate.setText("21-Feb-2016");
 //        edtCluePlace.setText("ใต้สพาน ตลาดสุวรรณภูมิ");
 //        edtClueDetail.setText("พบเห็นมาถามทาง จึงขอถ่ายรูปมาช่วยตามหาผู้ปกครอง");
+        isDirectMode = getIntent().getExtras().getBoolean("DirectMode", false);
         tvClueAdder.setText(user.name);
         tvCluePhone.setText(user.telephone);
     }
@@ -96,6 +102,13 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
                 break;
             case R.id.imageView:
                 selectImage();
+                break;
+            case R.id.location:
+                Intent intent = new Intent(this, MapsActivity.class);
+                String temp = edtCluePlace.getText().toString();
+                intent.putExtra("latlng", temp);
+                startActivityForResult(intent, MAP_LOCATION_REQUEST);
+                break;
         }
     }
 
@@ -129,6 +142,11 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
         } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
+        } else if (requestCode == MAP_LOCATION_REQUEST && resultCode == RESULT_OK && data != null) {
+            double lat = data.getDoubleExtra("lat", 0.0);
+            double lng = data.getDoubleExtra("lng", 0.0);
+            String temp = "[Lat/Lng] : [" + lat + "," + lng + "]";
+            edtCluePlace.setText(temp);
         }
     }
 

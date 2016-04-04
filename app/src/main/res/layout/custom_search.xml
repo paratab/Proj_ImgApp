@@ -13,41 +13,47 @@
         android:text="@string/sex"
         android:textSize="15sp" />
 
-    <RadioGroup
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal">
+        android:gravity="center_horizontal">
 
-        <RadioButton
-            android:id="@+id/sexMale"
+        <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/male"
-            android:textSize="15sp" />
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/sexFemale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/female"
-            android:textSize="15sp" />
+            <RadioButton
+                android:id="@+id/sexMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/male"
+                android:textSize="15sp" />
 
-        <RadioButton
-            android:id="@+id/sexBoth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/sexBoth"
-            android:textSize="15sp" />
+            <RadioButton
+                android:id="@+id/sexFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/female"
+                android:textSize="15sp" />
 
-    </RadioGroup>
+            <RadioButton
+                android:id="@+id/sexBoth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/sexBoth"
+                android:textSize="15sp" />
+
+        </RadioGroup>
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"

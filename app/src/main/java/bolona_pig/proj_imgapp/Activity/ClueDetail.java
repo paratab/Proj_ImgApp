@@ -26,7 +26,7 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
     ServerRequest serverRequest;
     Clue clueInfo;
     ImageView imageView;
-    ImageButton imbTel, imbMessage;
+    ImageButton imbTel, imbMessage, location;
     LinearLayout gridUser;
     UserLocalStore userLocalStore;
 
@@ -45,11 +45,13 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
         imbMessage = (ImageButton) findViewById(R.id.imbMessage);
         gridUser = (LinearLayout) findViewById(R.id.gridUser);
         tvSex = (TextView) findViewById(R.id.tvSex);
+        location = (ImageButton) findViewById(R.id.location);
 
         serverRequest = new ServerRequest(this);
         userLocalStore = new UserLocalStore(this);
         imbTel.setOnClickListener(this);
         imbMessage.setOnClickListener(this);
+        location.setOnClickListener(this);
     }
 
     @Override
@@ -84,6 +86,11 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
         if (!user.username.equals(clueInfo.adderUsername)) {
             gridUser.setVisibility(View.VISIBLE);
         }
+
+        String temp = info.seenPlace;
+        if (temp.startsWith("[Lat/Lng]")) {
+            location.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -99,6 +106,12 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setType("vnd.android-dir/mms-sms");
                 intent.putExtra("address", tvCluePhone.getText());
+                startActivity(intent);
+                break;
+            case R.id.location:
+                intent = new Intent(this, Maps2Activity.class);
+                String temp = tvCluePlace.getText().toString();
+                intent.putExtra("latlng", temp);
                 startActivity(intent);
                 break;
         }

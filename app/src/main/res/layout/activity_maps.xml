@@ -3,7 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="bolona_pig.proj_imgapp.Activity.MapsActivity">
+
+    <FrameLayout
+        android:id="@+id/fm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardUseCompatPadding="true">
+
+            <fragment
+                android:id="@+id/place_autocomplete_fragment"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -45,8 +69,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="300dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
             android:layout_margin="8dp"
             android:background="@android:color/white"
             android:orientation="vertical">
@@ -56,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="Address"
+                android:text="ตำแหน่ง"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#28b54c" />
 
@@ -66,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:text="กำลังระบุตำแหน่ง"
                 android:textSize="16sp" />
         </LinearLayout>

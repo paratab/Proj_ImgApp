@@ -55,13 +55,34 @@
             android:text="@string/seenPlace"
             android:textSize="15sp" />
 
-        <EditText
-            android:id="@+id/edtCluePlace"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:inputType="text"
-            android:nextFocusDown="@+id/edtClueDate" />
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edtCluePlace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/location"
+                android:inputType="text"
+                android:nextFocusDown="@+id/edtClueDate" />
+
+            <ImageButton
+                android:id="@+id/location"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_location" />
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"

@@ -1,9 +1,15 @@
 package bolona_pig.proj_imgapp.Activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +30,8 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -36,11 +44,13 @@ import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
+import bolona_pig.proj_imgapp.Service.GcmRegisterService;
 
 public class Main3Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener, View.OnClickListener {
 
-    public final int LOGIN_USER_MANAGEMENT = 1;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    public final int LOGIN = 1;
     public final int LOGIN_NOTICE_ADD = 2;
     public final int LOGIN_CLUE_ADD = 3;
     public final int NOTICE_ADD_GET_ID = 4;
@@ -60,6 +70,27 @@ public class Main3Activity extends AppCompatActivity
     TextView customSearch;
     ArrayList<GridItem> arrayList;
     private ArrayList<GridItem> itemData = new ArrayList<>();
+    private boolean isReceiverRegistered;
+    private BroadcastReceiver mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean sentToken = sharedPreferences.getBoolean(GcmRegisterService.SENT_TOKEN_TO_SERVER, false);
+            // TODO Do something here
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +134,10 @@ public class Main3Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        registerReceiver();
+
+        if (checkPlayServices() && userLocalStore.getLoggedInStatus())
+            registerGCM();
     }
 
     @Override
@@ -226,19 +261,21 @@ public class Main3Activity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
-            @Override
-            public void done(ArrayList<GridItem> item, String resultStr) {
-                if (item.size() > 0) {
-                    itemData = item;
-                    noticeGridAdapter.setGridData(itemData);
-                    arrayList = itemData;
-                } else {
-                    Toast.makeText(Main3Activity.this, resultStr, Toast.LENGTH_SHORT).show();
+        if (!isCustomSearch) {
+            serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
+                @Override
+                public void done(ArrayList<GridItem> item, String resultStr) {
+                    if (item.size() > 0) {
+                        itemData = item;
+                        noticeGridAdapter.setGridData(itemData);
+                        arrayList = itemData;
+                    } else {
+                        Toast.makeText(Main3Activity.this, resultStr, Toast.LENGTH_SHORT).show();
+                    }
+                    progressBar.setVisibility(View.GONE);
                 }
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+            });
+        }
         setNavigationView();
     }
 
@@ -274,7 +311,7 @@ public class Main3Activity extends AppCompatActivity
 
         if (id == R.id.nav_user_login) {
             intent = new Intent(this, Login.class);
-            startActivity(intent);
+            startActivityForResult(intent, LOGIN);
         } else if (id == R.id.nav_user_logout) {
             userLocalStore.clearUserData();
             userLocalStore.setUserLoggedIn(false);
@@ -363,6 +400,10 @@ public class Main3Activity extends AppCompatActivity
                 intent.putExtra("clueId", id);
                 startActivity(intent);
             }
+        } else if (requestCode == LOGIN) {
+            if (resultCode == RESULT_OK) {
+                registerGCM();
+            }
         }
     }
 
@@ -383,5 +424,34 @@ public class Main3Activity extends AppCompatActivity
                     sex = "ไม่ระบุ";
                 break;
         }
+    }
+
+    private void registerGCM() {
+        Intent intent = new Intent(this, GcmRegisterService.class);
+        startService(intent);
+    }
+
+    private void registerReceiver() {
+        if (!isReceiverRegistered) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(GcmRegisterService.REGISTRATION_COMPLETE));
+            isReceiverRegistered = true;
+        }
+    }
+
+    private void unregisterReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        isReceiverRegistered = false;
+    }
+
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
     }
 }
