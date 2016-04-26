@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,7 +41,8 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
     final int MAP_LOCATION_REQUEST = 3;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
-    ImageButton btNoticeUpdate, location;
+    ImageButton location;
+    Button btNoticeUpdate;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     Notice recentNotice;
@@ -63,7 +65,7 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
         edtLnDetail = (EditText) findViewById(R.id.edtLnDetail);
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
-        btNoticeUpdate = (ImageButton) findViewById(R.id.btNoticeUpdate);
+        btNoticeUpdate = (Button) findViewById(R.id.btNoticeUpdate);
         imageView = (ImageView) findViewById(R.id.imageView);
         radioMale = (RadioButton) findViewById(R.id.sexMale);
         radioFemale = (RadioButton) findViewById(R.id.sexFemale);
@@ -198,19 +200,18 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
         String detail = edtLnDetail.getText().toString();
 
         Bitmap image;
-        String imageStr;
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = MidModule.bitmapToString(image);
+            //imageStr = MidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
             Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Notice notice = new Notice(id, name, sex, birthDate, lostPlace, lostDate, detail, user.username, user.name, user.telephone, imageStr);
-        serverRequest.updateNoticeDataInBG(notice, new GetNoticeCallBack() {
+        Notice notice = new Notice(id, name, sex, birthDate, lostPlace, lostDate, detail, user.username, user.name, user.telephone, "");
+        serverRequest.updateNoticeDataInBG(notice,image, new GetNoticeCallBack() {
             @Override
             public void done(Notice returnNotice, String resultStr) {
                 if (returnNotice == null) {

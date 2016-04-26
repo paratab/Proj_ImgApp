@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="5dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="bolona_pig.proj_imgapp.Activity.Main3Activity"
+    tools:context=".Activity.MainActivity"
     tools:showIn="@layout/app_bar_main3">
 
     <TextView
@@ -52,7 +52,7 @@
         fab:menu_colorNormal="#43A047"
         fab:menu_colorPressed="#2E7D32"
         fab:menu_colorRipple="#1B5E20"
-        fab:menu_icon="@drawable/ic_star"
+        fab:menu_icon="@drawable/fab_add"
         fab:menu_labels_ellipsize="end">
 
         <com.github.clans.fab.FloatingActionButton

@@ -131,31 +131,61 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/imbDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/delete_vec"
+            android:scaleType="centerCrop"
+            android:text="ลบเบาะแส"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+
         <LinearLayout
             android:id="@+id/gridUser"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:columnCount="2"
+            android:orientation="vertical"
             android:padding="5dp"
             android:visibility="gone">
 
-            <ImageButton
-                android:id="@+id/imbTelephone"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginRight="30dp"
-                android:background="@null"
+            <Button
+                android:id="@+id/imbSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/buttonshape"
+                android:drawableLeft="@drawable/ic_saves"
                 android:scaleType="centerCrop"
-                android:src="@drawable/phone" />
+                android:text="จัดเก็บเบาะแส"
+                android:textSize="16sp"
+                android:visibility="gone"/>
 
-            <ImageButton
-                android:id="@+id/imbMessage"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@null"
+            <Button
+                android:id="@+id/imbTelephone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/buttonshape"
+                android:drawableLeft="@drawable/phone"
                 android:scaleType="centerCrop"
-                android:src="@drawable/message" />
+                android:text="ติดต่อทางโทรศัพท์"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/imbMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/buttonshape"
+                android:drawableLeft="@drawable/message"
+                android:scaleType="centerCrop"
+                android:text="ติดต่อทางข้อความสั้น"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 

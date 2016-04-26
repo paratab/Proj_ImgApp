@@ -20,7 +20,7 @@ import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
 import bolona_pig.proj_imgapp.R;
 
-public class UserClueList extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class UserNoticeClue extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
     ListView listView;
     ProgressBar progressBar;
@@ -29,6 +29,7 @@ public class UserClueList extends AppCompatActivity implements AdapterView.OnIte
     SeenListAdapter seenListAdapter;
     UserLocalStore userLocalStore;
     User user;
+    int notice_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +47,25 @@ public class UserClueList extends AppCompatActivity implements AdapterView.OnIte
 
         progressBar.setVisibility(View.VISIBLE);
 
-        loadClueList();
-
         listView.setOnItemClickListener(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        notice_id = Integer.parseInt(getIntent().getExtras().getString("noticeId","-1"));
+        loadClueList();
+    }
+
     public void loadClueList() {
-        serverRequest.fetchUserClueListInBG(user, new GetItemCallback() {
+        serverRequest.fetchUserNoticeClueInBG(user,notice_id, new GetItemCallback() {
             @Override
             public void done(ArrayList<GridItem> item, String resultStr) {
                 if (item.size() > 0) {
                     listItem = item;
                     seenListAdapter.setListData(listItem);
                 } else {
-                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(UserClueList.this);
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(UserNoticeClue.this);
                     dialogBuilder.setTitle("ข้อผิดพลาด");
                     dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
@@ -86,7 +92,7 @@ public class UserClueList extends AppCompatActivity implements AdapterView.OnIte
         GridItem item = (GridItem) parent.getItemAtPosition(position);
         Intent intent = new Intent(this, ClueDetail.class);
         intent.putExtra("clueId", item.id + "");
-        intent.putExtra("menu", "null");
+        intent.putExtra("menu", "delete");
         startActivity(intent);
     }
 }

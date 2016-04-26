@@ -16,32 +16,29 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!-- <activity android:name=".Activity.MainActivity"> -->
-        <!-- &lt;!&ndash;<intent-filter>&ndash;&gt; -->
-        <!-- &lt;!&ndash;<action android:name="android.intent.action.MAIN" />&ndash;&gt; -->
-
-
-        <!-- &lt;!&ndash;<category android:name="android.intent.category.LAUNCHER" />&ndash;&gt; -->
-        <!-- &lt;!&ndash;</intent-filter>&ndash;&gt; -->
-        <!-- </activity> -->
         <activity
             android:name=".Activity.Register"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_register" />
         <activity
             android:name=".Activity.Login"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".Activity.UserDetail"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_user_management" />
         <activity
             android:name=".Activity.UserDetailEdit"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_user_detail_edit" />
         <activity
             android:name=".Activity.UserPassChange"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_user_password_change" />
         <activity
             android:name=".Activity.NoticeAdd"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_add_notice" />
 
         <meta-data
@@ -50,30 +47,39 @@
 
         <activity
             android:name=".Activity.MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_maps"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.NoticeDetail"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_notice_detail" />
         <activity
             android:name=".Activity.NoticeDetailEdit"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_notice_detail_edit" />
         <activity
             android:name=".Activity.ClueAdd"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_seen_info_add" />
         <activity
             android:name=".Activity.ClueDetail"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_seen_info_detail" />
         <activity
             android:name=".Activity.BackOffice"
             android:label="@string/title_activity_back_office" />
         <activity
             android:name=".Activity.UserNoticeList"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_user_noticelist" />
         <activity
             android:name=".Activity.UserClueList"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_user_seenlist" />
         <activity
-            android:name=".Activity.Main3Activity"
+            android:name=".Activity.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -84,6 +90,7 @@
         </activity>
         <activity
             android:name=".Activity.Maps2Activity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_maps2" />
 
         <service
@@ -93,7 +100,6 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Service.GcmTokenRefreshService"
             android:exported="false">
@@ -101,7 +107,6 @@
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Service.GcmRegisterService"
             android:exported="false" />
@@ -118,6 +123,9 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".Activity.UserNoticeClue"
+            android:label="เบาะแสที่เกี่ยวข้อง" />
     </application>
 
 </manifest>

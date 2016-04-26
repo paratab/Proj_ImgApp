@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,7 +30,8 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
 
     public final int SELECT_IMAGE_GALLERY = 1;
     public final int SELECT_IMAGE_CAMERA = 2;
-    ImageButton btUpdate, btChangePW;
+    Button btUpdate;
+    ImageButton btChangePW;
     TextView edtUsername, edtID, edtPassword;
     EditText edtName, edtEmail, edtTelephone;
     UserLocalStore userLocalStore;
@@ -42,7 +44,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail_edit);
 
-        btUpdate = (ImageButton) findViewById(R.id.btUpdate);
+        btUpdate = (Button) findViewById(R.id.btUpdate);
         btChangePW = (ImageButton) findViewById(R.id.btChangePW);
         edtUsername = (TextView) findViewById(R.id.edtUsername);
         edtPassword = (TextView) findViewById(R.id.edtPassword);
@@ -103,12 +105,11 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                 }
 
                 Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                String imageStr = MidModule.bitmapToString(image);
 
-                User user = new User(username, password, name, nationId, email, telephone, imageStr);
+                User user = new User(username, password, name, nationId, email, telephone, "");
 
                 ServerRequest serverRequest = new ServerRequest(this);
-                serverRequest.updateUserDataInBG(user, new GetUserCallBack() {
+                serverRequest.updateUserDataInBG(user, image,new GetUserCallBack() {
                     @Override
                     public void done(User returnedUser, String resultStr) {
                         if (returnedUser != null) {

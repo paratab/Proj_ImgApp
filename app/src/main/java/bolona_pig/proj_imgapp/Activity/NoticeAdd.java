@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -36,7 +37,8 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
     final int MAP_LOCATION_REQUEST = 3;
     EditText edtLnName, edtLnBirthDate, edtLnPlace, edtLnLostDate, edtLnDetail;
     TextView tvLnAdder, tvLnPhone;
-    ImageButton btAddNotice, location;
+    ImageButton location;
+    Button btAddNotice;
     UserLocalStore userLocalStore;
     ServerRequest serverRequest;
     DateTime dateTime;
@@ -58,7 +60,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         edtLnDetail = (EditText) findViewById(R.id.edtLnDetail);
         tvLnAdder = (TextView) findViewById(R.id.tvLnAdder);
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
-        btAddNotice = (ImageButton) findViewById(R.id.btNoticeAdd);
+        btAddNotice = (Button) findViewById(R.id.btNoticeAdd);
         imageView = (ImageView) findViewById(R.id.imageView);
         location = (ImageButton) findViewById(R.id.location);
 
@@ -151,7 +153,7 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         } else if (requestCode == MAP_LOCATION_REQUEST && resultCode == RESULT_OK && data != null) {
             double lat = data.getDoubleExtra("lat", 0.0);
             double lng = data.getDoubleExtra("lng", 0.0);
-            String temp = "[Lat/Lng] : [" + lat + "," + lng + "]";
+            String temp = "[พิกัด] : [" + lat + "," + lng + "]";
             edtLnPlace.setText(temp);
         }
     }
@@ -200,11 +202,10 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
         String detail = edtLnDetail.getText().toString();
 
         Bitmap image;
-        String imageStr;
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = MidModule.bitmapToString(image);
+            //imageStr = MidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
             Toast.makeText(this, "กรุณาเลือกรูปภาพ.", Toast.LENGTH_SHORT).show();
@@ -216,8 +217,8 @@ public class NoticeAdd extends AppCompatActivity implements View.OnClickListener
             return;
         }
 
-        Notice notice = new Notice(-1, name, sex, birthDate, lostPlace, lostDate, detail, user.username, user.name, user.telephone, imageStr);
-        serverRequest.storeNoticeDataInBG(notice, new GetNoticeCallBack() {
+        Notice notice = new Notice(-1, name, sex, birthDate, lostPlace, lostDate, detail, user.username, user.name, user.telephone, "");
+        serverRequest.storeNoticeDataInBG(notice, image,new GetNoticeCallBack() {
             @Override
             public void done(Notice returnNotice, String resultStr) {
                 if (returnNotice == null) {

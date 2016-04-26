@@ -80,9 +80,44 @@ public class UserNoticeList extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        GridItem item = (GridItem) parent.getItemAtPosition(position);
-        Intent intent = new Intent(this, NoticeDetail.class);
-        intent.putExtra("noticeId", item.id + "");
-        startActivity(intent);
+        final GridItem item = (GridItem) parent.getItemAtPosition(position);
+        showNoticeOption(item);
+//        Intent intent = new Intent(this, NoticeDetail.class);
+//        intent.putExtra("noticeId", item.id + "");
+//        startActivity(intent);
     }
+
+//    @Override
+//    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//        final GridItem item = (GridItem) parent.getItemAtPosition(position);
+//        showNoticeOption(item);
+//        return false;
+//    }
+
+    public void showNoticeOption(final GridItem item){
+
+        final CharSequence[] items = {"ดูข้อมูลของประกาศ","ดูเบาะแสที่เกี่ยวข้อง", "ยกเลิก"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("ตัวเลือกประกาศ");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (items[which].equals("ดูข้อมูลของประกาศ")) {
+                    Intent intent = new Intent(UserNoticeList.this, NoticeDetail.class);
+                    intent.putExtra("noticeId", item.id + "");
+                    startActivity(intent);
+                } else if (items[which].equals("ดูเบาะแสที่เกี่ยวข้อง")) {
+                    Intent intent = new Intent(UserNoticeList.this,UserNoticeClue.class);
+                    intent.putExtra("noticeId", item.id + "");
+                    startActivity(intent);
+                } else if (items[which].equals("ยกเลิก")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+
 }

@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
@@ -18,7 +18,7 @@ import bolona_pig.proj_imgapp.R;
 public class UserPassChange extends AppCompatActivity implements View.OnClickListener {
 
     EditText edtPassword, edtNewPassword, edtReplyNewPassword;
-    ImageButton btSavePassword;
+    Button btSavePassword;
     UserLocalStore userLocalStore;
     MidModule MidModule;
 
@@ -30,7 +30,7 @@ public class UserPassChange extends AppCompatActivity implements View.OnClickLis
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtNewPassword = (EditText) findViewById(R.id.edtNewPassword);
         edtReplyNewPassword = (EditText) findViewById(R.id.edtReplyNewPassword);
-        btSavePassword = (ImageButton) findViewById(R.id.btSavePassword);
+        btSavePassword = (Button) findViewById(R.id.btSavePassword);
 
         btSavePassword.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);

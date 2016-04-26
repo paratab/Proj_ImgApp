@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -35,7 +36,8 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
     final int SELECT_IMAGE_CAMERA = 2;
     final int MAP_LOCATION_REQUEST = 3;
 
-    ImageButton btClueAdd, location;
+    Button btClueAdd;
+    ImageButton location;
     EditText edtClueDate, edtCluePlace, edtClueDetail;
     TextView tvClueAdder, tvCluePhone;
     UserLocalStore userLocalStore;
@@ -46,7 +48,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
     MidModule MidModule;
     Boolean isSexSelected = false;
     String sex;
-    boolean isDirectMode;
+    int noticeId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
         edtClueDetail = (EditText) findViewById(R.id.edtClueDetail);
         tvClueAdder = (TextView) findViewById(R.id.tvClueAdder);
         tvCluePhone = (TextView) findViewById(R.id.tvCluePhone);
-        btClueAdd = (ImageButton) findViewById(R.id.btClueAdd);
+        btClueAdd = (Button) findViewById(R.id.btClueAdd);
         imageView = (ImageView) findViewById(R.id.imageView);
         location = (ImageButton) findViewById(R.id.location);
 
@@ -81,7 +83,13 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
 //        edtClueDate.setText("21-Feb-2016");
 //        edtCluePlace.setText("ใต้สพาน ตลาดสุวรรณภูมิ");
 //        edtClueDetail.setText("พบเห็นมาถามทาง จึงขอถ่ายรูปมาช่วยตามหาผู้ปกครอง");
-        isDirectMode = getIntent().getExtras().getBoolean("DirectMode", false);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle != null) {
+            noticeId = Integer.parseInt(bundle.getString("noticeId", "-1"));
+        }else{
+            noticeId = -1;
+        }
         tvClueAdder.setText(user.name);
         tvCluePhone.setText(user.telephone);
     }
@@ -145,7 +153,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
         } else if (requestCode == MAP_LOCATION_REQUEST && resultCode == RESULT_OK && data != null) {
             double lat = data.getDoubleExtra("lat", 0.0);
             double lng = data.getDoubleExtra("lng", 0.0);
-            String temp = "[Lat/Lng] : [" + lat + "," + lng + "]";
+            String temp = "[พิกัด] : [" + lat + "," + lng + "]";
             edtCluePlace.setText(temp);
         }
     }
@@ -156,19 +164,18 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
         String detail = edtClueDetail.getText().toString();
 
         Bitmap image;
-        String imageStr;
 
         try {
             image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            imageStr = MidModule.bitmapToString(image);
+            //imageStr = MidModule.bitmapToString(image);
         } catch (Exception e) {
             Log.e("custom_check", "Image is null, " + e.toString());
             Toast.makeText(this, "กรุณาเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Clue info = new Clue(-1, sex, date, place, detail, user.username, user.name, user.telephone, imageStr);
-        serverRequest.storeClueDataInBG(info, new GetClueCallback() {
+        Clue clueInfo = new Clue(-1, sex, date, place, detail, user.username, user.name, user.telephone, "");
+        serverRequest.storeClueDataInBG(clueInfo,image, noticeId, new GetClueCallback() {
             @Override
             public void done(Clue returnInfo, String resultStr) {
                 if (returnInfo == null) {
@@ -198,7 +205,7 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
 
     public void showResult(Clue info) {
         Intent intent = new Intent();
-        intent.putExtra("ClueId", info.id + "");
+        intent.putExtra("clueId", info.id + "");
         setResult(RESULT_OK, intent);
         finish();
     }

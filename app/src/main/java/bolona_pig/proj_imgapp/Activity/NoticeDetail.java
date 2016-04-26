@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.GridLayout;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import bolona_pig.proj_imgapp.R;
 
 public class NoticeDetail extends AppCompatActivity implements View.OnClickListener {
 
+    final int ADD_CLUE = 1;
     TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone, tvLnSex;
     ServerRequest serverRequest;
     UserLocalStore userLocalStore;
@@ -36,8 +38,9 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
     DateTime dateTime;
     ImageView imageView;
     boolean imageChange;
-    ImageButton imbTel, ImbMessage, imbMarkFin, imbEdit, imbDel, location;
-    GridLayout gridUser, gridOwner, gridAdmin;
+    Button imbTel, ImbMessage, imbMarkFin, imbEdit, imbDel, imbClueAdd;
+    ImageButton location;
+    LinearLayout gridUser, gridOwner, gridAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +56,15 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         tvLnPhone = (TextView) findViewById(R.id.tvLnPhone);
         tvLnSex = (TextView) findViewById(R.id.tvLnSex);
         imageView = (ImageView) findViewById(R.id.imageView);
-        imbTel = (ImageButton) findViewById(R.id.imbTelephone);
-        ImbMessage = (ImageButton) findViewById(R.id.imbMessage);
-        imbMarkFin = (ImageButton) findViewById(R.id.imbOwnMark);
-        imbEdit = (ImageButton) findViewById(R.id.imbOwnEdit);
-        imbDel = (ImageButton) findViewById(R.id.imbAdminDelete);
-        gridUser = (GridLayout) findViewById(R.id.gridUser);
-        gridOwner = (GridLayout) findViewById(R.id.gridOwner);
-        gridAdmin = (GridLayout) findViewById(R.id.gridAdmin);
+        imbTel = (Button) findViewById(R.id.imbTelephone);
+        ImbMessage = (Button) findViewById(R.id.imbMessage);
+        imbMarkFin = (Button) findViewById(R.id.imbOwnMark);
+        imbEdit = (Button) findViewById(R.id.imbOwnEdit);
+        imbDel = (Button) findViewById(R.id.imbAdminDelete);
+        imbClueAdd = (Button) findViewById(R.id.imbClueAdd);
+        gridUser = (LinearLayout) findViewById(R.id.gridUser);
+        gridOwner = (LinearLayout) findViewById(R.id.gridOwner);
+        gridAdmin = (LinearLayout) findViewById(R.id.gridAdmin);
         location = (ImageButton) findViewById(R.id.location);
 
         serverRequest = new ServerRequest(this);
@@ -73,6 +77,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         imbEdit.setOnClickListener(this);
         imbDel.setOnClickListener(this);
         location.setOnClickListener(this);
+        imbClueAdd.setOnClickListener(this);
         imageChange = false;
     }
 
@@ -114,17 +119,16 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         User user = userLocalStore.getLoggedInUser();
         if (user.username.equals(notice.adderUsername)) {
             gridOwner.setVisibility(View.VISIBLE);
-        } else {
+        } else if (userLocalStore.getLoggedInStatus()) {
             gridUser.setVisibility(View.VISIBLE);
         }
         if (user.isAdmin()) gridAdmin.setVisibility(View.VISIBLE);
 
         String temp = notice.lostPlace;
-        if (temp.startsWith("[Lat/Lng]")) {
+        if (temp.startsWith("[พิกัด]")) {
             location.setVisibility(View.VISIBLE);
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -157,6 +161,11 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
                 String temp = tvLnPlace.getText().toString();
                 intent.putExtra("latlng", temp);
                 startActivity(intent);
+                break;
+            case R.id.imbClueAdd:
+                intent = new Intent(this, ClueAdd.class);
+                intent.putExtra("noticeId", "" + recentNotice.id);
+                startActivityForResult(intent, ADD_CLUE);
                 break;
         }
     }
@@ -191,6 +200,12 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 111 && resultCode == RESULT_OK && data != null) {
             imageChange = data.getExtras().getBoolean("imageChange");
+        } else if (requestCode == ADD_CLUE && resultCode == RESULT_OK && data != null) {
+            String id = data.getStringExtra("clueId");
+            Intent intent = new Intent(this, ClueDetail.class);
+            intent.putExtra("clueId", id);
+            intent.putExtra("menu", "null");
+            startActivity(intent);
         }
     }
 }

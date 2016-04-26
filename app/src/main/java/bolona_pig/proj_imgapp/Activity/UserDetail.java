@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +20,7 @@ import bolona_pig.proj_imgapp.R;
 public class UserDetail extends AppCompatActivity implements View.OnClickListener {
 
     public final int USER_EDIT = 1;
-    ImageButton btLogout, btEditData, btnNoticeList, btnSeenList;
+    Button btEditData;
     TextView edtUsername, edtID, edtPassword, edtTelephone, edtName, edtEmail;
     UserLocalStore userLocalStore;
     ImageView imageView;
@@ -32,8 +32,6 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
 
-        btLogout = (ImageButton) findViewById(R.id.btLogout);
-        btEditData = (ImageButton) findViewById(R.id.btEditData);
         edtUsername = (TextView) findViewById(R.id.edtUsername);
         edtPassword = (TextView) findViewById(R.id.edtPassword);
         edtName = (TextView) findViewById(R.id.edtName);
@@ -41,13 +39,9 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
         edtEmail = (TextView) findViewById(R.id.edtEmail);
         edtTelephone = (TextView) findViewById(R.id.edtPhone);
         imageView = (ImageView) findViewById(R.id.imageView);
-        btnNoticeList = (ImageButton) findViewById(R.id.btNoticeList);
-        btnSeenList = (ImageButton) findViewById(R.id.btSeenList);
+        btEditData = (Button) findViewById(R.id.btEditData);
 
-        btLogout.setOnClickListener(this);
         btEditData.setOnClickListener(this);
-        btnSeenList.setOnClickListener(this);
-        btnNoticeList.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
         MidModule = new MidModule();
         imageChange = false;
@@ -80,21 +74,9 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-            case R.id.btLogout:
-                userLocalStore.clearUserData();
-                userLocalStore.setUserLoggedIn(false);
-                finish();
-                break;
-
             case R.id.btEditData:
                 intent = new Intent(this, UserDetailEdit.class);
                 startActivityForResult(intent, USER_EDIT);
-                break;
-            case R.id.btNoticeList:
-                startActivity(new Intent(this, UserNoticeList.class));
-                break;
-            case R.id.btSeenList:
-                startActivity(new Intent(this, UserClueList.class));
                 break;
         }
     }

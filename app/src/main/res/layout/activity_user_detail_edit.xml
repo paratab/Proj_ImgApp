@@ -126,14 +126,15 @@
             android:layout_marginBottom="15dp" />
 
 
-        <ImageButton
+        <Button
             android:id="@+id/btUpdate"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@null"
-            android:scaleType="centerCrop"
-            android:src="@drawable/save" />
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_saves"
+            android:text="@string/save"
+            android:textSize="16sp"/>
 
 
     </LinearLayout>

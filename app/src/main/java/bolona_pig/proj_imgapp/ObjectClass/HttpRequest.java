@@ -25,7 +25,7 @@ public class HttpRequest {
         returnString = "";
     }
 
-    public int makeHttpRequest(Map<String, String> data, String address) {
+    public boolean makeHttpRequest(Map<String, String> data, String address) {
 
         String encodeData = getEncodeData(data);
         BufferedReader reader = null; // Read some data from server
@@ -37,6 +37,7 @@ public class HttpRequest {
 
             con.setRequestMethod("POST");
             con.setConnectTimeout(TIMEOUT);
+            con.getReadTimeout();
             con.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
             writer.write(encodeData);
@@ -55,8 +56,13 @@ public class HttpRequest {
             }
             returnString = strb.toString();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+//        catch(SocketTimeoutException e){
+//            Log.e("custom_check", e.toString());
+//        }
+        catch (Exception e) {
+            Log.e("custom_check", e.toString());
+            return false;
         } finally {
             if (reader != null) {
                 try {
@@ -67,7 +73,7 @@ public class HttpRequest {
             }
         }
 
-        return responseCode;
+        return responseCode == HttpURLConnection.HTTP_OK;
     }
 
     private String getEncodeData(Map<String, String> data) {

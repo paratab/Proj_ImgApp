@@ -32,7 +32,7 @@ public class Maps2Activity extends FragmentActivity implements OnMapReadyCallbac
     protected void onStart() {
         super.onStart();
         String latlngStr = getIntent().getExtras().getString("latlng");
-        if (!latlngStr.isEmpty() && latlngStr.startsWith("[Lat/Lng] : ")) {
+        if (!latlngStr.isEmpty() && latlngStr.startsWith("[พิกัด] : ")) {
             latlngStr = latlngStr.substring(13, latlngStr.length() - 1);
             String[] latlong = latlngStr.split(",");
             double latitude = Double.parseDouble(latlong[0]);

@@ -1,10 +1,13 @@
 package bolona_pig.proj_imgapp.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,8 +16,10 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import bolona_pig.proj_imgapp.CallBack.GetBooleanCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetClueCallback;
 import bolona_pig.proj_imgapp.ObjectClass.Clue;
+import bolona_pig.proj_imgapp.ObjectClass.MidModule;
 import bolona_pig.proj_imgapp.ObjectClass.ServerRequest;
 import bolona_pig.proj_imgapp.ObjectClass.User;
 import bolona_pig.proj_imgapp.ObjectClass.UserLocalStore;
@@ -26,9 +31,11 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
     ServerRequest serverRequest;
     Clue clueInfo;
     ImageView imageView;
-    ImageButton imbTel, imbMessage, location;
+    Button imbTel, imbMessage, imbSave, imbDelete;
+    ImageButton location;
     LinearLayout gridUser;
     UserLocalStore userLocalStore;
+    int notice_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,23 +48,37 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
         tvClueAdder = (TextView) findViewById(R.id.tvClueAdder);
         tvCluePhone = (TextView) findViewById(R.id.tvCluePhone);
         imageView = (ImageView) findViewById(R.id.imageView);
-        imbTel = (ImageButton) findViewById(R.id.imbTelephone);
-        imbMessage = (ImageButton) findViewById(R.id.imbMessage);
+        imbTel = (Button) findViewById(R.id.imbTelephone);
+        imbMessage = (Button) findViewById(R.id.imbMessage);
         gridUser = (LinearLayout) findViewById(R.id.gridUser);
         tvSex = (TextView) findViewById(R.id.tvSex);
         location = (ImageButton) findViewById(R.id.location);
+        imbSave = (Button) findViewById(R.id.imbSave);
+        imbDelete = (Button) findViewById(R.id.imbDelete);
 
         serverRequest = new ServerRequest(this);
         userLocalStore = new UserLocalStore(this);
         imbTel.setOnClickListener(this);
         imbMessage.setOnClickListener(this);
         location.setOnClickListener(this);
+        imbSave.setOnClickListener(this);
+        imbDelete.setOnClickListener(this);
     }
 
     @Override
     protected void onStart() {
+        //TODO Change option to boolean or int not notice id;
         super.onStart();
-        int infoId = Integer.parseInt(getIntent().getExtras().getString("clueId"));
+        int infoId = Integer.parseInt(getIntent().getStringExtra("clueId"));
+        String menu = getIntent().getStringExtra("menu");
+
+        if (menu.equals("save")) {
+            notice_id = Integer.parseInt(getIntent().getStringExtra("noticeId"));
+            imbSave.setVisibility(View.VISIBLE);
+        } else if (menu.equals("delete")) {
+            imbDelete.setVisibility(View.VISIBLE);
+        }
+
         serverRequest.fetchClueDataInBG(infoId, new GetClueCallback() {
             @Override
             public void done(Clue returnInfo, String resultStr) {
@@ -69,6 +90,10 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
+
+        if (clueInfo.seenPlace.startsWith("[พิกัด]")) {
+            location.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showClueInfo(Clue info) {
@@ -87,10 +112,6 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
             gridUser.setVisibility(View.VISIBLE);
         }
 
-        String temp = info.seenPlace;
-        if (temp.startsWith("[Lat/Lng]")) {
-            location.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -114,6 +135,62 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
                 intent.putExtra("latlng", temp);
                 startActivity(intent);
                 break;
+            case R.id.imbSave:
+                updateClueStatus(userLocalStore.getLoggedInUser().username);
+                break;
+            case R.id.imbDelete:
+                deleteClueStatus(userLocalStore.getLoggedInUser().username);
+                break;
         }
+    }
+
+    private void deleteClueStatus(final String username) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("ลบเบาะแส");
+        builder.setMessage("คุณแน่ใจที่จะ \"ลบเบาะแส\" ออกจากรายการบันทึกหรือไม่");
+        builder.setNegativeButton("ยกเลิก", null);
+        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                serverRequest.updateClueStatusDelete(clueInfo.id, username, new GetBooleanCallBack() {
+                    @Override
+                    public void done(Boolean flag, String resultStr) {
+                        if (flag != null && flag) {
+                            Toast.makeText(ClueDetail.this, "ลบเบาะแสเสร็จสิ้น", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            MidModule midModule = new MidModule();
+                            midModule.showAlertDialog(resultStr, ClueDetail.this);
+                        }
+                    }
+                });
+            }
+        });
+        builder.show();
+    }
+
+    private void updateClueStatus(final String username) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("จัดเก็บข้อมูล");
+        builder.setMessage("คุณแน่ใจที่จะ\"จัดเก็บเบาะแส\"\n ไว้หรือไม่");
+        builder.setNegativeButton("ยกเลิก", null);
+        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                serverRequest.updateClueStatusSave(clueInfo.id, notice_id, username, new GetBooleanCallBack() {
+                    @Override
+                    public void done(Boolean flag, String resultStr) {
+                        if (flag != null && flag) {
+                            Toast.makeText(ClueDetail.this, "จัดเก็บเสร็จสิ้น", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            MidModule midModule = new MidModule();
+                            midModule.showAlertDialog(resultStr, ClueDetail.this);
+                        }
+                    }
+                });
+            }
+        });
+        builder.show();
     }
 }

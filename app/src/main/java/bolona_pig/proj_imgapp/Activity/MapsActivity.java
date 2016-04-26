@@ -98,7 +98,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             @Override
             public void onClick(View v) {
                 Log.i("custom_check", latlng.toString());
-                Toast.makeText(MapsActivity.this, latlng.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MapsActivity.this, latlng.toString(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putExtra("lat", latlng.latitude);
                 intent.putExtra("lng", latlng.longitude);
@@ -115,7 +115,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             googleApiClient.connect();
         }
         String latlngStr = getIntent().getExtras().getString("latlng");
-        if (!latlngStr.isEmpty() && latlngStr.startsWith("[Lat/Lng] : ")) {
+        if (!latlngStr.isEmpty() && latlngStr.startsWith("[พิกัด] : ")) {
             latlngStr = latlngStr.substring(13, latlngStr.length() - 1);
             String[] latlong = latlngStr.split(",");
             double latitude = Double.parseDouble(latlong[0]);
@@ -181,7 +181,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
                 latlng = position.target;
 
-                Log.i("custom_check", "[" + position.target.latitude + "," + position.target.longitude + "]");
+                //Log.i("custom_check", "[" + position.target.latitude + "," + position.target.longitude + "]");
 
                 new ReverseGeoCodingTask(position.target, new GetBooleanCallBack() {
                     @Override
@@ -290,7 +290,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                     }
                 }
                 str = strReturnedAddress.toString();
-                Log.e("custom_check", str);
+                //Log.e("custom_check", str);
             }
 
             return Boolean.TRUE;

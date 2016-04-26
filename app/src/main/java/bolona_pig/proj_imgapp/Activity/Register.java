@@ -11,8 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,7 +27,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     public final int SELECT_IMAGE_GALLERY = 1;
     public final int SELECT_IMAGE_CAMERA = 2;
-    ImageButton btRegister;
+    Button btRegister;
     EditText edtUsername, edtPassword, edtReplyPassword, edtName, edtID, edtEmail, edtTelephone;
     MidModule MidModule;
     ImageView imageView;
@@ -50,7 +50,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        btRegister = (ImageButton) findViewById(R.id.btRegister);
+        btRegister = (Button) findViewById(R.id.btRegister);
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtReplyPassword = (EditText) findViewById(R.id.edtReplyPassword);
@@ -124,37 +124,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btRegister:
-
-                String username = edtUsername.getText().toString();
-                String password = edtPassword.getText().toString();
-                String replyPassword = edtReplyPassword.getText().toString();
-                String name = edtName.getText().toString();
-                String nationId = edtID.getText().toString();
-                String email = edtEmail.getText().toString();
-                String telephone = edtTelephone.getText().toString();
-
-                Bitmap image;
-                String imageStr;
-
-                try {
-                    image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                    imageStr = MidModule.bitmapToString(image);
-                } catch (Exception e) {
-                    Log.e("custom_check", "Image is null, " + e.toString());
-                    Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (!checkInput(username, password, replyPassword, nationId, email, telephone)) {
-                    return;
-                }
-
-                password = MidModule.getSHA1Hash(password);
-
-                User user = new User(username, password, name, nationId, email, telephone, imageStr);
-
-                registerUser(user);
-
+                registerUser();
                 break;
             case R.id.imageUpload:
                 selectImage();
@@ -162,9 +132,36 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
-    private void registerUser(User user) {
+    private void registerUser() {
+        String username = edtUsername.getText().toString();
+        String password = edtPassword.getText().toString();
+        String replyPassword = edtReplyPassword.getText().toString();
+        String name = edtName.getText().toString();
+        String nationId = edtID.getText().toString();
+        String email = edtEmail.getText().toString();
+        String telephone = edtTelephone.getText().toString();
+
+        Bitmap image;
+
+        try {
+            image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            //imageStr = MidModule.bitmapToString(image);
+        } catch (Exception e) {
+            Log.e("custom_check", "Image is null, " + e.toString());
+            Toast.makeText(this, "ยังไม่มีการเลือกรูปภาพ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!checkInput(username, password, replyPassword, nationId, email, telephone)) {
+            return;
+        }
+
+        password = MidModule.getSHA1Hash(password);
+
+        User user = new User(username, password, name, nationId, email, telephone, "");
+
         ServerRequest serverRequest = new ServerRequest(this);
-        serverRequest.storeUserDataInBG(user, new GetUserCallBack() {
+        serverRequest.storeUserDataInBG(user, image, new GetUserCallBack() {
             @Override
             public void done(User returnedUser, String resultStr) {
                 if (returnedUser != null) {

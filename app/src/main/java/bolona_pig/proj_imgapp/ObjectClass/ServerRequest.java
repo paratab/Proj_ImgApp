@@ -2,6 +2,7 @@ package bolona_pig.proj_imgapp.ObjectClass;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -28,7 +29,10 @@ public class ServerRequest {
 
     public static final String ADDRESS = "http://www.surawit-sj.xyz";
     ProgressDialog progressDialog;
+    ProgressDialog customText;
     Context context;
+    MidModule midModule = new MidModule();
+    HttpRequest httpRequest = new HttpRequest();
 
     public ServerRequest(Context context) {
         this.context = context;
@@ -38,9 +42,9 @@ public class ServerRequest {
         progressDialog.setMessage("กรุณารอซักครู่...");
     }
 
-    public void storeUserDataInBG(User user, GetUserCallBack userCallBack) {
+    public void storeUserDataInBG(User user, Bitmap image, GetUserCallBack userCallBack) {
         progressDialog.show();
-        new StoreUserDataAsyncTask(user, userCallBack).execute();
+        new StoreUserDataAsyncTask(user,image, userCallBack).execute();
     }
 
     public void fetchUserDataInBG(User user, GetUserCallBack userCallBack) {
@@ -48,9 +52,9 @@ public class ServerRequest {
         new FetchUserDataAsyncTask(user, userCallBack).execute();
     }
 
-    public void updateUserDataInBG(User user, GetUserCallBack userCallBack) {
+    public void updateUserDataInBG(User user, Bitmap image,GetUserCallBack userCallBack) {
         progressDialog.show();
-        new UpdateUserDataAsyncTask(user, userCallBack).execute();
+        new UpdateUserDataAsyncTask(user,image, userCallBack).execute();
     }
 
     public void updateUserPasswordInBG(User user, String newPassword, GetUserCallBack userCallBack) {
@@ -58,9 +62,9 @@ public class ServerRequest {
         new UpdateUserPasswordAsyncTask(user, newPassword, userCallBack).execute();
     }
 
-    public void storeNoticeDataInBG(Notice notice, GetNoticeCallBack noticeCallBack) {
+    public void storeNoticeDataInBG(Notice notice,Bitmap image, GetNoticeCallBack noticeCallBack) {
         progressDialog.show();
-        new StoreNoticeDataAsyncTask(notice, noticeCallBack).execute();
+        new StoreNoticeDataAsyncTask(notice,image, noticeCallBack).execute();
     }
 
     public void fetchNoticeDataInBG(int noticeId, GetNoticeCallBack noticeCallBack) {
@@ -68,14 +72,14 @@ public class ServerRequest {
         new FetchNoticeDataAsyncTask(noticeId, noticeCallBack).execute();
     }
 
-    public void updateNoticeDataInBG(Notice notice, GetNoticeCallBack noticeCallBack) {
+    public void updateNoticeDataInBG(Notice notice,Bitmap image, GetNoticeCallBack noticeCallBack) {
         progressDialog.show();
-        new UpdateNoticeDataAsyncTask(notice, noticeCallBack).execute();
+        new UpdateNoticeDataAsyncTask(notice, image, noticeCallBack).execute();
     }
 
-    public void storeClueDataInBG(Clue info, GetClueCallback seenInfoCallback) {
+    public void storeClueDataInBG(Clue clueInfo,Bitmap image, int noticeId, GetClueCallback seenInfoCallback) {
         progressDialog.show();
-        new StoreClueDataAsyncTask(info, seenInfoCallback).execute();
+        new StoreClueDataAsyncTask(clueInfo,image, noticeId, seenInfoCallback).execute();
     }
 
     public void fetchClueDataInBG(int infoId, GetClueCallback seenInfoCallback) {
@@ -91,6 +95,10 @@ public class ServerRequest {
         new FetchUserNoticeListAsyncTask(user, itemCallback).execute();
     }
 
+    public void fetchUserNoticeClueInBG(User user,int notice_id, GetItemCallback itemCallback) {
+        new FetchUserNoticeClueAsyncTask(user,notice_id,itemCallback).execute();
+    }
+
     public void fetchUserClueListInBG(User user, GetItemCallback itemCallback) {
         new FetchUserClueListAsyncTask(user, itemCallback).execute();
     }
@@ -104,12 +112,27 @@ public class ServerRequest {
         new UpdateNoticeStatusAsyncTask(id, username, booleanCallBack).execute();
     }
 
+    public void updateClueStatusSave(int clue_id,int notice_id, String username, GetBooleanCallBack booleanCallBack) {
+        progressDialog.show();
+        new UpdateClueStatusSaveAsyncTask(clue_id, notice_id, username, booleanCallBack).execute();
+    }
+
+    public void updateClueStatusDelete(int clue_id, String username, GetBooleanCallBack booleanCallBack) {
+        progressDialog.show();
+        new UpdateClueStatusDeleteAsyncTask(clue_id, username, booleanCallBack).execute();
+    }
+
     public void customSearchInBG(String sex, int minAge, int maxAge, GetItemCallback itemCallback) {
         progressDialog.show();
         new CustomSearchAsyncTask(sex, minAge, maxAge, itemCallback).execute();
     }
 
     public void checkUserNoticeNumberInBG(String username, GetBooleanCallBack booleanCallback) {
+        customText = new ProgressDialog(context);
+        customText.setCancelable(false);
+        customText.setTitle(R.string.processing);
+        customText.setMessage("กำลังดำเนินการเช็คจำนวนประกาศที่สร้างไว้แล้วของท่าน");
+        customText.show();
         new CheckUserNoticeNumberAsyncTask(username, booleanCallback).execute();
     }
 
@@ -128,13 +151,13 @@ public class ServerRequest {
 
         User user;
         GetUserCallBack userCallBack;
-        HttpRequest httpRequest;
         String resultStr;
+        Bitmap image;
 
-        public StoreUserDataAsyncTask(User user, GetUserCallBack userCallBack) {
+        public StoreUserDataAsyncTask(User user,Bitmap image, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
-            httpRequest = new HttpRequest();
+            this.image = image;
         }
 
         @Override
@@ -147,7 +170,7 @@ public class ServerRequest {
             dataToSend.put("nationId", user.nationId);
             dataToSend.put("email", user.email);
             dataToSend.put("telephone", user.telephone);
-            dataToSend.put("imageString", user.imagePath);
+            dataToSend.put("imageString", midModule.bitmapToString(image));
 
             User returnUser = null;
 
@@ -158,14 +181,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreUserData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreUserData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -201,13 +224,11 @@ public class ServerRequest {
     public class FetchUserDataAsyncTask extends AsyncTask<Void, Void, User> {
         User user;
         GetUserCallBack userCallBack;
-        HttpRequest httpRequest;
         String resultStr;
 
         public FetchUserDataAsyncTask(User user, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
-            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -225,14 +246,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -278,13 +299,13 @@ public class ServerRequest {
     public class UpdateUserDataAsyncTask extends AsyncTask<Void, Void, User> {
         User user;
         GetUserCallBack userCallBack;
-        HttpRequest httpRequest;
         String resultStr;
+        Bitmap image;
 
-        public UpdateUserDataAsyncTask(User user, GetUserCallBack userCallBack) {
+        public UpdateUserDataAsyncTask(User user,Bitmap image, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
-            httpRequest = new HttpRequest();
+            this.image = image;
         }
 
         @Override
@@ -295,7 +316,7 @@ public class ServerRequest {
             dataToSend.put("name", user.name);
             dataToSend.put("email", user.email);
             dataToSend.put("telephone", user.telephone);
-            dataToSend.put("imageString", user.imagePath);
+            dataToSend.put("imageString", midModule.bitmapToString(image));
 
             User returnUser = null;
 
@@ -306,14 +327,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateUserData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateUserData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -353,14 +374,12 @@ public class ServerRequest {
         User user;
         GetUserCallBack userCallBack;
         String newPassword;
-        HttpRequest httpRequest;
         String resultStr;
 
         public UpdateUserPasswordAsyncTask(User user, String newPassword, GetUserCallBack userCallBack) {
             this.user = user;
             this.userCallBack = userCallBack;
             this.newPassword = newPassword;
-            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -379,14 +398,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateUserPassword.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateUserPassword.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -424,13 +443,13 @@ public class ServerRequest {
 
         Notice notice;
         GetNoticeCallBack noticeCallBack;
-        HttpRequest httpRequest;
         String resultStr;
+        Bitmap image;
 
-        public StoreNoticeDataAsyncTask(Notice notice, GetNoticeCallBack noticeCallBack) {
+        public StoreNoticeDataAsyncTask(Notice notice,Bitmap image, GetNoticeCallBack noticeCallBack) {
             this.notice = notice;
             this.noticeCallBack = noticeCallBack;
-            httpRequest = new HttpRequest();
+            this.image = image;
         }
 
 
@@ -445,7 +464,7 @@ public class ServerRequest {
             dataToSend.put("lostDate", notice.lostDate);
             dataToSend.put("detail", notice.detail);
             dataToSend.put("username", notice.adderUsername);
-            dataToSend.put("imageString", notice.imagePath);
+            dataToSend.put("imageString", midModule.bitmapToString(image));
 
             Notice returnNotice = null;
 
@@ -456,14 +475,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreNoticeData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreNoticeData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -497,14 +516,12 @@ public class ServerRequest {
     public class FetchNoticeDataAsyncTask extends AsyncTask<Void, Void, Notice> {
 
         GetNoticeCallBack noticeCallBack;
-        HttpRequest httpRequest;
         int noticeId;
         String resultStr;
 
         public FetchNoticeDataAsyncTask(int noticeId, GetNoticeCallBack noticeCallBack) {
             this.noticeId = noticeId;
             this.noticeCallBack = noticeCallBack;
-            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -521,14 +538,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchNoticeData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchNoticeData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -574,13 +591,13 @@ public class ServerRequest {
     public class UpdateNoticeDataAsyncTask extends AsyncTask<Void, Void, Notice> {
         Notice notice;
         GetNoticeCallBack noticeCallBack;
-        HttpRequest httpRequest;
         String resultStr;
+        Bitmap image;
 
-        public UpdateNoticeDataAsyncTask(Notice notice, GetNoticeCallBack noticeCallBack) {
+        public UpdateNoticeDataAsyncTask(Notice notice, Bitmap image,GetNoticeCallBack noticeCallBack) {
             this.notice = notice;
             this.noticeCallBack = noticeCallBack;
-            httpRequest = new HttpRequest();
+            this.image = image;
         }
 
         @Override
@@ -595,7 +612,7 @@ public class ServerRequest {
             dataToSend.put("lostDate", notice.lostDate);
             dataToSend.put("detail", notice.detail);
             dataToSend.put("adderUsername", notice.adderUsername);
-            dataToSend.put("imageString", notice.imagePath);
+            dataToSend.put("imageString", midModule.bitmapToString(image));
 
             Notice returnNotice = null;
 
@@ -606,14 +623,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateNoticeData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateNoticeData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -649,13 +666,15 @@ public class ServerRequest {
 
         Clue clueData;
         GetClueCallback seenInfoCallback;
-        HttpRequest httpRequest;
         String resultStr;
+        int noticeId;
+        Bitmap image;
 
-        public StoreClueDataAsyncTask(Clue clueData, GetClueCallback seenInfoCallback) {
+        public StoreClueDataAsyncTask(Clue clueData,Bitmap image, int noticeId, GetClueCallback seenInfoCallback) {
             this.clueData = clueData;
             this.seenInfoCallback = seenInfoCallback;
-            httpRequest = new HttpRequest();
+            this.noticeId = noticeId;
+            this.image = image;
         }
 
         @Override
@@ -667,7 +686,8 @@ public class ServerRequest {
             dataToSend.put("seenPlace", clueData.seenPlace);
             dataToSend.put("detail", clueData.detail);
             dataToSend.put("adderUsername", clueData.adderUsername);
-            dataToSend.put("imageString", clueData.imagePath);
+            dataToSend.put("imageString", midModule.bitmapToString(image));
+            dataToSend.put("noticeId",""+this.noticeId);
 
             Clue returnClueData = null;
 
@@ -678,14 +698,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreClueData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreClueData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -695,7 +715,7 @@ public class ServerRequest {
                     int resultStoreClueImage = jObj.getInt("resultStoreClueImage");
 
                     if (resultDBConnection == 1 && resultStoreClueData == 1 && resultStoreClueImage == 1) {
-                        int id = jObj.getInt("id");
+                        int id = jObj.getInt("clueId");
                         returnClueData = new Clue(id);
                     } else if (resultDBConnection == 0)
                         resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
@@ -718,14 +738,12 @@ public class ServerRequest {
 
     public class FetchClueDataAsyncTask extends AsyncTask<Void, Void, Clue> {
         GetClueCallback seenInfoCallback;
-        HttpRequest httpRequest;
         int clueId;
         String resultStr;
 
         public FetchClueDataAsyncTask(int clueId, GetClueCallback seenInfoCallback) {
             this.clueId = clueId;
             this.seenInfoCallback = seenInfoCallback;
-            httpRequest = new HttpRequest();
         }
 
         @Override
@@ -742,14 +760,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchClueData.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchClueData.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -792,14 +810,12 @@ public class ServerRequest {
 
     public class FetchNoticeItemGridAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
         GetItemCallback itemCallback;
-        HttpRequest httpRequest;
         ArrayList<GridItem> noticeItems;
         int offset;
         String resultStr;
 
         public FetchNoticeItemGridAsyncTask(int offset, GetItemCallback itemCallback) {
             this.itemCallback = itemCallback;
-            httpRequest = new HttpRequest();
             this.offset = offset;
             noticeItems = new ArrayList<>();
         }
@@ -816,14 +832,14 @@ public class ServerRequest {
                     return noticeItems;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchNoticeItemGrid.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchNoticeItemGrid.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return noticeItems;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -869,14 +885,12 @@ public class ServerRequest {
 
     public class FetchUserNoticeListAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
         GetItemCallback itemCallback;
-        HttpRequest httpRequest;
         ArrayList<GridItem> noticeItems;
         User user;
         String resultStr;
 
         public FetchUserNoticeListAsyncTask(User user, GetItemCallback itemCallback) {
             this.itemCallback = itemCallback;
-            httpRequest = new HttpRequest();
             noticeItems = new ArrayList<>();
             this.user = user;
         }
@@ -893,14 +907,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserNoticeList.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserNoticeList.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
                 if (jObj.length() != 0) {
@@ -943,16 +957,91 @@ public class ServerRequest {
         }
     }
 
+    public class FetchUserNoticeClueAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
+        GetItemCallback itemCallback;
+        ArrayList<GridItem> noticeItems;
+        User user;
+        String resultStr;
+        int notice_id;
+
+        public FetchUserNoticeClueAsyncTask(User user,int notice_id, GetItemCallback itemCallback) {
+            this.itemCallback = itemCallback;
+            noticeItems = new ArrayList<>();
+            this.notice_id = notice_id;
+            this.user = user;
+        }
+
+        @Override
+        public ArrayList<GridItem> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("username", user.username);
+            dataToSend.put("notice_id", ""+notice_id);
+
+            try {
+
+                if (!isNetworkAvailable()) {
+                    resultStr = context.getResources().getString(R.string.errorNotConnectInternet);
+                    return null;
+                }
+
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserNoticeClue.php");
+                if (! isConnectionSuccess) { 
+                    resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    return null;
+                }
+
+                String line = httpRequest.getReturnString();
+                Log.i("custom_check", "Response : "+ line);
+
+                JSONObject jObj = new JSONObject(line);
+                if (jObj.length() != 0) {
+                    int resultDBConnection = jObj.getInt("resultDBConnection");
+                    int resultFetchUserClueListData = jObj.getInt("resultFetchUserClueListData");
+
+                    if (resultDBConnection == 1 && resultFetchUserClueListData == 1) {
+                        JSONArray noticeArray = jObj.getJSONArray("gridItem");
+                        GridItem item;
+                        if (noticeArray.length() != 0) {
+                            for (int i = 0; i < noticeArray.length(); i++) {
+                                JSONObject items = noticeArray.getJSONObject(i);
+                                int id = items.getInt("id");
+                                String sex = items.getString("sex");
+                                String seenDate = items.getString("seenDate");
+                                String imagePath = ADDRESS + items.getString("imagePath");
+                                item = new GridItem(id, sex, seenDate, imagePath);
+                                noticeItems.add(item);
+                            }
+                        } else {
+                            resultStr = context.getResources().getString(R.string.errorNoNoticeExist);
+                        }
+                    } else if (resultDBConnection == 0)
+                        resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    else if (resultFetchUserClueListData == 0)
+                        resultStr = context.getResources().getString(R.string.errorSystemWorkingIncorrectly);
+                }
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return noticeItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<GridItem> noticeItems) {
+            itemCallback.done(noticeItems, resultStr);
+            super.onPostExecute(noticeItems);
+
+        }
+    }
+
     public class FetchUserClueListAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
         GetItemCallback itemCallback;
-        HttpRequest httpRequest;
         ArrayList<GridItem> noticeItems;
         User user;
         String resultStr;
 
         public FetchUserClueListAsyncTask(User user, GetItemCallback itemCallback) {
             this.itemCallback = itemCallback;
-            httpRequest = new HttpRequest();
             noticeItems = new ArrayList<>();
             this.user = user;
         }
@@ -969,14 +1058,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserClueList.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/FetchUserClueList.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
                 if (jObj.length() != 0) {
@@ -989,10 +1078,10 @@ public class ServerRequest {
                             for (int i = 0; i < noticeArray.length(); i++) {
                                 JSONObject items = noticeArray.getJSONObject(i);
                                 int id = items.getInt("id");
-                                String place = items.getString("seenPlace");
+                                String sex = items.getString("sex");
                                 String date = items.getString("seenDate");
                                 String imagePath = ADDRESS + items.getString("imagePath");
-                                item = new GridItem(id, place, date, imagePath);
+                                item = new GridItem(id, sex, date, imagePath);
                                 noticeItems.add(item);
                             }
                         } else {
@@ -1019,13 +1108,11 @@ public class ServerRequest {
 
     public class CheckUsernameExistInBG extends AsyncTask<Void, Void, Boolean> {
         GetBooleanCallBack booleanCallBack;
-        HttpRequest httpRequest;
         String username;
         String resultStr;
 
         public CheckUsernameExistInBG(String username, GetBooleanCallBack booleanCallBack) {
             this.booleanCallBack = booleanCallBack;
-            httpRequest = new HttpRequest();
             this.username = username;
         }
 
@@ -1043,14 +1130,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/CheckUsernameExist.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/CheckUsernameExist.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
                 if (jObj.length() != 0) {
@@ -1080,13 +1167,11 @@ public class ServerRequest {
 
     public class UpdateNoticeStatusAsyncTask extends AsyncTask<Void, Void, Boolean> {
         GetBooleanCallBack booleanCallBack;
-        HttpRequest httpRequest;
         int id;
         String resultStr, username;
 
         public UpdateNoticeStatusAsyncTask(int id, String username, GetBooleanCallBack booleanCallBack) {
             this.booleanCallBack = booleanCallBack;
-            httpRequest = new HttpRequest();
             this.id = id;
             this.username = username;
         }
@@ -1106,14 +1191,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateNoticeStatus.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateNoticeStatus.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
                 if (jObj.length() != 0) {
@@ -1143,9 +1228,137 @@ public class ServerRequest {
         }
     }
 
+    public class UpdateClueStatusSaveAsyncTask extends AsyncTask<Void, Void, Boolean> {
+        GetBooleanCallBack booleanCallBack;
+        int clue_id, notice_id;
+        String resultStr, username;
+
+        public UpdateClueStatusSaveAsyncTask(int clue_id,int notice_id, String username, GetBooleanCallBack booleanCallBack) {
+            this.booleanCallBack = booleanCallBack;
+            this.clue_id = clue_id;
+            this.notice_id = notice_id;
+            this.username = username;
+        }
+
+        @Override
+        public Boolean doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("username", username);
+            dataToSend.put("clue_id", this.clue_id + "");
+            dataToSend.put("notice_id", this.notice_id + "");
+
+            Boolean isUpdateSuccess = null;
+
+            try {
+
+                if (!isNetworkAvailable()) {
+                    resultStr = context.getResources().getString(R.string.errorNotConnectInternet);
+                    return null;
+                }
+
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateClueStatusSave.php");
+                if (! isConnectionSuccess) { 
+                    resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    return null;
+                }
+
+                String line = httpRequest.getReturnString();
+                Log.i("custom_check", "Response : "+ line);
+
+                JSONObject jObj = new JSONObject(line);
+                if (jObj.length() != 0) {
+                    int resultDBConnection = jObj.getInt("resultDBConnection");
+                    int resultUpdateStatus = jObj.getInt("resultUpdateStatus");
+                    int resultNoticeStatus = jObj.getInt("resultClueStatus");
+                    int resultClueSave = jObj.getInt("resultClueSave");
+
+                    if (resultDBConnection == 1 && resultUpdateStatus == 1 && resultNoticeStatus == 1 && resultClueSave == 1) {
+                        isUpdateSuccess = true;
+                    } else if (resultDBConnection == 0)
+                        resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    else
+                        resultStr = context.getResources().getString(R.string.errorSystemWorkingIncorrectly);
+                }
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return isUpdateSuccess;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isUpdateSuccess) {
+            progressDialog.dismiss();
+            booleanCallBack.done(isUpdateSuccess, resultStr);
+            super.onPostExecute(isUpdateSuccess);
+        }
+    }
+
+    public class UpdateClueStatusDeleteAsyncTask extends AsyncTask<Void, Void, Boolean> {
+        GetBooleanCallBack booleanCallBack;
+        int clue_id;
+        String resultStr, username;
+
+        public UpdateClueStatusDeleteAsyncTask(int clue_id, String username, GetBooleanCallBack booleanCallBack) {
+            this.booleanCallBack = booleanCallBack;
+            this.clue_id = clue_id;
+            this.username = username;
+        }
+
+        @Override
+        public Boolean doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("username", username);
+            dataToSend.put("clue_id", this.clue_id + "");
+
+            Boolean isUpdateSuccess = null;
+
+            try {
+
+                if (!isNetworkAvailable()) {
+                    resultStr = context.getResources().getString(R.string.errorNotConnectInternet);
+                    return null;
+                }
+
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/UpdateClueStatusDelete.php");
+                if (! isConnectionSuccess) { 
+                    resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    return null;
+                }
+
+                String line = httpRequest.getReturnString();
+                Log.i("custom_check", "Response : "+ line);
+
+                JSONObject jObj = new JSONObject(line);
+                if (jObj.length() != 0) {
+                    int resultDBConnection = jObj.getInt("resultDBConnection");
+                    int resultUpdateStatus = jObj.getInt("resultUpdateStatus");
+                    int resultClueStatus = jObj.getInt("resultClueStatus");
+
+                    if (resultDBConnection == 1 && resultUpdateStatus == 1 && resultClueStatus == 1) {
+                        isUpdateSuccess = true;
+                    } else if (resultDBConnection == 0)
+                        resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
+                    else
+                        resultStr = context.getResources().getString(R.string.errorSystemWorkingIncorrectly);
+                }
+            } catch (Exception e) {
+                Log.i("custom_check", e.toString());
+            }
+
+            return isUpdateSuccess;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isUpdateSuccess) {
+            progressDialog.dismiss();
+            booleanCallBack.done(isUpdateSuccess, resultStr);
+            super.onPostExecute(isUpdateSuccess);
+        }
+    }
+
     public class CustomSearchAsyncTask extends AsyncTask<Void, Void, ArrayList<GridItem>> {
         GetItemCallback itemCallback;
-        HttpRequest httpRequest;
         int minAge, maxAge;
         String resultStr, sex;
         ArrayList<GridItem> noticeItems;
@@ -1153,7 +1366,6 @@ public class ServerRequest {
         public CustomSearchAsyncTask(String sex, int minAge, int maxAge, GetItemCallback itemCallback) {
             this.itemCallback = itemCallback;
             noticeItems = new ArrayList<>();
-            httpRequest = new HttpRequest();
             this.minAge = minAge;
             this.maxAge = maxAge;
             this.sex = sex;
@@ -1181,14 +1393,14 @@ public class ServerRequest {
                     return noticeItems;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/NoticeCustomSearch.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/NoticeCustomSearch.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return noticeItems;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
 
@@ -1234,13 +1446,11 @@ public class ServerRequest {
 
     public class CheckUserNoticeNumberAsyncTask extends AsyncTask<Void, Void, Boolean> {
         GetBooleanCallBack booleanCallBack;
-        HttpRequest httpRequest;
         String username;
         String resultStr;
 
         public CheckUserNoticeNumberAsyncTask(String username, GetBooleanCallBack booleanCallBack) {
             this.booleanCallBack = booleanCallBack;
-            httpRequest = new HttpRequest();
             this.username = username;
         }
 
@@ -1258,14 +1468,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/CheckUserNoticeNumber.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/CheckUserNoticeNumber.php");
+                if (! isConnectionSuccess) { 
                     resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
                 if (jObj.length() != 0) {
@@ -1290,7 +1500,7 @@ public class ServerRequest {
 
         @Override
         protected void onPostExecute(Boolean isAbleToCreateNotice) {
-            progressDialog.dismiss();
+            customText.dismiss();
             booleanCallBack.done(isAbleToCreateNotice, resultStr);
             super.onPostExecute(isAbleToCreateNotice);
         }
@@ -1298,13 +1508,11 @@ public class ServerRequest {
 
     public class StoreGCMTokenAsyncTask extends AsyncTask<Void, Void, Boolean> {
         GetBooleanCallBack booleanCallBack;
-        HttpRequest httpRequest;
         String token, username;
         String resultStr;
 
         public StoreGCMTokenAsyncTask(String token, String username, GetBooleanCallBack booleanCallBack) {
             this.booleanCallBack = booleanCallBack;
-            httpRequest = new HttpRequest();
             this.token = token;
             this.username = username;
         }
@@ -1325,14 +1533,14 @@ public class ServerRequest {
                     return null;
                 }
 
-                int resultConnection = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreGCMToken.php");
-                if (resultConnection != 200) {
+                boolean isConnectionSuccess = httpRequest.makeHttpRequest(dataToSend, ADDRESS + "/StoreGCMToken.php");
+                if (! isConnectionSuccess) { 
                     resultStr = result;
                     return null;
                 }
 
                 String line = httpRequest.getReturnString();
-                Log.i("custom_check", line);
+                Log.i("custom_check", "Response : "+ line);
 
                 JSONObject jObj = new JSONObject(line);
                 if (jObj.length() != 0) {

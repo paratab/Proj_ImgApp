@@ -107,51 +107,15 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <GridLayout
-            android:id="@+id/gridUser"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btEditData"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
-            android:columnCount="3"
-            android:padding="5dp">
-
-            <ImageButton
-                android:id="@+id/btEditData"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginRight="20dp"
-                android:background="@null"
-                android:scaleType="centerCrop"
-                android:src="@drawable/edit_profile" />
-
-            <ImageButton
-                android:id="@+id/btNoticeList"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginRight="20dp"
-                android:background="@null"
-                android:scaleType="centerCrop"
-                android:src="@drawable/notice" />
-
-            <ImageButton
-                android:id="@+id/btSeenList"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@null"
-                android:scaleType="centerCrop"
-                android:src="@drawable/clue" />
-
-        </GridLayout>
-
-        <ImageButton
-            android:id="@+id/btLogout"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:scaleType="centerCrop"
-            android:src="@drawable/logout" />
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_edit_vec"
+            android:src="@drawable/edit_profile"
+            android:text="แก้ไขข้อมูลส่วนตัว" />
 
     </LinearLayout>
 </ScrollView>
