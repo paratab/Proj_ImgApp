@@ -12,6 +12,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -47,7 +49,7 @@ import bolona_pig.proj_imgapp.R;
 import bolona_pig.proj_imgapp.Service.GcmRegisterService;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public final int LOGIN = 1;
@@ -69,9 +71,9 @@ public class MainActivity extends AppCompatActivity
     AlertDialog dialog;
     TextView customSearch;
     ArrayList<GridItem> arrayList;
+    SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<GridItem> itemData = new ArrayList<>();
     private boolean isReceiverRegistered;
-
     private BroadcastReceiver mRegistrationBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -123,10 +125,26 @@ public class MainActivity extends AppCompatActivity
         fabSeenInfo.setOnClickListener(this);
         fabMainPage2.setOnClickListener(this);
         floatingActionMenu.setClosedOnTouchOutside(true);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeMain);
 
         //fabMainPage2.setVisibility(View.GONE);
 
         gridView.setOnItemClickListener(this);
+        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int topRowVerticalPosition =
+                        (gridView == null || gridView.getChildCount() == 0) ?
+                                0 : gridView.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
+            }
+        });
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -141,6 +159,9 @@ public class MainActivity extends AppCompatActivity
 
         if (checkPlayServices() && userLocalStore.getLoggedInStatus())
             registerGCM();
+        Toast.makeText(this, "Mark", Toast.LENGTH_SHORT).show();
+
+        loadNoticeList();
     }
 
     @Override
@@ -261,9 +282,8 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    //@Override
+    protected void loadNoticeList() {
         if (!isCustomSearch) {
             serverRequest.fetchNoticeItemGridInBG(0, new GetItemCallback() {
                 @Override
@@ -276,11 +296,18 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, resultStr, Toast.LENGTH_SHORT).show();
                     }
                     progressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
-        setNavigationView();
+
         fabMainPage2.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setNavigationView();
     }
 
     protected void setNavigationView() {
@@ -298,7 +325,7 @@ public class MainActivity extends AppCompatActivity
             textView = (TextView) header.findViewById(R.id.nav_text2);
             textView.setText("id:" + user.username);
             ImageView imageView = (ImageView) header.findViewById(R.id.imageView);
-            Picasso.with(this).load(user.imagePath).into(imageView);
+            Picasso.with(this).load(user.imagePath).fit().centerCrop().into(imageView);
         } else {
             navigationView.getMenu().findItem(R.id.nav_user_login).setVisible(true);
             ImageView imageView = (ImageView) header.findViewById(R.id.imageView);
@@ -458,5 +485,10 @@ public class MainActivity extends AppCompatActivity
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onRefresh() {
+        loadNoticeList();
     }
 }

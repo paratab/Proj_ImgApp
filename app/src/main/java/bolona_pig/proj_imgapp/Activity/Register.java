@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.IOException;
 
 import bolona_pig.proj_imgapp.CallBack.GetBooleanCallBack;
 import bolona_pig.proj_imgapp.CallBack.GetUserCallBack;
@@ -32,6 +35,17 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     MidModule MidModule;
     ImageView imageView;
     boolean isUsernameAvailable = false;
+
+    private static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
 
     @Override
     protected void onStart() {
@@ -96,6 +110,14 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
+            try {
+                ExifInterface exif = new ExifInterface(imageUri.getPath());
+                int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int rotationInDegrees = exifToDegrees(rotation);
+                Toast.makeText(this, rotationInDegrees + "", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

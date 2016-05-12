@@ -79,10 +79,12 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         location.setOnClickListener(this);
         imbClueAdd.setOnClickListener(this);
         imageChange = false;
+
+        loadNoticeDetail();
     }
 
-    @Override
-    protected void onStart() {
+    //@Override
+    protected void loadNoticeDetail() {
         super.onStart();
         int noticeId = Integer.parseInt(getIntent().getExtras().getString("noticeId"));
         serverRequest.fetchNoticeDataInBG(noticeId, new GetNoticeCallBack() {
@@ -110,9 +112,10 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         tvLnPhone.setText(notice.telephone);
         recentNotice = notice;
 
-        if (!imageChange) Picasso.with(this).load(notice.imagePath).into(imageView);
+        if (!imageChange)
+            Picasso.with(this).load(notice.imagePath).fit().centerCrop().into(imageView);
         else
-            Picasso.with(this).load(recentNotice.imagePath).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).into(imageView);
+            Picasso.with(this).load(recentNotice.imagePath).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerCrop().into(imageView);
 
         imageChange = false;
 
@@ -200,6 +203,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 111 && resultCode == RESULT_OK && data != null) {
             imageChange = data.getExtras().getBoolean("imageChange");
+            loadNoticeDetail();
         } else if (requestCode == ADD_CLUE && resultCode == RESULT_OK && data != null) {
             String id = data.getStringExtra("clueId");
             Intent intent = new Intent(this, ClueDetail.class);

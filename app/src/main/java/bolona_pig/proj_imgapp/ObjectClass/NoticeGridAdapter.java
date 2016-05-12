@@ -68,7 +68,7 @@ public class NoticeGridAdapter extends BaseAdapter {
         textView1.setText(temp);
         temp = "อายุ : " + dateTime.getAge(item.title2) + " ปี";
         textView2.setText(temp);
-        Picasso.with(mContext).load(item.image).into(imageView);
+        Picasso.with(mContext).load(item.image).fit().centerCrop().into(imageView);
 
         return gridView;
     }

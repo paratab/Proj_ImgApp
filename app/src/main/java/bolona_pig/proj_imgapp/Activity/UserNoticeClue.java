@@ -48,13 +48,15 @@ public class UserNoticeClue extends AppCompatActivity implements AdapterView.OnI
         progressBar.setVisibility(View.VISIBLE);
 
         listView.setOnItemClickListener(this);
+
+        notice_id = Integer.parseInt(getIntent().getExtras().getString("noticeId", "-1"));
+        loadClueList();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        notice_id = Integer.parseInt(getIntent().getExtras().getString("noticeId","-1"));
-        loadClueList();
+
     }
 
     public void loadClueList() {

@@ -68,7 +68,7 @@ public class NoticeListAdapter extends BaseAdapter {
         textView1.setText(temp);
         temp = "วันที่หายตัว : " + item.title2;
         textView2.setText(temp);
-        Picasso.with(mContext).load(item.image).into(imageView);
+        Picasso.with(mContext).load(item.image).fit().centerCrop().into(imageView);
 
         return gridView;
     }

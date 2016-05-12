@@ -45,20 +45,23 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
         userLocalStore = new UserLocalStore(this);
         MidModule = new MidModule();
         imageChange = false;
+
+        loadUserData();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    //@Override
+    protected void loadUserData() {
+        //super.onStart();
         User user = userLocalStore.getLoggedInUser();
         edtUsername.setText(user.username);
         edtName.setText(user.name);
         edtID.setText(user.nationId);
         edtEmail.setText(user.email);
         edtTelephone.setText(user.telephone);
-        if (!imageChange) Picasso.with(this).load(user.imagePath).into(imageView);
+        if (!imageChange)
+            Picasso.with(this).load(user.imagePath).fit().centerCrop().into(imageView);
         else
-            Picasso.with(this).load(user.imagePath).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).into(imageView);
+            Picasso.with(this).load(user.imagePath).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerCrop().into(imageView);
         imageChange = false;
     }
 
@@ -67,6 +70,7 @@ public class UserDetail extends AppCompatActivity implements View.OnClickListene
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == USER_EDIT && resultCode == RESULT_OK && data != null) {
             imageChange = data.getExtras().getBoolean("imageChange");
+            loadUserData();
         }
     }
 

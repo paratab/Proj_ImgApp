@@ -55,7 +55,7 @@ public class MidModule {
 
     public String bitmapToString(Bitmap in) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        in.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        in.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
         return Base64.encodeToString(bytes.toByteArray(), Base64.DEFAULT);
     }
 

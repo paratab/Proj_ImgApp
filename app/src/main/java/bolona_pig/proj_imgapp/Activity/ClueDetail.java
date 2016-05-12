@@ -63,11 +63,12 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
         location.setOnClickListener(this);
         imbSave.setOnClickListener(this);
         imbDelete.setOnClickListener(this);
+
+        loadClueData();
     }
 
-    @Override
-    protected void onStart() {
-        //TODO Change option to boolean or int not notice id;
+    //@Override
+    protected void loadClueData() {
         super.onStart();
         int infoId = Integer.parseInt(getIntent().getStringExtra("clueId"));
         String menu = getIntent().getStringExtra("menu");
@@ -104,7 +105,7 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
         tvCluePhone.setText(info.telephone);
         tvSex.setText(info.sex);
 
-        Picasso.with(this).load(info.imagePath).into(imageView);
+        Picasso.with(this).load(info.imagePath).fit().centerCrop().into(imageView);
         clueInfo = info;
 
         User user = userLocalStore.getLoggedInUser();
