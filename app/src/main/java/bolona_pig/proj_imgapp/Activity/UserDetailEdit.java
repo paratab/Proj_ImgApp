@@ -106,7 +106,7 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
 
                 Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
-                User user = new User(username, password, name, nationId, email, telephone, "");
+                final User user = new User(username, password, name, nationId, email, telephone, "");
 
                 ServerRequest serverRequest = new ServerRequest(this);
                 serverRequest.updateUserDataInBG(user, image,new GetUserCallBack() {
@@ -115,6 +115,9 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
                         if (returnedUser != null) {
                             userLocalStore.storeUserData(returnedUser);
                             Toast.makeText(UserDetailEdit.this, "บันทึกข้อมูลเรียบร้อย", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            intent.putExtra("imageChange", imageChange);
+                            setResult(RESULT_OK, intent);
                             finish();
                         } else {
                             MidModule.showAlertDialog(resultStr, UserDetailEdit.this);
@@ -162,14 +165,16 @@ public class UserDetailEdit extends AppCompatActivity implements View.OnClickLis
             }
         } else if (requestCode == SELECT_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            imageView.setImageBitmap(MidModule.resizeBitmapFromURI(this, imageUri));
+            //imageView.setImageURI(imageUri);
             imageChange = true;
             Intent intent = getIntent();
             intent.putExtra("imageChange", true);
             setResult(RESULT_OK, getIntent());
         } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            imageView.setImageBitmap(MidModule.resizeBitmapFromURI(this, imageUri));
+            //imageView.setImageURI(imageUri);
             imageChange = true;
             Intent intent = getIntent();
             intent.putExtra("imageChange", true);

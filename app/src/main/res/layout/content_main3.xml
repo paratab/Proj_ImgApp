@@ -80,15 +80,6 @@
             fab:fabSize="normal"
             fab:fab_label="@string/fabSeenInfo" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fabMain2"
-            style="@style/MenuButtonsSmall.Green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit"
-            fab:fabSize="normal"
-            fab:fab_label="ไปยังหน้าหลัก 2" />
-
     </com.github.clans.fab.FloatingActionMenu>
 
 </RelativeLayout>

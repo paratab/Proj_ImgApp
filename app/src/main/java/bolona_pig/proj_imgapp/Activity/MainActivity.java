@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     GridView gridView;
     ProgressBar progressBar;
     NoticeGridAdapter noticeGridAdapter;
-    FloatingActionButton fabNotice, fabSeenInfo, fabMainPage2;
+    FloatingActionButton fabNotice, fabSeenInfo;
     FloatingActionMenu floatingActionMenu;
     NumberPicker minAge, maxAge;
     int minValue, maxValue;
@@ -119,15 +119,11 @@ public class MainActivity extends AppCompatActivity
 
         fabNotice = (FloatingActionButton) findViewById(R.id.fabNotice);
         fabSeenInfo = (FloatingActionButton) findViewById(R.id.fabSeenInfo);
-        fabMainPage2 = (FloatingActionButton) findViewById(R.id.fabMain2);
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fabMenu);
         fabNotice.setOnClickListener(this);
         fabSeenInfo.setOnClickListener(this);
-        fabMainPage2.setOnClickListener(this);
         floatingActionMenu.setClosedOnTouchOutside(true);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeMain);
-
-        //fabMainPage2.setVisibility(View.GONE);
 
         gridView.setOnItemClickListener(this);
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -159,7 +155,6 @@ public class MainActivity extends AppCompatActivity
 
         if (checkPlayServices() && userLocalStore.getLoggedInStatus())
             registerGCM();
-        Toast.makeText(this, "Mark", Toast.LENGTH_SHORT).show();
 
         loadNoticeList();
     }
@@ -300,8 +295,6 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
-
-        fabMainPage2.setVisibility(View.GONE);
     }
 
     @Override
@@ -394,10 +387,6 @@ public class MainActivity extends AppCompatActivity
                     intent = new Intent(this, ClueAdd.class);
                     startActivityForResult(intent, CLUE_ADD_GET_ID);
                 }
-                break;
-            case R.id.fabMain2:
-//                intent = new Intent(this, BackOffice.class);
-//                startActivity(intent);
                 break;
         }
     }

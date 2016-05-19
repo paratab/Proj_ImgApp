@@ -27,7 +27,7 @@ import bolona_pig.proj_imgapp.R;
 
 public class ClueDetail extends AppCompatActivity implements View.OnClickListener {
 
-    TextView tvClueDate, tvCluePlace, tvClueDetail, tvClueAdder, tvCluePhone, tvSex;
+    TextView tvClueDate, tvCluePlace, tvClueDetail, tvClueAdder, tvCluePhone, tvSex, geoDecode;
     ServerRequest serverRequest;
     Clue clueInfo;
     ImageView imageView;
@@ -36,6 +36,7 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
     LinearLayout gridUser;
     UserLocalStore userLocalStore;
     int notice_id;
+    MidModule midModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
         location = (ImageButton) findViewById(R.id.location);
         imbSave = (Button) findViewById(R.id.imbSave);
         imbDelete = (Button) findViewById(R.id.imbDelete);
+        geoDecode = (TextView) findViewById(R.id.geoDecode);
 
         serverRequest = new ServerRequest(this);
         userLocalStore = new UserLocalStore(this);
@@ -63,6 +65,7 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
         location.setOnClickListener(this);
         imbSave.setOnClickListener(this);
         imbDelete.setOnClickListener(this);
+        midModule = new MidModule();
 
         loadClueData();
     }
@@ -91,10 +94,6 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
-
-        if (clueInfo.seenPlace.startsWith("[พิกัด]")) {
-            location.setVisibility(View.VISIBLE);
-        }
     }
 
     private void showClueInfo(Clue info) {
@@ -113,6 +112,22 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
             gridUser.setVisibility(View.VISIBLE);
         }
 
+        if (clueInfo.seenPlace.startsWith("[พิกัด]")) {
+            location.setVisibility(View.VISIBLE);
+            geoDecode.setVisibility(View.VISIBLE);
+            midModule.decodeLatLng(this, clueInfo.seenPlace, new GetBooleanCallBack() {
+                @Override
+                public void done(Boolean flag, String resultStr) {
+                    if (flag) {
+                        geoDecode.setText(resultStr);
+                    } else {
+                        geoDecode.setVisibility(View.GONE);
+                    }
+                }
+            });
+        } else {
+            geoDecode.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -134,6 +149,7 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
                 intent = new Intent(this, Maps2Activity.class);
                 String temp = tvCluePlace.getText().toString();
                 intent.putExtra("latlng", temp);
+
                 startActivity(intent);
                 break;
             case R.id.imbSave:
@@ -158,6 +174,8 @@ public class ClueDetail extends AppCompatActivity implements View.OnClickListene
                     public void done(Boolean flag, String resultStr) {
                         if (flag != null && flag) {
                             Toast.makeText(ClueDetail.this, "ลบเบาะแสเสร็จสิ้น", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            setResult(RESULT_OK, intent);
                             finish();
                         } else {
                             MidModule midModule = new MidModule();

@@ -1012,7 +1012,7 @@ public class ServerRequest {
                                 noticeItems.add(item);
                             }
                         } else {
-                            resultStr = context.getResources().getString(R.string.errorNoNoticeExist);
+                            resultStr = context.getResources().getString(R.string.errorNoClueForNotice);
                         }
                     } else if (resultDBConnection == 0)
                         resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);
@@ -1268,11 +1268,9 @@ public class ServerRequest {
                 JSONObject jObj = new JSONObject(line);
                 if (jObj.length() != 0) {
                     int resultDBConnection = jObj.getInt("resultDBConnection");
-                    int resultUpdateStatus = jObj.getInt("resultUpdateStatus");
-                    int resultNoticeStatus = jObj.getInt("resultClueStatus");
                     int resultClueSave = jObj.getInt("resultClueSave");
 
-                    if (resultDBConnection == 1 && resultUpdateStatus == 1 && resultNoticeStatus == 1 && resultClueSave == 1) {
+                    if (resultDBConnection == 1 && resultClueSave == 1) {
                         isUpdateSuccess = true;
                     } else if (resultDBConnection == 0)
                         resultStr = context.getResources().getString(R.string.errorCannotConnectToServer);

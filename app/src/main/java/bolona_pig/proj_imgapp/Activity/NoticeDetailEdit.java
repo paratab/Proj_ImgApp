@@ -169,14 +169,16 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            imageView.setImageBitmap(MidModule.resizeBitmapFromURI(this, imageUri));
+            //imageView.setImageURI(imageUri);
             imageChange = true;
             Intent intent = getIntent();
             intent.putExtra("imageChange", true);
             setResult(RESULT_OK, getIntent());
         } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            imageView.setImageBitmap(MidModule.resizeBitmapFromURI(this, imageUri));
+            //imageView.setImageURI(imageUri);
             imageChange = true;
             Intent intent = getIntent();
             intent.putExtra("imageChange", true);
@@ -225,6 +227,9 @@ public class NoticeDetailEdit extends AppCompatActivity implements View.OnClickL
 
     public void showResult() {
         Toast.makeText(this, "แก้ไขข้อมูลเรียบร้อย", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        intent.putExtra("imageChange", imageChange);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

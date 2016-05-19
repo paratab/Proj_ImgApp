@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -58,12 +59,13 @@ public class GcmDownstreamService extends GcmListenerService {
         intent.putExtra("clueId", clue_id);
         intent.putExtra("menu", "save");
         intent.putExtra("noticeId", notice_id);
-        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), Integer.parseInt(clue_id), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_description_white_24dp);
 
         notifyBuilder = new NotificationCompat.Builder(this).setTicker("มีเบาะแสใหม่ !").setSmallIcon(R.drawable.ic_description_white_24dp).setLargeIcon(icon)
                 .setContentTitle("เบาะแสของ " + lostName).setContentText("กรุณากดเพื่อดูรายละเอียดของเบาะแส").setContentIntent(pIntent)
-                .setAutoCancel(true).setDefaults(Notification.DEFAULT_SOUND).setVibrate(new long[]{100, 3000, 500, 1000});
+                .setAutoCancel(true).setVibrate(new long[]{100, 1000, 100, 1000, 100, 1000}).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 
         Notification notification = notifyBuilder.build();
 

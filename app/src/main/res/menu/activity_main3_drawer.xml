@@ -5,7 +5,7 @@
         <menu>
             <item
                 android:id="@+id/nav_user_detail"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_menu_send"
                 android:title="@string/nav_user_detail"
                 android:visible="false" />
             <item

@@ -116,7 +116,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         }
         String latlngStr = getIntent().getExtras().getString("latlng");
         if (!latlngStr.isEmpty() && latlngStr.startsWith("[พิกัด] : ")) {
-            latlngStr = latlngStr.substring(13, latlngStr.length() - 1);
+            latlngStr = latlngStr.substring(11, latlngStr.length() - 1);
             String[] latlong = latlngStr.split(",");
             double latitude = Double.parseDouble(latlong[0]);
             double longitude = Double.parseDouble(latlong[1]);

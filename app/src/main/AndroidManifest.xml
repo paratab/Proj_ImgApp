@@ -67,9 +67,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_seen_info_detail" />
         <activity
-            android:name=".Activity.BackOffice"
-            android:label="@string/title_activity_back_office" />
-        <activity
             android:name=".Activity.UserNoticeList"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_user_noticelist" />
@@ -91,7 +88,8 @@
         <activity
             android:name=".Activity.Maps2Activity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_maps2" />
+            android:label="@string/title_activity_maps2"
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".Service.GcmDownstreamService"

@@ -31,7 +31,7 @@ import bolona_pig.proj_imgapp.R;
 public class NoticeDetail extends AppCompatActivity implements View.OnClickListener {
 
     final int ADD_CLUE = 1;
-    TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone, tvLnSex;
+    TextView tvLnName, tvLnBirthDate, tvLnPlace, tvLnLostDate, tvLnDetail, tvLnAdder, tvLnPhone, tvLnSex, geoDecode;
     ServerRequest serverRequest;
     UserLocalStore userLocalStore;
     Notice recentNotice;
@@ -41,6 +41,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
     Button imbTel, ImbMessage, imbMarkFin, imbEdit, imbDel, imbClueAdd;
     ImageButton location;
     LinearLayout gridUser, gridOwner, gridAdmin;
+    MidModule midModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         gridOwner = (LinearLayout) findViewById(R.id.gridOwner);
         gridAdmin = (LinearLayout) findViewById(R.id.gridAdmin);
         location = (ImageButton) findViewById(R.id.location);
+        geoDecode = (TextView) findViewById(R.id.geoDecode);
 
         serverRequest = new ServerRequest(this);
         userLocalStore = new UserLocalStore(this);
@@ -79,6 +81,8 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         location.setOnClickListener(this);
         imbClueAdd.setOnClickListener(this);
         imageChange = false;
+
+        midModule = new MidModule();
 
         loadNoticeDetail();
     }
@@ -130,6 +134,18 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
         String temp = notice.lostPlace;
         if (temp.startsWith("[พิกัด]")) {
             location.setVisibility(View.VISIBLE);
+            midModule.decodeLatLng(this, temp, new GetBooleanCallBack() {
+                @Override
+                public void done(Boolean flag, String resultStr) {
+                    if (flag) {
+                        geoDecode.setText(resultStr);
+                    } else {
+                        geoDecode.setVisibility(View.GONE);
+                    }
+                }
+            });
+        } else {
+            geoDecode.setVisibility(View.GONE);
         }
     }
 
@@ -163,6 +179,7 @@ public class NoticeDetail extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(this, Maps2Activity.class);
                 String temp = tvLnPlace.getText().toString();
                 intent.putExtra("latlng", temp);
+                intent.putExtra("mode", "notice");
                 startActivity(intent);
                 break;
             case R.id.imbClueAdd:

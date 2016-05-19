@@ -146,10 +146,12 @@ public class ClueAdd extends AppCompatActivity implements View.OnClickListener, 
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            imageView.setImageBitmap(MidModule.resizeBitmapFromURI(this, imageUri));
+            //imageView.setImageURI(imageUri);
         } else if (requestCode == SELECT_IMAGE_CAMERA && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            imageView.setImageBitmap(MidModule.resizeBitmapFromURI(this, imageUri));
+            //imageView.setImageURI(imageUri);
         } else if (requestCode == MAP_LOCATION_REQUEST && resultCode == RESULT_OK && data != null) {
             double lat = data.getDoubleExtra("lat", 0.0);
             double lng = data.getDoubleExtra("lng", 0.0);
